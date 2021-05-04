@@ -1,0 +1,205 @@
+/*
+Copyright (c) 2021 James Dean Mathias
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+#include "Player.hpp"
+
+#include "Configuration.hpp"
+#include "ConfigurationPath.hpp"
+#include "Content.hpp"
+#include "ContentKey.hpp"
+#include "SoundPlayer.hpp"
+#include "components/Drag.hpp"
+#include "components/Momentum.hpp"
+#include "components/Orientation.hpp"
+#include "components/Position.hpp"
+#include "components/Size.hpp"
+#include "entities/WeaponEmpty.hpp"
+#include "entities/WeaponGun.hpp"
+#include "misc/math.hpp"
+
+#include <algorithm>
+#include <cmath>
+#include <memory>
+
+namespace entities
+{
+
+    // --------------------------------------------------------------
+    //
+    // Create a player based on details from the configuration file.
+    //
+    // --------------------------------------------------------------
+    std::shared_ptr<Player> Player::create()
+    {
+        Specification spec;
+        spec.thrustRate = Configuration::get<double>(config::PLAYER_THRUST_RATE);
+        spec.dragRate = Configuration::get<double>(config::PLAYER_DRAG_RATE) * misc::PER_MS_TO_US;
+        spec.rotateRate = Configuration::get<float>(config::PLAYER_ROTATE_RATE);
+        spec.maxSpeed = Configuration::get<float>(config::PLAYER_MAX_SPEED);
+        spec.size = Configuration::get<float>(config::PLAYER_SIZE);
+
+        auto player = std::make_shared<Player>(spec);
+
+        player->attachPrimaryWeapon(std::make_shared<entities::WeaponGun>(config::ENTITY_WEAPON_BASIC_GUN));
+        player->attachSecondaryWeapon(std::make_shared<entities::WeaponEmpty>());
+
+        return player;
+    }
+
+    Player::Player(Specification spec) :
+        m_thrustRate(spec.thrustRate),
+        m_rotateRate(spec.rotateRate),
+        m_maxSpeed(spec.maxSpeed)
+    {
+        this->addComponent(std::make_unique<components::Position>(math::Point2f(0.0f, 0.0f)));
+        this->addComponent(std::make_unique<components::Orientation>(0.0f));
+        this->addComponent(std::make_unique<components::Size>(math::Dimension2f(spec.size, spec.size)));
+        this->addComponent(std::make_unique<components::Momentum>(math::Vector2f(0.0f, 0.0f)));
+        this->addComponent(std::make_unique<components::Drag>(spec.dragRate));
+
+        //
+        // This is a unique one, due to the way it works, handing it directly here, rather than a
+        // fire-and-forget using the SoundBuffer.
+        m_thrust.setBuffer(*Content::get<sf::SoundBuffer>(content::KEY_AUDIO_THRUST));
+    }
+
+    // --------------------------------------------------------------
+    //
+    // Due to circular pointers between weapons and the player, the shared_ptr for a player
+    // won't automatically go out of scope.  Therefore, this method is used to tell a player
+    // to cleanup after itself.
+    //
+    // --------------------------------------------------------------
+    void Player::cleanup()
+    {
+        m_weaponPrimary = nullptr;
+        m_weaponSecondary = nullptr;
+    }
+
+    Player::~Player()
+    {
+        // The thrust sound can still be playing when the player dies because the key
+        // hasn't been released.  This ensures the thrust sounds stops when the player
+        // no longer exists.
+        m_thrust.stop();
+    }
+
+    // --------------------------------------------------------------
+    //
+    // Player needs to update because thrust is based on a start/stop
+    // from a key being pressed or released.
+    //
+    // --------------------------------------------------------------
+    void Player::update(const std::chrono::microseconds elapsedTime)
+    {
+        if (m_thrusting)
+        {
+            accelerate(elapsedTime);
+        }
+    }
+
+    void Player::applyPowerup(std::shared_ptr<entities::Powerup> powerup)
+    {
+        SoundPlayer::play(powerup->getAudioKey());
+
+        switch (powerup->getType())
+        {
+            case Powerup::Type::RapidFire:
+            case Powerup::Type::SpreadFire:
+                this->attachPrimaryWeapon(powerup->get());
+                break;
+            case Powerup::Type::Bomb:
+                this->attachSecondaryWeapon(powerup->get());
+                break;
+        }
+    }
+
+    // --------------------------------------------------------------
+    //
+    // Brake in the "orientatiion" direction.
+    //
+    // --------------------------------------------------------------
+    void Player::brake(std::chrono::microseconds elapsedTime)
+    {
+        auto vector = math::vectorFromDegrees(this->getComponent<components::Orientation>()->get());
+        auto momentum = this->getComponent<components::Momentum>();
+        auto magBefore = std::sqrt(momentum->get().x * momentum->get().x + momentum->get().y * momentum->get().y);
+        auto mx = static_cast<decltype(momentum->get().x)>(momentum->get().x - vector.x * m_thrustRate * elapsedTime.count());
+        auto my = static_cast<decltype(momentum->get().y)>(momentum->get().y - vector.y * m_thrustRate * elapsedTime.count());
+        auto magAfter = std::sqrt(mx * mx + my * my);
+        //
+        // This has the effect of preventing the player from going backwards due to braking
+        if (magAfter < magBefore)
+        {
+            momentum->set({ mx, my });
+        }
+        else
+        {
+            momentum->set({ 0.0f, 0.0f });
+        }
+    }
+
+    void Player::rotateLeft(std::chrono::microseconds elapsedTime)
+    {
+        auto orientation = this->getComponent<components::Orientation>();
+        orientation->set(orientation->get() - elapsedTime.count() * m_rotateRate);
+    }
+
+    void Player::rotateRight(std::chrono::microseconds elapsedTime)
+    {
+        auto orientation = this->getComponent<components::Orientation>();
+        orientation->set(orientation->get() + elapsedTime.count() * m_rotateRate);
+    }
+
+    // --------------------------------------------------------------
+    //
+    // Add momentum in the "orientation" direction.
+    //
+    // --------------------------------------------------------------
+    void Player::accelerate(std::chrono::microseconds elapsedTime)
+    {
+        auto vector = math::vectorFromDegrees(this->getComponent<components::Orientation>()->get());
+        auto momentum = this->getComponent<components::Momentum>();
+        momentum->set({ static_cast<decltype(momentum->get().x)>(momentum->get().x + vector.x * m_thrustRate * elapsedTime.count()),
+                        static_cast<decltype(momentum->get().y)>(momentum->get().y + vector.y * m_thrustRate * elapsedTime.count()) });
+
+        auto magnitude = std::sqrt(momentum->get().x * momentum->get().x + momentum->get().y * momentum->get().y);
+        if (magnitude > m_maxSpeed)
+        {
+            float scale = m_maxSpeed / magnitude;
+            momentum->set({ momentum->get().x * scale, momentum->get().y * scale });
+        }
+    }
+
+    void Player::attachPrimaryWeapon(std::shared_ptr<entities::Weapon> weapon)
+    {
+        weapon->setParent(shared_from_this());
+        m_weaponPrimary = weapon;
+    }
+
+    void Player::attachSecondaryWeapon(std::shared_ptr<entities::Weapon> weapon)
+    {
+        weapon->setParent(shared_from_this());
+        m_weaponSecondary = weapon;
+    }
+
+} // namespace entities

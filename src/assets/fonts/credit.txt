@@ -1,0 +1,4 @@
+Shojumaru Font
+   * Source: https://fonts.google.com/specimen/Shojumaru?query=shojumaru
+   * Credit: Astigmatic
+   * License: SIL Open Font License (OFL) - https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL

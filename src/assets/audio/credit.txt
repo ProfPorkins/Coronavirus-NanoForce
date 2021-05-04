@@ -1,0 +1,50 @@
+menu-activate.wav
+	https://freesound.org/data/previews/435/435997_2975501-lq.ogg
+	Source: https://freesound.org/people/Soundscapes55/sounds/435997/
+	Credit: Soundscapes55
+	License: https://creativecommons.org/publicdomain/zero/1.0/
+
+menu-accept.wav
+	Source: https://opengameart.org/content/gui-sound-effects
+	Credit: LokiF
+	Attribution License: https://creativecommons.org/licenses/by/3.0/
+
+thruster-level3.ogg
+	Source: https://www.freesound.org/people/nathanshadow/sounds/22456/
+	Credit: nathanshadow
+	License: https://creativecommons.org/licenses/sampling+/1.0/
+
+fire.ogg
+	Source: https://opengameart.org/content/63-digital-sound-effects-lasers-phasers-space-etc
+	Credit: Kenny (www.kenney.nl)
+	License: https://creativecommons.org/publicdomain/zero/1.0/
+
+virus-death.ogg
+	Source: https://opengameart.org/content/lava-splash
+	Credit: Michel Baradari
+	License: https://creativecommons.org/licenses/by/3.0/
+
+player-death.ogg
+	Source: https://opengameart.org/content/wgs-sound-fx-explosion-1
+	Credit: Retimer
+	License: https://creativecommons.org/licenses/by/3.0/
+
+fire-bomb.ogg
+	Source: https://opengameart.org/content/muffled-distant-explosion
+	Credit: NenadSimic
+	License: https://creativecommons.org/publicdomain/zero/1.0/
+
+explode-bomb.ogg
+	Source: https://opengameart.org/content/2-high-quality-explosions
+	Credit: Michel Baradari
+	License: http://creativecommons.org/licenses/by/3.0/
+
+powerup.ogg
+	Source: https://opengameart.org/content/3-heal-spells
+	Credit: DoKashiteru
+	License: https://creativecommons.org/licenses/by/3.0/
+
+player-start.wav
+	Source: https://opengameart.org/content/warp-sound-2
+	Credit: Arthur
+	License: https://creativecommons.org/licenses/by-sa/3.0/

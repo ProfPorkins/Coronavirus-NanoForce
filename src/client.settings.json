@@ -1,0 +1,23 @@
+{
+    "graphics": {
+        "resolution": {
+            "width": 1920,
+            "height": 1080
+        },
+        "bpp": 32,
+        "full-screen": false,
+        "vsync": true,
+        "scale-to-resolution": false
+    },
+    "keyboard": {
+        "up": "w",
+        "down": "s",
+        "left": "a",
+        "right": "d",
+        "primary-fire": "space",
+        "secondary-fire": "s"
+    },
+    "music": {
+        "play-background": true
+    }
+}

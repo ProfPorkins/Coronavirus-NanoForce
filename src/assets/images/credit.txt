@@ -1,0 +1,50 @@
+menu-background-1.jpg
+	Source: https://www.flickr.com/photos/niaid/49534865371/
+	License: https://creativecommons.org/licenses/by/2.0/
+	Credit: NIAID-RML
+
+virus-background-2.png
+	Source: https://phil.cdc.gov/Details.aspx?pid=18115
+	License: Public Domain
+	Credit: CDC-PHIL
+
+sars-cov-2.png
+	Source: https://phil.cdc.gov/details.aspx?pid=23312
+	License: Public Domain
+	Credit: CDC-PHIL
+
+bomb.png
+	Source: https://phil.cdc.gov/Details.aspx?pid=21074
+	License: Public Domain
+	Credit: CDC-PHIL
+
+playerShip1_blue.png
+	Source: https://www.kenney.nl/assets/space-shooter-redux
+	License: https://creativecommons.org/publicdomain/zero/1.0/
+	Credit: Kenny
+
+powerup-(bomb/rapid-fire/spread-fire).png
+	Source: https://opengameart.org/content/powerup-animated-orb
+	License: https://creativecommons.org/publicdomain/zero/1.0/
+	Credit: Joseph Crown (Opengameart)
+
+player-start-particle.png
+	Source: https://opengameart.org/content/sparkling-fireball-effect
+	License: https://creativecommons.org/publicdomain/zero/1.0/
+	Credit: rubberduck
+
+virus-particle.png
+	Source: https://phil.cdc.gov/
+	License: Public Domain
+	Credit: CDC-PHIL
+
+Petri-(1 through 6):
+	Source: https://phil.cdc.gov/
+	License: Public Domain
+	Credit: CDC-PHIL
+
+Achievement Images:
+	Source: https://opengameart.org/content/basic-gems-icon-set
+	License: https://creativecommons.org/licenses/by/3.0/
+	Credit: yinakoSGA
+	Copied and then converted these to grayscale for additional images

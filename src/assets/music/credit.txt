@@ -1,0 +1,11 @@
+background-music-1.ogg
+	Source: https://opengameart.org/content/heroic-minority
+	Credit: Alexandr Zhelanov
+	License: https://creativecommons.org/licenses/by/3.0/
+	Converted to .ogg format
+
+background-music-2.ogg
+	Source: https://opengameart.org/content/battle-theme-a
+	Credit: Alex Smith
+	License: https://creativecommons.org/publicdomain/zero/1.0/
+	Converted to .ogg format
