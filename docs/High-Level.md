@@ -2,7 +2,7 @@
 
 The high-level overview of the architecture looks like the following diagram.
 
-![High Level Overview](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/High-Level-Overview.png)
+![High Level Overview](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/images/High-Level-Overview.png)
 
 The GameModel is the focus of the code, with most everything else in support of it.
 
