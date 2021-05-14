@@ -1,4 +1,4 @@
-# C++ Developer Setup & Compiling Instructions
+# Developer Setup & Compiling Instructions
 
 This page describes how to setup the development environment you need to compile and run the game.  Instructions for both Windows and Linux are provided.  Familiarity with C++ development on either Windows or Linux is expected.
 
@@ -58,7 +58,7 @@ The following development tools must be installed:
 * g++ - A version that supports C++ 17 is required
 * CMake
 * (optional) clang-format
-* The following may need to be installed: `sudo apt install [lib name]`
+* The following dev libraries may need to be installed: `sudo apt install [lib name]`
   * libx11-dev
   * xorg-dev
   * libgl1-mesa-dev
