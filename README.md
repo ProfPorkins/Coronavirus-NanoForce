@@ -18,7 +18,16 @@ Instructions for Windows and Linux are found at [this page](https://github.com/P
 
 ## Code Design
 
-A few answers to questions
+Links to documentation on various aspects of the architecture and code are found below.  Throughout the documentation you will find not only the description of the design and code, but also my commentary on why it is that why and how else I might like to do it.  Mostly I'm attempting to describe the code as it is, but I also want to communicate compromises made (typically to time) other possibilities for how it might be different/better.
+
+* [High Level Architectural Overview](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/High-Level.md)
+* Startup and application/game loop
+* Entities & Components
+* Systems
+* Renderers
+* Levels
+
+A few answers to questions some might have
 
 * Does it work? Yes
 * Could the design and implementation be improved? Yes
