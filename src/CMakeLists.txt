@@ -124,13 +124,11 @@ set(CLIENT_MISC_HEADERS
     misc/ConcurrentQueue.hpp
     misc/math.hpp
     misc/misc.hpp
-    misc/sha512.hpp
     )
 
 set(CLIENT_MISC_SOURCES
     misc/math.cpp
     misc/misc.cpp
-    misc/sha512.cpp
     )
 
 set(CLIENT_RENDERERS_HEADERS

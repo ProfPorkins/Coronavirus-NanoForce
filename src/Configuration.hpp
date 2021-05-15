@@ -58,8 +58,6 @@ class Configuration
     template <typename T>
     static void set(const std::vector<std::string>& path, T value);
 
-    auto getHash() { return m_hash; }
-
     //
     // Additional Graphics configuration settings
     //
@@ -99,7 +97,6 @@ class Configuration
 
     rapidjson::Document m_domFull;
     rapidjson::Document m_domSettings;
-    std::string m_hash;
 
     Graphics m_graphics;
 };
