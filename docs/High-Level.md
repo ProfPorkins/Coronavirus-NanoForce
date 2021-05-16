@@ -63,7 +63,30 @@ Assets (images, sounds, fonts, etc) are managed by the `Content` Singleton.  Sev
 
 At initialization, this class creates a worker thread that is used to load assets from disk into memory.  The motivation for using a worker thread is to keep the main thread free from being paused when assets are loaded.  The worker thread waits for an event to occur, such as a request to load an asset.  Once an event is signaled, the worker pulls pulls the next available task from a queue and calls the appropriate code to load that asset type.  If the loading was successful, and an `onComplete` function is defined for the task, the `onComplete` function is invoked.  If the loading wasn't successful, and an `onError` function is defined for the task, the `onError` function is invoked.  In this way, code that requests an asset to be loaded can be notified on either success or failure and take appropriate action.
 
-Similar to the `Configuration` class described above, template specialization is used by the two method that initiate loading of an asset and retrieving a pointer to an asset already in memory.
+### Template Specialization
+
+Similar to the `Configuration` class described above, template specialization is used by the two methods that initiate loading of an asset and retrieving a pointer to an asset already in memory.  Two methods for loading and retrieval of assets have specializations, their declarations are shown below:
+
+    template <typename T>
+    static void load(std::string key, std::string filename, std::function<void(std::string)> onComplete = nullptr, std::function<void(std::string)> onError = nullptr);
+
+    template <typename T>
+    static std::shared_ptr<T> get(std::string key);
+
+The specialization for the `sf::Font` type for each is shown next:
+
+    template <>
+    void Content::load<sf::Font>(std::string key, std::string filename, std::function<void(std::string)> onComplete, std::function<void(std::string)> onError)
+    {
+        instance().m_tasks.enqueue({ Task::Type::Font, key, filename, onComplete, onError });
+        instance().m_eventTasks.notify_one();
+    }
+
+    template <>
+    std::shared_ptr<sf::Font> Content::get(std::string key)
+    {
+        return instance().m_fonts[key];
+    }
 
 ## Sound Effect Player (class `SoundPlayer`)
 
