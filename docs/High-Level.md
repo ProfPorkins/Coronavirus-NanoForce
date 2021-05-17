@@ -17,7 +17,7 @@ The GameModel is primarily supported by the following capabilities
 
 There are three additional pieces to the overall architecture.  The are services to support loading and retrieval of assets, playing of sound and music, and loading and maintenance of game configuration settings.  Each of these are described below.
 
-All three of these services are implemented as Singletons.  I know it is popular to shame the use of Singletons, but the technique works well for these.  For each of these, there should only ever be the possibility of one of them existing, and each of these needs to be available to many parts of the game code.  I did consider making something of a service architecture instead of using Singletons, but that was going to be more work and more complexity for no additional benefit that I could see.
+All three of these services are implemented as singletons.  I know it is popular to shame the use of singletons, but the technique works well for these.  For each of these, there should only ever be the possibility of one of them existing, and each of these needs to be available to many parts of the game code.  I did consider making something of a service architecture instead of using singletons, but that was going to be more work and more complexity for no additional benefit that I could see.
 
 ## Configuration (class `Configuration`)
 
@@ -59,7 +59,7 @@ The use of these methods looks like:
 
 ## Asset Management (class `Content`)
 
-Assets (images, sounds, fonts, etc) are managed by the `Content` Singleton.  Several methods are exposed that allow for requesting an asset is loaded, obtaining a pointer to an asset, checking to see if a particular asset exists or if there are any pending loading tasks.  Because the memory footprint of this game is so small, no capability to unload assets is provided.  Once something is loaded into memory, it is there for the duration of the process.
+Assets (images, sounds, fonts, etc) are managed by the `Content` singleton.  Several methods are exposed that allow for requesting an asset is loaded, obtaining a pointer to an asset, checking to see if a particular asset exists or if there are any pending loading tasks.  Because the memory footprint of this game is so small, no capability to unload assets is provided.  Once something is loaded into memory, it is there for the duration of the process.
 
 At initialization, this class creates a worker thread that is used to load assets from disk into memory.  The motivation for using a worker thread is to keep the main thread free from being paused when assets are loaded.  The worker thread waits for an event to occur, such as a request to load an asset.  Once an event is signaled, the worker pulls pulls the next available task from a queue and calls the appropriate code to load that asset type.  If the loading was successful, and an `onComplete` function is defined for the task, the `onComplete` function is invoked.  If the loading wasn't successful, and an `onError` function is defined for the task, the `onError` function is invoked.  In this way, code that requests an asset to be loaded can be notified on either success or failure and take appropriate action.
 
