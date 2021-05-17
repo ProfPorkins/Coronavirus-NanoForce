@@ -37,7 +37,6 @@ THE SOFTWARE.
 #include "systems/Age.hpp"
 #include "systems/AnimatedSprite.hpp"
 #include "systems/Birth.hpp"
-#include "systems/ControllerInput.hpp"
 #include "systems/Health.hpp"
 #include "systems/KeyboardInput.hpp"
 #include "systems/Lifetime.hpp"
@@ -69,10 +68,6 @@ class GameModel
     void signalKeyPressed(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now);
     void signalKeyReleased(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now);
 
-    void signalButtonPressed(sf::Event::JoystickButtonEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now);
-    void signalButtonReleased(sf::Event::JoystickButtonEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now);
-    void signalJoystickMoved(sf::Event::JoystickMoveEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now);
-
     void update(const std::chrono::microseconds elapsedTime);
     void render(sf::RenderTarget& renderTarget, const std::chrono::microseconds elapsedTime);
 
@@ -85,7 +80,6 @@ class GameModel
     std::uint32_t m_virusesKilled{ 0 };
 
     systems::KeyboardInput m_sysKeyboard;
-    systems::ControllerInput m_sysController;
     systems::Movement m_sysMovement;
     systems::Lifetime m_sysLifetime;
     systems::ParticleSystem m_sysParticle;

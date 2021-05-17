@@ -36,7 +36,7 @@ namespace entities
 {
     // --------------------------------------------------------------
     //
-    // The Player entity is the "ship" controller by the person
+    // The Player entity is the "ship" controlled by the person
     // playing the game.
     //
     // --------------------------------------------------------------

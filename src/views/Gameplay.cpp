@@ -68,29 +68,6 @@ namespace views
         m_model->signalKeyReleased(event, elapsedTime, now);
     }
 
-    void Gameplay::signalButtonPressed(sf::Event::JoystickButtonEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now)
-    {
-        switch (static_cast<systems::ControllerButton>(event.button))
-        {
-            case systems::ControllerButton::B:
-                m_nextState = ViewState::LevelSelect;
-                break;
-            default:
-                m_model->signalButtonPressed(event, elapsedTime, now);
-                break;
-        }
-    }
-
-    void Gameplay::signalButtonReleased(sf::Event::JoystickButtonEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now)
-    {
-        m_model->signalButtonReleased(event, elapsedTime, now);
-    }
-
-    void Gameplay::signalJoystickMoved(sf::Event::JoystickMoveEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now)
-    {
-        m_model->signalJoystickMoved(event, elapsedTime, now);
-    }
-
     ViewState Gameplay::update(const std::chrono::microseconds elapsedTime, [[maybe_unused]] const std::chrono::system_clock::time_point now)
     {
         m_model->update(elapsedTime);

@@ -329,18 +329,6 @@ int main()
                     view->signalMouseReleased(event.mouseButton.button, { viewCoords.x, viewCoords.y }, elapsedTime);
                 }
                 break;
-                case sf::Event::JoystickButtonPressed:
-                    std::cout << "(pressed) id: " << event.joystickButton.joystickId << " - button: " << event.joystickButton.button << std::endl;
-                    view->signalButtonPressed(event.joystickButton, elapsedTime, currentTime);
-                    break;
-                case sf::Event::JoystickButtonReleased:
-                    std::cout << "(released) id: " << event.joystickButton.joystickId << " - button: " << event.joystickButton.button << std::endl;
-                    view->signalButtonReleased(event.joystickButton, elapsedTime, currentTime);
-                    break;
-                case sf::Event::JoystickMoved:
-                    std::cout << "(moved) id: " << event.joystickMove.joystickId << " - axis: " << event.joystickMove.axis << " position: " << event.joystickMove.position << std::endl;
-                    view->signalJoystickMoved(event.joystickMove, elapsedTime, currentTime);
-                    break;
                 default:
                     // This is here to eliminate a bunch of compiler warnings related to events not handled in this switch statement
                     break;

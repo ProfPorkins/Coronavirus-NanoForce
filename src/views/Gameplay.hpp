@@ -45,10 +45,6 @@ namespace views
         virtual void signalKeyPressed(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
         virtual void signalKeyReleased(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
 
-        virtual void signalButtonPressed(sf::Event::JoystickButtonEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
-        virtual void signalButtonReleased(sf::Event::JoystickButtonEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
-        virtual void signalJoystickMoved(sf::Event::JoystickMoveEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
-
         virtual ViewState update(const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
         virtual void render(sf::RenderTarget& renderTarget, const std::chrono::microseconds elapsedTime) override;
 

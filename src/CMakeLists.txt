@@ -154,7 +154,6 @@ set(CLIENT_SYSTEMS_HEADERS
     systems/Age.hpp
     systems/AnimatedSprite.hpp
     systems/Birth.hpp
-    systems/ControllerInput.hpp
     systems/Health.hpp
     systems/KeyboardInput.hpp
     systems/Lifetime.hpp
@@ -166,7 +165,6 @@ set(CLIENT_SYSTEMS_SOURCES
     systems/Age.cpp
     systems/AnimatedSprite.cpp
     systems/Birth.cpp
-    systems/ControllerInput.cpp
     systems/Health.cpp
     systems/KeyboardInput.cpp
     systems/Lifetime.cpp

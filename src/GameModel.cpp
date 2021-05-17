@@ -176,21 +176,6 @@ void GameModel::signalKeyReleased(sf::Event::KeyEvent event, const std::chrono::
     m_sysKeyboard.signalKeyReleased(event, elapsedTime, now);
 }
 
-void GameModel::signalButtonPressed(sf::Event::JoystickButtonEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now)
-{
-    m_sysController.signalButtonPressed(event, elapsedTime, now);
-}
-
-void GameModel::signalButtonReleased(sf::Event::JoystickButtonEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now)
-{
-    m_sysController.signalButtonReleased(event, elapsedTime, now);
-}
-
-void GameModel::signalJoystickMoved(sf::Event::JoystickMoveEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now)
-{
-    m_sysController.signalJoystickMoved(event, elapsedTime, now);
-}
-
 // --------------------------------------------------------------
 //
 // This is where everything performs its update.
@@ -199,7 +184,6 @@ void GameModel::signalJoystickMoved(sf::Event::JoystickMoveEvent event, const st
 void GameModel::update(const std::chrono::microseconds elapsedTime)
 {
     m_sysKeyboard.update(elapsedTime);
-    m_sysController.update(elapsedTime);
     m_sysParticle.update(elapsedTime);
 
     m_updatePlayer(elapsedTime);
@@ -441,8 +425,6 @@ void GameModel::onPlayerDeath()
 // --------------------------------------------------------------
 void GameModel::resetPlayer()
 {
-    m_sysController.unregisterAll();
-
     if (m_player)
     {
         m_player->cleanup();
@@ -489,14 +471,6 @@ void GameModel::startPlayer(math::Point2f position)
     m_sysKeyboard.registerHandler(
         Configuration::get<std::string>(config::KEYBOARD_PRIMARY_FIRE), true, std::chrono::microseconds(0),
         [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime) {
-            player->getPrimaryWeapon()->fire(
-                std::bind(&GameModel::emitBullet, this, std::placeholders::_1),
-                std::bind(&GameModel::emitBomb, this, std::placeholders::_1));
-        });
-
-    m_sysController.registerHandler(
-        systems::ControllerAxis::LeftTrigger,
-        [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime, [[maybe_unused]] float fraction) {
             player->getPrimaryWeapon()->fire(
                 std::bind(&GameModel::emitBullet, this, std::placeholders::_1),
                 std::bind(&GameModel::emitBomb, this, std::placeholders::_1));
