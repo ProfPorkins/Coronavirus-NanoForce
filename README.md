@@ -22,7 +22,7 @@ Links to documentation on various aspects of the architecture and code are found
 
 * [High Level Architectural Overview](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/High-Level.md)
 * [Startup and application/game loop](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/Startup-GameLoop.md)
-* Entities & Components
+* [Entities & Components](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/Entities-Components.md)
 * Systems
 * Renderers
 * Levels
