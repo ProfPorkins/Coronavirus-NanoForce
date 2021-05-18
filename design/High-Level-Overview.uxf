@@ -152,4 +152,58 @@ m1=*
 composed of &gt;</panel_attributes>
     <additional_attributes>150.0;20.0;10.0;20.0</additional_attributes>
   </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>390</x>
+      <y>450</y>
+      <w>240</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>Content
+--
+--
++instance(): Content
++initialize(): void
++terminate(): void
++load&lt;T&gt;(...): void
++has&lt;T&gt;(key: string): bool
++get&lt;T&gt;(key: string): T
++anyPending(): bool</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>100</x>
+      <y>450</y>
+      <w>240</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>Configuration
+--
+--
++instance(): Configuration
++initialize(...): bool
++get&lt;T&gt;(...): T
++set&lt;T&gt;(...): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>690</x>
+      <y>450</y>
+      <w>240</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>SoundPlayer
+--
+--
++instance(): Content
++initialize(): void
++terminate(): void
++play(key: string, volume: float): void</panel_attributes>
+    <additional_attributes/>
+  </element>
 </diagram>
