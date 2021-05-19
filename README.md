@@ -43,4 +43,5 @@ The following are ideas I have about revisions to the implementation I may (or m
 
 * Refactor the code to be closer to an ECS architecture.
 * Once C++20 is well supported the three compilers used to build it (MSVC, g++, llvm), take advantage of the new language capabilities where/if it makes sense.  In particular, I'm thinking of refactoring to use modules to give myself experience with that capability.
+* Add support for localization.  It would be an interesting exercise to revise the code to handle multiple languages.
 * [Gyruss](https://en.wikipedia.org/wiki/Gyruss) was a favorite game of mine back in the day.  Have considered a new version of the game design that follows that style of gameplay.
