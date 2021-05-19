@@ -24,10 +24,8 @@ THE SOFTWARE.
 
 // --------------------------------------------------------------
 //
-// Not sure this is even necessary, given that a compile-time hash
-// of the type is used for each component's name.  For now, however,
-// not going to remove this, keeping it here to show there is a relationship
-// between all components.
+// The purpose of this class is to provide a common base type that 
+// can be referenced by the `Entity` class for any derived type.
 //
 // --------------------------------------------------------------
 namespace components

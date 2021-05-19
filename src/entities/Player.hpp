@@ -67,7 +67,6 @@ namespace entities
         auto getSecondaryWeapon() { return m_weaponSecondary; }
         void applyPowerup(std::shared_ptr<entities::Powerup> powerup);
 
-        void brake(std::chrono::microseconds elapsedTime);
         void rotateLeft(std::chrono::microseconds elapsedTime);
         void rotateRight(std::chrono::microseconds elapsedTime);
 

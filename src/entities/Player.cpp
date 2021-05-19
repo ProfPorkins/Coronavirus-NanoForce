@@ -133,31 +133,6 @@ namespace entities
         }
     }
 
-    // --------------------------------------------------------------
-    //
-    // Brake in the "orientatiion" direction.
-    //
-    // --------------------------------------------------------------
-    void Player::brake(std::chrono::microseconds elapsedTime)
-    {
-        auto vector = math::vectorFromDegrees(this->getComponent<components::Orientation>()->get());
-        auto momentum = this->getComponent<components::Momentum>();
-        auto magBefore = std::sqrt(momentum->get().x * momentum->get().x + momentum->get().y * momentum->get().y);
-        auto mx = static_cast<decltype(momentum->get().x)>(momentum->get().x - vector.x * m_thrustRate * elapsedTime.count());
-        auto my = static_cast<decltype(momentum->get().y)>(momentum->get().y - vector.y * m_thrustRate * elapsedTime.count());
-        auto magAfter = std::sqrt(mx * mx + my * my);
-        //
-        // This has the effect of preventing the player from going backwards due to braking
-        if (magAfter < magBefore)
-        {
-            momentum->set({ mx, my });
-        }
-        else
-        {
-            momentum->set({ 0.0f, 0.0f });
-        }
-    }
-
     void Player::rotateLeft(std::chrono::microseconds elapsedTime)
     {
         auto orientation = this->getComponent<components::Orientation>();
