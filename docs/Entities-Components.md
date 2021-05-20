@@ -8,7 +8,7 @@ ECS Note: While this code uses the terms Entity, Component, and System, the arch
 
 Components are attributes of entities, having only state and no behaviors.  By that I mean a component doesn't have any logic associated with it, only data.  Components have their state modified either by the entity itself or by a system.  The components in this code are very much like components in an ECS architecture.
 
-The following diagram provides an overview of components in this code.
+The following diagram provides an overview of the components in this code.
 
 ![Components Diagram](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/images/Components.png)
 
@@ -24,7 +24,7 @@ Entities are the game play items, with the exception of levels (described here [
 
 ECS Note: Entities in this code are composed of components, as ECS describes, but they are not only composed of components.  Entities may have other state and logic that modifies their state, which is different from ECS where only systems have logic that modifies state.
 
-The following diagram provides an overview of entities in this code.
+The following diagram provides an overview of then entities in this code.
 
 ![Entities Diagram](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/images/Entities.png)
 

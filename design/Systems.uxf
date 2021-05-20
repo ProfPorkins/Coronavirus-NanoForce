@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>90</x>
+      <y>140</y>
+      <w>350</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>Age
+--
+--
++update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>830</x>
+      <y>140</y>
+      <w>350</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>Birth
+--
+--
++update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>460</x>
+      <y>140</y>
+      <w>350</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>AnimatedSprite
+--
+--
++update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>90</x>
+      <y>250</y>
+      <w>350</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>Health
+--
+--
++update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>460</x>
+      <y>250</y>
+      <w>350</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>KeyboardInput
+--
+--
++update(elapsedTime : microseconds)
++registerHandler()
++registerKeyPressedHandler()
++unregisterHandler()
++unregisterKeyPressedHandler()
++unregisterAll()
++signalKeyPressed()
++signalKeyReleased()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>830</x>
+      <y>250</y>
+      <w>350</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>Lifetime
+--
+--
++update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>90</x>
+      <y>360</y>
+      <w>350</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>Movement
+--
+--
++update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>830</x>
+      <y>360</y>
+      <w>350</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>ParticleSystem
+--
+--
++update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
