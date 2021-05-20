@@ -4,29 +4,29 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>90</x>
+      <x>60</x>
       <y>140</y>
-      <w>350</w>
+      <w>380</w>
       <h>80</h>
     </coordinates>
     <panel_attributes>Age
 --
 --
-+update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
++update(elapsedTime : microseconds, entities : EntityMap)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>830</x>
+      <x>860</x>
       <y>140</y>
-      <w>350</w>
+      <w>380</w>
       <h>80</h>
     </coordinates>
     <panel_attributes>Birth
 --
 --
-+update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
++update(elapsedTime : microseconds, entities : EntityMap)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -34,27 +34,27 @@
     <coordinates>
       <x>460</x>
       <y>140</y>
-      <w>350</w>
+      <w>380</w>
       <h>80</h>
     </coordinates>
     <panel_attributes>AnimatedSprite
 --
 --
-+update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
++update(elapsedTime : microseconds, entities : EntityMap)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>90</x>
+      <x>60</x>
       <y>250</y>
-      <w>350</w>
+      <w>380</w>
       <h>80</h>
     </coordinates>
     <panel_attributes>Health
 --
 --
-+update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
++update(elapsedTime : microseconds, entities : EntityMaptity)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -62,7 +62,7 @@
     <coordinates>
       <x>460</x>
       <y>250</y>
-      <w>350</w>
+      <w>380</w>
       <h>170</h>
     </coordinates>
     <panel_attributes>KeyboardInput
@@ -81,43 +81,43 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>830</x>
+      <x>860</x>
       <y>250</y>
-      <w>350</w>
+      <w>380</w>
       <h>80</h>
     </coordinates>
     <panel_attributes>Lifetime
 --
 --
-+update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
++update(elapsedTime : microseconds, entities : EntityMap)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>90</x>
+      <x>60</x>
       <y>360</y>
-      <w>350</w>
+      <w>380</w>
       <h>80</h>
     </coordinates>
     <panel_attributes>Movement
 --
 --
-+update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
++update(elapsedTime : microseconds, entities : EntityMapntity)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>830</x>
+      <x>860</x>
       <y>360</y>
-      <w>350</w>
+      <w>380</w>
       <h>80</h>
     </coordinates>
     <panel_attributes>ParticleSystem
 --
 --
-+update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
++update(elapsedTime : microseconds, entities : EntityMap)</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>
