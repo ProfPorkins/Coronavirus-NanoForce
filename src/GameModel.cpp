@@ -62,33 +62,33 @@ void GameModel::selectLevel(levels::LevelName whichLevel)
 }
 
 GameModel::GameModel() :
-    m_sysBirth(std::bind(&GameModel::onVirusBirth, this, std::placeholders::_1))
+    m_sysBirth([this](entities::Entity::IdType parentId) { this->onVirusBirth(parentId); })
 {
     switch (m_levelSelect)
     {
         case levels::LevelName::Training1:
-            m_level = std::make_unique<levels::Training>(std::bind(&GameModel::emitPowerup, this, std::placeholders::_1), config::TRAINING_1);
+            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_1);
             break;
         case levels::LevelName::Training2:
-            m_level = std::make_unique<levels::Training>(std::bind(&GameModel::emitPowerup, this, std::placeholders::_1), config::TRAINING_2);
+            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_2);
             break;
         case levels::LevelName::Training3:
-            m_level = std::make_unique<levels::Training>(std::bind(&GameModel::emitPowerup, this, std::placeholders::_1), config::TRAINING_3);
+            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_3);
             break;
         case levels::LevelName::Training4:
-            m_level = std::make_unique<levels::Training>(std::bind(&GameModel::emitPowerup, this, std::placeholders::_1), config::TRAINING_4);
+            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_4);
             break;
         case levels::LevelName::Training5:
-            m_level = std::make_unique<levels::Training>(std::bind(&GameModel::emitPowerup, this, std::placeholders::_1), config::TRAINING_5);
+            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_5);
             break;
         case levels::LevelName::Patient1:
-            m_level = std::make_unique<levels::Patient>(std::bind(&GameModel::emitPowerup, this, std::placeholders::_1), config::PATIENT_1);
+            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::PATIENT_1);
             break;
         case levels::LevelName::Patient2:
-            m_level = std::make_unique<levels::Patient>(std::bind(&GameModel::emitPowerup, this, std::placeholders::_1), config::PATIENT_2);
+            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::PATIENT_2);
             break;
         case levels::LevelName::Patient3:
-            m_level = std::make_unique<levels::Patient>(std::bind(&GameModel::emitPowerup, this, std::placeholders::_1), config::PATIENT_3);
+            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::PATIENT_3);
             break;
     }
 
@@ -196,7 +196,7 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     m_sysMovement.update(*m_level, elapsedTime, m_bombs);
     m_sysMovement.update(*m_level, elapsedTime, m_viruses);
 
-    // It is absolutely essential to the overall game, but the age should be updated
+    // It isn't absolutely essential to the overall game, but the age should be updated
     // before Birth because age is used in the gestation determination in the Birth system.
     m_sysAge.update(elapsedTime, m_viruses);
     m_sysBirth.update(elapsedTime, m_viruses);
@@ -472,8 +472,8 @@ void GameModel::startPlayer(math::Point2f position)
         Configuration::get<std::string>(config::KEYBOARD_PRIMARY_FIRE), true, std::chrono::microseconds(0),
         [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime) {
             player->getPrimaryWeapon()->fire(
-                std::bind(&GameModel::emitBullet, this, std::placeholders::_1),
-                std::bind(&GameModel::emitBomb, this, std::placeholders::_1));
+                [this](std::shared_ptr<entities::Entity>& bullet) { this->emitBullet(bullet); },
+                [this](std::shared_ptr<entities::Entity>& bomb) { this->emitBomb(bomb); });
         });
 
     //
@@ -482,8 +482,8 @@ void GameModel::startPlayer(math::Point2f position)
         Configuration::get<std::string>(config::KEYBOARD_SECONDARY_FIRE), true, std::chrono::microseconds(0),
         [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime) {
             player->getSecondaryWeapon()->fire(
-                std::bind(&GameModel::emitBullet, this, std::placeholders::_1),
-                std::bind(&GameModel::emitBomb, this, std::placeholders::_1));
+                [this](std::shared_ptr<entities::Entity>& bullet) { this->emitBullet(bullet); },
+                [this](std::shared_ptr<entities::Entity>& bomb) { this->emitBomb(bomb); });
         });
 
     m_player->getComponent<components::Position>()->set(position);

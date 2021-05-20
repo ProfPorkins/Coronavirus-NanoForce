@@ -30,7 +30,6 @@ THE SOFTWARE.
 #include <array>
 #include <chrono>
 #include <cstdint>
-#include <functional>
 #include <memory>
 #include <queue>
 

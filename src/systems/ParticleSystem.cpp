@@ -105,7 +105,10 @@ namespace systems
         {
             auto effect = std::move(m_effects.front());
             m_effects.pop();
-            effect->update(elapsedTime, std::bind(&ParticleSystem::getAvailableParticle, this), std::bind(&ParticleSystem::addParticle, this, std::placeholders::_1));
+            effect->update(
+                elapsedTime,
+                [this]() { return getAvailableParticle(); },
+                [this](std::unique_ptr<Particle> p) { this->addParticle(std::move(p)); });
             // Put it back in the queue if its lifetime hasn't expired
             if (effect->getAlive() < effect->getLifetime())
             {

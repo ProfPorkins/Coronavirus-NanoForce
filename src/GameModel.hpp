@@ -49,7 +49,6 @@ THE SOFTWARE.
 #include <atomic>
 #include <chrono>
 #include <cstdint>
-#include <functional>
 #include <memory>
 #include <unordered_map>
 #include <vector>

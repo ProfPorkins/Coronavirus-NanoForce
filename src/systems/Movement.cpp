@@ -49,15 +49,6 @@ namespace systems
         // Apply drag to the entity.
         if (entity.hasComponent<components::Drag>())
         {
-            // Appplying it in the direction of orientation, rather than momentum
-            // makes the entity "drive" rather than float.
-            //auto magnitude = std::sqrt(momentum->get().x * momentum->get().x + momentum->get().y * momentum->get().y);
-            //magnitude -= static_cast<decltype(magnitude)>(entity.getComponent<components::Drag>()->get() * elapsedTime.count());
-            //magnitude = std::max(0.0f, magnitude);
-
-            //auto vector = math::vectorFromDegrees(entity.getComponent<components::Orientation>()->get());
-            //momentum->set({ vector.x * magnitude, vector.y * magnitude });
-
             // Apply it in the direction of momentum
             auto magnitude = std::sqrt(momentum->get().x * momentum->get().x + momentum->get().y * momentum->get().y);
             magnitude -= static_cast<decltype(magnitude)>(entity.getComponent<components::Drag>()->get() * elapsedTime.count());
