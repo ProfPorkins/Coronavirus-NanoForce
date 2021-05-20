@@ -60,7 +60,7 @@ namespace levels
                 std::sin(angle) * distance * arenaDistance
             };
 
-            auto virus = entities::Virus::create();
+            auto virus = std::make_shared<entities::Virus>();
             virus->getComponent<components::Position>()->set(point);
             viruses.push_back(virus);
         }

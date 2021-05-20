@@ -373,7 +373,7 @@ void GameModel::onVirusBirth(entities::Entity::IdType parentId)
     if (m_viruses.size() < m_level->getMaxViruses())
     {
         auto parentPosition = m_viruses[parentId]->getComponent<components::Position>();
-        auto virus = entities::Virus::create();
+        auto virus = std::make_shared<entities::Virus>();
         virus->getComponent<components::Position>()->set(parentPosition->get());
         m_newViruses.push_back(virus);
     }

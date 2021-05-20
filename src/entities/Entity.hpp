@@ -47,7 +47,7 @@ namespace entities
     // An Entity is a collection of components.
     //
     // The "name" for an entity is its "ctti::unnamed_type_id_t".  This
-    // allows for compile-time determination of the name, using an integral
+    // allows for compile-time determination of the name, using an integral-like
     // type, which also allows it to have fast lookup/use in various
     // associative containers.
     //

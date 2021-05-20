@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 // --------------------------------------------------------------
 //
-// The purpose of this class is to provide a common base type that 
+// The purpose of this class is to provide a common base type that
 // can be referenced by the `Entity` class for any derived type.
 //
 // --------------------------------------------------------------

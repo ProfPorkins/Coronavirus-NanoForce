@@ -39,11 +39,18 @@ THE SOFTWARE.
 
 namespace entities
 {
-    Virus::Virus(std::chrono::microseconds age, Specification spec) :
+    // --------------------------------------------------------------
+    //
+    // Create a virus based on the 'type' from the configuration file.
+    //
+    // --------------------------------------------------------------
+    Virus::Virus(std::chrono::microseconds age) :
         m_generator(m_rd()),
         m_distAngle(0.0f, 360.0f),
         m_distBoolean(0, 1)
     {
+        Specification spec = readConfiguration();
+
         this->addComponent(std::make_unique<components::Position>(math::Point2f(0.0f, 0.0f)));
         this->addComponent(std::make_unique<components::Orientation>(0.0f));
         this->addComponent(std::make_unique<components::Momentum>(math::Vector2f(0.0f, 0.0f), spec.rotateRate));
@@ -78,6 +85,29 @@ namespace entities
 
     // --------------------------------------------------------------
     //
+    // Obtain the virus details from the configuration
+    //
+    // --------------------------------------------------------------
+    Virus::Specification Virus::readConfiguration()
+    {
+        Virus::Specification spec;
+
+        spec.minSize = Configuration::get<float>(config::VIRUS_SIZE_MIN);
+        spec.maxSize = Configuration::get<float>(config::VIRUS_SIZE_MAX);
+        spec.maxAge = misc::msTous(std::chrono::milliseconds(Configuration::get<std::uint32_t>(config::VIRUS_AGE_MATURITY)));
+        spec.healthStart = Configuration::get<std::uint16_t>(config::VIRUS_HEALTH_START);
+        spec.healthIncrements = Configuration::get<std::uint8_t>(config::VIRUS_HEALTH_INCREMENTS);
+        spec.healthIncrementTime = misc::msTous(std::chrono::milliseconds(Configuration::get<std::uint32_t>(config::VIRUS_HEALTH_INCREMENT_TIME)));
+        spec.gestationMin = misc::msTous(std::chrono::milliseconds(Configuration::get<std::uint32_t>(config::VIRUS_GEST_MIN)));
+        spec.gestationMean = misc::msTous(std::chrono::milliseconds(Configuration::get<std::uint32_t>(config::VIRUS_GEST_MEAN)));
+        spec.gestationStdev = misc::msTous(std::chrono::milliseconds(Configuration::get<std::uint32_t>(config::VIRUS_GEST_STDEV)));
+        spec.rotateRate = Configuration::get<float>(config::VIRUS_ROTATE_RATE) * misc::PER_MS_TO_US;
+
+        return spec;
+    }
+
+    // --------------------------------------------------------------
+    //
     // Randomly choose a momentum vector
     //
     // --------------------------------------------------------------
@@ -99,28 +129,6 @@ namespace entities
         momentumCmp->setRotateRate(rotateRate);
         // Bullets rotate the opposite direction
         m_bulletRotateRate = (direction == 0) ? m_bulletRotateRate : -m_bulletRotateRate;
-    }
-
-    // --------------------------------------------------------------
-    //
-    // Create a virus based on the 'type' from the configuration file.
-    //
-    // --------------------------------------------------------------
-    std::shared_ptr<Virus> Virus::create(std::chrono::microseconds age)
-    {
-        Virus::Specification spec;
-        spec.minSize = Configuration::get<float>(config::VIRUS_SIZE_MIN);
-        spec.maxSize = Configuration::get<float>(config::VIRUS_SIZE_MAX);
-        spec.maxAge = misc::msTous(std::chrono::milliseconds(Configuration::get<std::uint32_t>(config::VIRUS_AGE_MATURITY)));
-        spec.healthStart = Configuration::get<std::uint16_t>(config::VIRUS_HEALTH_START);
-        spec.healthIncrements = Configuration::get<std::uint8_t>(config::VIRUS_HEALTH_INCREMENTS);
-        spec.healthIncrementTime = misc::msTous(std::chrono::milliseconds(Configuration::get<std::uint32_t>(config::VIRUS_HEALTH_INCREMENT_TIME)));
-        spec.gestationMin = misc::msTous(std::chrono::milliseconds(Configuration::get<std::uint32_t>(config::VIRUS_GEST_MIN)));
-        spec.gestationMean = misc::msTous(std::chrono::milliseconds(Configuration::get<std::uint32_t>(config::VIRUS_GEST_MEAN)));
-        spec.gestationStdev = misc::msTous(std::chrono::milliseconds(Configuration::get<std::uint32_t>(config::VIRUS_GEST_STDEV)));
-        spec.rotateRate = Configuration::get<float>(config::VIRUS_ROTATE_RATE) * misc::PER_MS_TO_US;
-
-        return std::make_shared<Virus>(age, spec);
     }
 
 } // namespace entities

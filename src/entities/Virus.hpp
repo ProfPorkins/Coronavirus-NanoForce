@@ -36,6 +36,15 @@ namespace entities
     class Virus : public Entity
     {
       public:
+        Virus(std::chrono::microseconds age = std::chrono::microseconds(0));
+
+        void addBullet(std::shared_ptr<entities::Entity> bullet);
+        auto& getBullets() { return m_bullets; }
+        float getBulletAngleStart() { return m_bulletAngleStart; }
+
+        void updateBulletAngleStart(std::chrono::microseconds elapsedTime) { m_bulletAngleStart += (m_bulletRotateRate * elapsedTime.count()); }
+
+      private:
         struct Specification
         {
             Specification() = default;
@@ -52,18 +61,6 @@ namespace entities
             float rotateRate; // degrees per ms
         };
 
-      public:
-        static std::shared_ptr<Virus> create(std::chrono::microseconds age = std::chrono::microseconds(0));
-
-        Virus(std::chrono::microseconds age, Specification spec);
-
-        void addBullet(std::shared_ptr<entities::Entity> bullet);
-        auto& getBullets() { return m_bullets; }
-        float getBulletAngleStart() { return m_bulletAngleStart; }
-
-        void updateBulletAngleStart(std::chrono::microseconds elapsedTime) { m_bulletAngleStart += (m_bulletRotateRate * elapsedTime.count()); }
-
-      private:
         float m_bulletAngleStart{ 0.0f };
         float m_bulletRotateRate{ 0.1f * misc::PER_MS_TO_US }; // degrees per us
         std::vector<std::shared_ptr<entities::Entity>> m_bullets;
@@ -73,6 +70,7 @@ namespace entities
         std::uniform_real_distribution<float> m_distAngle;
         std::uniform_int_distribution<std::uint16_t> m_distBoolean;
 
+        Specification readConfiguration();
         void selectPath();
     };
 } // namespace entities
