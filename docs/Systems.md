@@ -1,10 +1,10 @@
 # Systems
 
-For this code, systems are a way to organize the game play code into cohesive units.  There are systems in age the viruses, update the health of viruses, move entities, update the state of animated sprites, handle particles, process input, and others.
-
-The following diagram provides an overview of the systems in this code.
+Systems are a way to organize the game play code into cohesive units.  There are systems to age the viruses, update the health of viruses, move entities, update the state of animated sprites, handle particles, process input, and others.  The following diagram provides an overview of the systems in this code.
 
 ![Systems Diagram](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/images/Systems.png)
+
+The common tie among the systems is that they all expose an `update` method.  In all cases this method accepts the elapsed time, any other parameters may or may not be unique to the system.  There is no inheritance model associated with systems.
 
 ## Update
 
