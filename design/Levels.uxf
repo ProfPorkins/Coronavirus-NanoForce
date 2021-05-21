@@ -33,11 +33,12 @@
       <x>440</x>
       <y>380</y>
       <w>310</w>
-      <h>90</h>
+      <h>100</h>
     </coordinates>
-    <panel_attributes>levels::Circle
+    <panel_attributes>levels::PetriDish
 --
 --
++initializeViruses
 +findSafeStart() : Point2
 +collidesWithBorder(entity : Entity) : boolean
 +reflectFromBorder(entity : Entity) : Vector2</panel_attributes>
@@ -53,55 +54,5 @@
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>600</x>
-      <y>560</y>
-      <w>310</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>levels::Patient
---
---
-+initializeViruses</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>280</x>
-      <y>560</y>
-      <w>310</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>levels::Training
---
---
-+initializeViruses</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>570</x>
-      <y>460</y>
-      <w>210</w>
-      <h>120</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;190.0;100.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>410</x>
-      <y>460</y>
-      <w>190</w>
-      <h>120</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>170.0;10.0;10.0;100.0</additional_attributes>
   </element>
 </diagram>
