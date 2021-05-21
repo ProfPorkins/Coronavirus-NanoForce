@@ -28,15 +28,15 @@ Links to documentation on various aspects of the architecture and code are found
 * Levels
 * Game Model
 
-A few answers to questions some might have
+A few answers to questions some might have:
 
 * Does it work? Yes
 * Could the design and implementation be improved? Yes
 * Does it use your favorite architectural design? No
 * Does it use your favorite C++ features? No
 * Does it use your favorite third-party library? No
-* Why didn't you do XYZ this other way in CMake? My CMake skills are only so so
 * Why didn't you use Unity, Unreal, or another game engine? I enjoy writing the lower level systems myself, that is part of the _fun_ for me.  Those are incredible tools, just not what I'm looking to do for this kind of hobby project.
+* Why didn't you do XYZ this other way in CMake? My CMake skills are only so so
 
 ## Possible Future Revisions
 
