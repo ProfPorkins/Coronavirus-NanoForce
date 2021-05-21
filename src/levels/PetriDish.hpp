@@ -22,18 +22,30 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "Circle.hpp"
+#include "Level.hpp"
+#include "misc/math.hpp"
+
+#include <memory>
+#include <string>
 
 namespace levels
 {
-    class PetriDish : public Circle
+    class PetriDish : public Level
     {
       public:
         PetriDish(std::function<void(std::shared_ptr<entities::Powerup>&)> emitPowerup, std::string key, bool training);
 
         virtual std::vector<std::shared_ptr<entities::Virus>> initializeViruses() override;
+        virtual std::optional<math::Point2f> findSafeStart(std::chrono::microseconds howLongWaiting, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& viruses) override;
+        virtual bool collidesWithBorder(entities::Entity& entity) override;
+        virtual void reflectFromBorder(entities::Entity& entity) override;
+
+    protected:
+        virtual math::Point2f computePowerupPosition() override;
 
     private:
         bool m_training{ false };
+
+        std::uniform_real_distribution<float> m_distCircle;
     };
 } // namespace levels

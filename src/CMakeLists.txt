@@ -106,14 +106,12 @@ set(CLIENT_ENTITIES_SOURCES
     )
 
 set(CLIENT_LEVEL_HEADERS
-    levels/Circle.hpp
     levels/Level.hpp
     levels/PetriDish.hpp
     levels/LevelName.hpp
     )
 
 set(CLIENT_LEVEL_SOURCES
-    levels/Circle.cpp
     levels/Level.cpp
     levels/PetriDish.cpp
     )
