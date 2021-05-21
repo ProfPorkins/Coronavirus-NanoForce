@@ -39,7 +39,7 @@ The following code segment shows the `GameModel::render` method implementation..
         m_rendererStatus->render(renderTarget);
     }
 
-You can see how each different renderer is used to render the different elements of the game.  One item of note in this method is the `m_renderPlayer(renderTarget);` line of code.  When a level starts, the player controlled ship isn't yet visible.  `m_renderPlayer` is an `std::function` that accepts an `sf::RenderTarget` parameter.  When the level starts, it is assigned to a lambda that does nothing.  Once the player controlled ship needs to be drawn, it is assigned to a lambda that calls the actual renderer used to draw the player ship.
+One item of note in this method is the `m_renderPlayer(renderTarget);` line of code.  When a level starts, the player controlled ship isn't yet visible.  `m_renderPlayer` is an `std::function` that accepts an `sf::RenderTarget` parameter.  When the level starts, it is assigned to a lambda that does nothing.  Once the player controlled ship needs to be drawn, it is assigned to a lambda that calls the actual renderer used to draw the player ship.
 
 Because each renderer has a very specific job to do, the code for each is relatively small.  A few are highlighted in the sections below.
 
