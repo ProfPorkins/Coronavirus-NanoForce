@@ -26,11 +26,14 @@ THE SOFTWARE.
 
 namespace levels
 {
-    class Patient : public Circle
+    class PetriDish : public Circle
     {
       public:
-        Patient(std::function<void(std::shared_ptr<entities::Powerup>&)> emitPowerup, std::string key);
+        PetriDish(std::function<void(std::shared_ptr<entities::Powerup>&)> emitPowerup, std::string key, bool training);
 
         virtual std::vector<std::shared_ptr<entities::Virus>> initializeViruses() override;
+
+    private:
+        bool m_training{ false };
     };
 } // namespace levels

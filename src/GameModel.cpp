@@ -39,8 +39,7 @@ THE SOFTWARE.
 #include "entities/PowerupBomb.hpp"
 #include "entities/PowerupRapidFire.hpp"
 #include "entities/PowerupSpreadFire.hpp"
-#include "levels/Patient.hpp"
-#include "levels/Training.hpp"
+#include "levels/PetriDish.hpp"
 #include "misc/math.hpp"
 #include "misc/misc.hpp"
 #include "systems/effects/CircleExpansionEffect.hpp"
@@ -67,28 +66,28 @@ GameModel::GameModel() :
     switch (m_levelSelect)
     {
         case levels::LevelName::Training1:
-            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_1);
+            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_1, true);
             break;
         case levels::LevelName::Training2:
-            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_2);
+            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_2, true);
             break;
         case levels::LevelName::Training3:
-            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_3);
+            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_3, true);
             break;
         case levels::LevelName::Training4:
-            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_4);
+            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_4, true);
             break;
         case levels::LevelName::Training5:
-            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_5);
+            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_5, true);
             break;
         case levels::LevelName::Patient1:
-            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::PATIENT_1);
+            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::PATIENT_1, false);
             break;
         case levels::LevelName::Patient2:
-            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::PATIENT_2);
+            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::PATIENT_2, false);
             break;
         case levels::LevelName::Patient3:
-            m_level = std::make_unique<levels::Training>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::PATIENT_3);
+            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::PATIENT_3, false);
             break;
     }
 

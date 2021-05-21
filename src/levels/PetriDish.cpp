@@ -20,24 +20,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "Training.hpp"
+#include "PetriDish.hpp"
 
 #include "Configuration.hpp"
+#include "ConfigurationPath.hpp"
 #include "components/Position.hpp"
+
+#include <chrono>
 
 namespace levels
 {
-    Training::Training(std::function<void(std::shared_ptr<entities::Powerup>&)> emitPowerup, std::string key) :
-        Circle(emitPowerup, key)
+    PetriDish::PetriDish(std::function<void(std::shared_ptr<entities::Powerup>&)> emitPowerup, std::string key, bool training) :
+        Circle(emitPowerup, key),
+        m_training(training)
     {
     }
 
     // --------------------------------------------------------------
     //
     // Generate some initial viruses to get the level started.
+    // Randomly choose the age of the viruses, so there is a
+    // good mix of ages.
     //
     // --------------------------------------------------------------
-    std::vector<std::shared_ptr<entities::Virus>> Training::initializeViruses()
+    std::vector<std::shared_ptr<entities::Virus>> PetriDish::initializeViruses()
     {
         std::vector<std::shared_ptr<entities::Virus>> viruses;
 
@@ -48,6 +54,19 @@ namespace levels
         arenaDistance *= 0.75; // Additional scaling to not be right on the edge at the start
         for (int i = 1; i <= m_initialVirusCount; i++)
         {
+            // All viruses in the training levels start at age 0, while the patient levels have a distribution of starting ages
+            std::shared_ptr<entities::Virus> virus = nullptr;
+            if (m_training)
+            {
+                virus = std::make_shared<entities::Virus>();
+            }
+            else
+            {
+                // Choose an age
+                auto maxAge = misc::msTous(std::chrono::milliseconds(Configuration::get<std::uint32_t>(config::VIRUS_AGE_MATURITY)));
+                auto age = std::chrono::duration_cast<std::chrono::microseconds>(m_distUniform(m_generator) * maxAge);
+                virus = std::make_shared<entities::Virus>(age);
+            }
             //
             // Choose a random angle
             auto angle = m_distCircle(m_generator);
@@ -60,7 +79,6 @@ namespace levels
                 std::sin(angle) * distance * arenaDistance
             };
 
-            auto virus = std::make_shared<entities::Virus>();
             virus->getComponent<components::Position>()->set(point);
             viruses.push_back(virus);
         }

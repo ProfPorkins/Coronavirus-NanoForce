@@ -108,16 +108,14 @@ set(CLIENT_ENTITIES_SOURCES
 set(CLIENT_LEVEL_HEADERS
     levels/Circle.hpp
     levels/Level.hpp
-    levels/Patient.hpp
-    levels/Training.hpp
+    levels/PetriDish.hpp
     levels/LevelName.hpp
     )
 
 set(CLIENT_LEVEL_SOURCES
     levels/Circle.cpp
     levels/Level.cpp
-    levels/Patient.cpp
-    levels/Training.cpp
+    levels/PetriDish.cpp
     )
 
 set(CLIENT_MISC_HEADERS
