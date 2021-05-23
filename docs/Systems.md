@@ -44,8 +44,6 @@ Consider the following code segment from the `GameModel::update` method...
         m_sysMovement.update(*m_level, elapsedTime, m_bombs);
         m_sysMovement.update(*m_level, elapsedTime, m_viruses);
 
-        // It isn't absolutely essential to the overall game, but the age should be updated
-        // before Birth because age is used in the gestation determination in the Birth system.
         m_sysAge.update(elapsedTime, m_viruses);
         m_sysBirth.update(elapsedTime, m_viruses);
         m_sysHealth.update(elapsedTime, m_viruses);
