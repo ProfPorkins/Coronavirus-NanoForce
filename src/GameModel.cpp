@@ -269,26 +269,10 @@ void GameModel::render(sf::RenderTarget& renderTarget, const std::chrono::micros
     renderTarget.clear(sf::Color::Black);
     m_rendererBackground->render(renderTarget);
 
-    for (auto&& [id, bullet] : m_bullets)
-    {
-        m_rendererBullet->render(*bullet, renderTarget);
-    }
-
-    for (auto&& [id, bomb] : m_bombs)
-    {
-        m_rendererBomb->render(*bomb, renderTarget);
-    }
-
-    for (auto&& [id, powerup] : m_powerups)
-    {
-        m_rendererPowerup->render(*powerup, renderTarget);
-    }
-
-    for (auto&& [id, virus] : m_viruses)
-    {
-        m_rendererSarsCov2->render(*virus, renderTarget, elapsedTime);
-    }
-
+    m_rendererBullet->render(m_bullets, renderTarget);
+    m_rendererBomb->render(m_bombs, renderTarget);
+    m_rendererPowerup->render(m_powerups, renderTarget);
+    m_rendererSarsCov2->render(m_viruses, renderTarget, elapsedTime);
     m_renderPlayer(renderTarget);
     m_rendererParticleSystem->render(m_sysParticle, renderTarget);
     m_rendererHUD->render(m_remainingNanoBots + 1, m_timePlayed, m_virusesKilled, renderTarget);

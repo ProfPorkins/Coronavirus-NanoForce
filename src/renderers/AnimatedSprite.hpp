@@ -42,5 +42,17 @@ namespace renderers
         AnimatedSprite() = default;
 
         void render(entities::Entity& entity, sf::RenderTarget& renderTarget);
+
+        template <typename T>
+        void render(std::unordered_map<entities::Entity::IdType, std::shared_ptr<T>>& entities, sf::RenderTarget& renderTarget);
     };
+
+    template <typename T>
+    void AnimatedSprite::render(std::unordered_map<entities::Entity::IdType, std::shared_ptr<T>>& entities, sf::RenderTarget& renderTarget)
+    {
+        for (auto&& [id, entity] : entities)
+        {
+            render(*entity, renderTarget);
+        }
+    }
 } // namespace renderers

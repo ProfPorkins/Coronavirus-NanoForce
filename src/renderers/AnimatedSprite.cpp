@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include "components/AnimatedSprite.hpp"
 #include "components/Position.hpp"
+#include "entities/Powerup.hpp"
 
 namespace renderers
 {

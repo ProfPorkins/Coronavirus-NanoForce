@@ -42,9 +42,11 @@ namespace renderers
         Virus(std::shared_ptr<sf::Texture> texVirus, std::shared_ptr<sf::Texture> texBullet);
 
         void render(entities::Virus& entity, sf::RenderTarget& renderTarget, const std::chrono::microseconds elapsedTime);
+        void render(std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities, sf::RenderTarget& renderTarget, const std::chrono::microseconds elapsedTime);
 
       private:
         std::shared_ptr<sf::Sprite> m_sprite;
         std::shared_ptr<sf::Sprite> m_bullet;
     };
+
 } // namespace renderers

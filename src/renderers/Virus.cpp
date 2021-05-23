@@ -93,4 +93,12 @@ namespace renderers
             }
         }
     }
+
+    void Virus::render(std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities, sf::RenderTarget& renderTarget, const std::chrono::microseconds elapsedTime)
+    {
+        for (auto&& [id, entity] : entities)
+        {
+            render(*entity, renderTarget, elapsedTime);
+        }
+    }
 } // namespace renderers
