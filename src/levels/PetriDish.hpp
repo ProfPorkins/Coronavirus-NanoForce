@@ -40,10 +40,10 @@ namespace levels
         virtual bool collidesWithBorder(entities::Entity& entity) override;
         virtual void bounceOffBorder(entities::Entity& entity) override;
 
-    protected:
+      protected:
         virtual math::Point2f computePowerupPosition() override;
 
-    private:
+      private:
         bool m_training{ false };
 
         std::uniform_real_distribution<float> m_distCircle;
