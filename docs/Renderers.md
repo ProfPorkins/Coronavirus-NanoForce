@@ -13,26 +13,10 @@ The following code segment shows the `GameModel::render` method implementation..
         renderTarget.clear(sf::Color::Black);
         m_rendererBackground->render(renderTarget);
 
-        for (auto&& [id, bullet] : m_bullets)
-        {
-            m_rendererBullet->render(*bullet, renderTarget);
-        }
-
-        for (auto&& [id, bomb] : m_bombs)
-        {
-            m_rendererBomb->render(*bomb, renderTarget);
-        }
-
-        for (auto&& [id, powerup] : m_powerups)
-        {
-            m_rendererPowerup->render(*powerup, renderTarget);
-        }
-
-        for (auto&& [id, virus] : m_viruses)
-        {
-            m_rendererSarsCov2->render(*virus, renderTarget, elapsedTime);
-        }
-
+        m_rendererBullet->render(m_bullets, renderTarget);
+        m_rendererBomb->render(m_bombs, renderTarget);
+        m_rendererPowerup->render(m_powerups, renderTarget);
+        m_rendererSarsCov2->render(m_viruses, renderTarget, elapsedTime);
         m_renderPlayer(renderTarget);
         m_rendererParticleSystem->render(m_sysParticle, renderTarget);
         m_rendererHUD->render(m_remainingNanoBots + 1, m_timePlayed, m_virusesKilled, renderTarget);
@@ -54,11 +38,27 @@ The SFML has the concept of a sprite through the `sf::Sprite` class.  This code 
 
         void render(entities::Entity& entity, sf::RenderTarget& renderTarget);
 
+        template <typename T>
+        void render(std::unordered_map<entities::Entity::IdType, std::shared_ptr<T>>& entities, sf::RenderTarget& renderTarget);
+
       private:
         std::shared_ptr<sf::Sprite> m_sprite;
     };
 
-The `Sprite` constructor is passed which texture to use for the rendering.  As show in the next code segment, an `sf::Sprite` is created and associated with this texture.  The full class implementation for the `Sprite` renderer is shown next...
+    template <typename T>
+    void Sprite::render(std::unordered_map<entities::Entity::IdType, std::shared_ptr<T>>& entities, sf::RenderTarget& renderTarget)
+    {
+        for (auto&& [id, entity] : entities)
+        {
+            render(*entity, renderTarget);
+        }
+    }
+
+The `Sprite` constructor is passed which texture to use for the rendering.  As show in the next code segment, an `sf::Sprite` is created and associated with this texture and used for the rendering of this sprite.  Therefore, for each different sprite to be rendered, a unique `Sprite` renderer instance is required.
+
+An interesting (to me) side note is the use of a templated `render` method.  The purpose of method is to allow a collection of sprites to be draw, with a single method call in the game model code.  The reason for making it templated is to allow for different `Entity` types to use the method.  For example, sometimes it is simply a collection of `Entity` that needs to be rendered (e.g., bullets), in another case it is a collection of a derived `Entity` type (e.g, a `Powerup` collection).  The way that I've chosen to do this is parameterize on the value type of the collection.  In this way I ensure it is a collection of the form I expect, but only parameterized on the value part of the collection.  With C++20 concepts, I should be able to improve the use of this template.
+
+The full class implementation for the `Sprite` renderer is shown next...
 
     Sprite::Sprite(std::shared_ptr<sf::Texture> texture)
     {
