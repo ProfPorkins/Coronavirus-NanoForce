@@ -175,7 +175,7 @@ namespace levels
         return distance > ARENA_RADIUS;
     }
 
-    void PetriDish::reflectFromBorder(entities::Entity& entity)
+    void PetriDish::bounceOffBorder(entities::Entity& entity)
     {
         //
         // Reflect the direction of the ship.  Have to take negative

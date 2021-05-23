@@ -80,7 +80,7 @@ namespace systems
         {
             //
             // Need to reflect the entity with the arena border
-            level.reflectFromBorder(entity);
+            level.bounceOffBorder(entity);
             //
             // After reflecting, have to move it a little bit, so it doesn't get stuck on the border.
             updateEntity(level, entity, elapsedTime, false);

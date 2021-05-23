@@ -59,7 +59,7 @@ namespace levels
 
         virtual std::optional<math::Point2f> findSafeStart(std::chrono::microseconds howLongWaiting, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& viruses) = 0;
         virtual bool collidesWithBorder(entities::Entity& entity) = 0;
-        virtual void reflectFromBorder(entities::Entity& entity) = 0;
+        virtual void bounceOffBorder(entities::Entity& entity) = 0;
         virtual void update(const std::chrono::microseconds elapsedTime);
 
       protected:

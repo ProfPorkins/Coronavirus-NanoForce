@@ -38,7 +38,7 @@ namespace levels
         virtual std::vector<std::shared_ptr<entities::Virus>> initializeViruses() override;
         virtual std::optional<math::Point2f> findSafeStart(std::chrono::microseconds howLongWaiting, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& viruses) override;
         virtual bool collidesWithBorder(entities::Entity& entity) override;
-        virtual void reflectFromBorder(entities::Entity& entity) override;
+        virtual void bounceOffBorder(entities::Entity& entity) override;
 
     protected:
         virtual math::Point2f computePowerupPosition() override;
