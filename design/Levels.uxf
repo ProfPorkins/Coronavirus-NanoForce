@@ -22,7 +22,7 @@
 +getMessageFailure() : string
 /+findSafeStart() : Point2/
 /+collidesWithBorder(entity : Entity) : boolean/
-/+reflectFromBorder(entity : Entity) : Vector2/
+/+bounceOffBorder(entity : Entity) : Vector2/
 /+initializeViruses/
 +update(elapsedTime : microseconds)</panel_attributes>
     <additional_attributes/>
