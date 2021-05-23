@@ -1,0 +1,718 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>820</x>
+      <y>1510</y>
+      <w>210</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Entity
+--
++id : integer
+--
++addComponent(c : T)
++removeComponent&lt;T&gt;()
++hasComponent&lt;T&gt;() : boolean
++getComponent&lt;T&gt;() : T</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1100</x>
+      <y>1210</y>
+      <w>170</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>Component
+--
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1000</x>
+      <y>1220</y>
+      <w>120</w>
+      <h>310</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=0..*</panel_attributes>
+    <additional_attributes>10.0;290.0;10.0;10.0;100.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>650</x>
+      <y>860</y>
+      <w>300</w>
+      <h>420</h>
+    </coordinates>
+    <panel_attributes>GameModel
+--
+-level : levels::level
+-viruses : Entity[]
+-bullets : Entity[]
+-bombs : Entity[]
+-powerups : Entity[]
+-sysKeyboard : systems::Keyboard
+-sysMovement : systems::Movement
+-sysLifetime : systems::Lifetime
+-sysParticleSystem : systems::ParticleSystem
+-sysBirth : systems:Birth
+-sysHealth : systems::Health
+-sysAnimatedSprite : systems::AnimatedSprite
+-sysAge : systems::Age
+-rendererPlayer : renderers::Sprite
+-rendererBullet : renderers::Sprite
+-rendererBomb : renderers::Bomb
+-rendererSarsCov2 : renderers::Virus
+-rendererBackground : renderers::Background
+-rendererParticleSystem : renderers::ParticleSystem
+-rendererPowerup : renderers::AnimatedSprite
+-rendererHUD : renderers::HUD
+-rendererGameStatus : renderers::GameStatus
+--
++update(elapsedTime)
++render(RenderTarget, elapsedTime)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>1270</y>
+      <w>120</w>
+      <h>280</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=0..*</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;250.0;100.0;250.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>0</y>
+      <w>380</w>
+      <h>880</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;860.0;10.0;10.0;360.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1080</x>
+      <y>0</y>
+      <w>350</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>systems::Age
+--
+--
++update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1080</x>
+      <y>200</y>
+      <w>350</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>systems::Birth
+--
+--
++update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1080</x>
+      <y>100</y>
+      <w>350</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>systems::AnimatedSprite
+--
+--
++update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1080</x>
+      <y>300</y>
+      <w>350</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>systems::Health
+--
+--
++update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1080</x>
+      <y>400</y>
+      <w>350</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>systems::KeyboardInput
+--
+--
++update(elapsedTime : microseconds)
++registerHandler()
++registerKeyPressedHandler()
++unregisterHandler()
++unregisterKeyPressedHandler()
++unregisterAll()
++signalKeyPressed()
++signalKeyReleased()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1080</x>
+      <y>590</y>
+      <w>350</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>systems::Lifetime
+--
+--
++update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1080</x>
+      <y>690</y>
+      <w>350</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>systems::Movement
+--
+--
++update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1080</x>
+      <y>790</y>
+      <w>350</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>systems::ParticleSystem
+--
+--
++update(elapsedTime : microseconds, entities : Entity)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>100</y>
+      <w>380</w>
+      <h>780</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;760.0;10.0;10.0;360.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>200</y>
+      <w>380</w>
+      <h>680</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;660.0;10.0;10.0;360.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>300</y>
+      <w>380</w>
+      <h>580</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;560.0;10.0;10.0;360.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>400</y>
+      <w>380</w>
+      <h>480</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;460.0;10.0;10.0;360.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>590</y>
+      <w>380</w>
+      <h>290</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;270.0;10.0;10.0;360.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>690</y>
+      <w>380</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;170.0;10.0;10.0;360.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>790</y>
+      <w>380</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0;360.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1260</x>
+      <y>1330</y>
+      <w>230</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>entities::Bomb
+--
+--
++explode()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1260</x>
+      <y>1420</y>
+      <w>230</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>entities::Bullet
+--
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1260</x>
+      <y>1510</y>
+      <w>230</w>
+      <h>230</h>
+    </coordinates>
+    <panel_attributes>entities::Player
+--
+-accelerate()
+-attachPrimaryWeapon()
+-attachSecondaryWeapon()
+--
++update(elapsedTime : microseconds)
++getPrimaryWeapon()
++getSecondaryWeapon()
++applyPowerup()
++brake()
++rotateLeft()
++rightRight()
++startThrust()
++endThrust()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1260</x>
+      <y>1760</y>
+      <w>230</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>entities::Powerup
+--
+-audioKey : string
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1260</x>
+      <y>1850</y>
+      <w>230</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>entities::Virus
+--
+--
++addBullet()
++getBullets()
++getBulletAngleStart()
++updateBulletAngleStart()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1260</x>
+      <y>1970</y>
+      <w>230</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>entities::Weapon
+--
+--
++fire()
++setParent()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1020</x>
+      <y>1330</y>
+      <w>260</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;190.0;170.0;190.0;170.0;10.0;240.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1020</x>
+      <y>1420</y>
+      <w>260</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;100.0;170.0;100.0;170.0;10.0;240.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1020</x>
+      <y>1510</y>
+      <w>260</w>
+      <h>280</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;170.0;10.0;170.0;260.0;240.0;260.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1020</x>
+      <y>1510</y>
+      <w>260</w>
+      <h>370</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;170.0;10.0;170.0;350.0;240.0;350.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1020</x>
+      <y>1510</y>
+      <w>260</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;240.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>1250</y>
+      <w>390</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>renderers::GameStatus
+--
+--
++render(renderTarget : sf:RenderTarget)
++setMessage(message : string)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>1090</y>
+      <w>390</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>renderers::AnimatedSprite
+--
+--
++render(entity : Entity, renderTarget : sf:RenderTarget)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>1170</y>
+      <w>390</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>renderers::Background
+--
+--
++render(renderTarget : sf:RenderTarget)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>1340</y>
+      <w>390</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>renderers::HUD
+--
+--
++render(renderTarget : sf:RenderTarget)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>1420</y>
+      <w>390</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>renderers::ParticleSystem
+--
+--
++render(ps : ParticleSystem, renderTarget : sf:RenderTarget)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>1500</y>
+      <w>390</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>renderers::Sprite
+--
+--
++render(entity : Entity, renderTarget : sf:RenderTarget)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>40</x>
+      <y>1580</y>
+      <w>390</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>renderers::Virus
+--
+--
++render(entity : Entity, renderTarget : sf:RenderTarget)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>420</x>
+      <y>960</y>
+      <w>250</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>230.0;10.0;120.0;10.0;120.0;140.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>420</x>
+      <y>960</y>
+      <w>250</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>230.0;10.0;120.0;10.0;120.0;220.0;10.0;220.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>420</x>
+      <y>960</y>
+      <w>250</w>
+      <h>330</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>230.0;10.0;120.0;10.0;120.0;300.0;10.0;300.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>420</x>
+      <y>960</y>
+      <w>250</w>
+      <h>420</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>230.0;10.0;120.0;10.0;120.0;390.0;10.0;390.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>420</x>
+      <y>960</y>
+      <w>250</w>
+      <h>500</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>230.0;10.0;120.0;10.0;120.0;470.0;10.0;470.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>420</x>
+      <y>960</y>
+      <w>250</w>
+      <h>580</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>230.0;10.0;120.0;10.0;120.0;550.0;10.0;550.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>420</x>
+      <y>960</y>
+      <w>250</w>
+      <h>660</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>230.0;10.0;120.0;10.0;120.0;630.0;10.0;630.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>370</y>
+      <w>310</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>levels::Level
+--
+--
++getBackgroundImageKey() : string
++getBackgroundMusicKey() : string
++getBackgroundSize() : Dimension2
++getMaxViruses() : integer
++getNanoBotCount() : integer
++getMessageReady() : string
++getMessageSuccess() : string
++getMessageFailure() : string
+/+findSafeStart() : Point2/
+/+collidesWithBorder(entity : Entity) : boolean/
+/+bounceOffBorder(entity : Entity) : Vector2/
+/+initializeViruses/
++update(elapsedTime : microseconds)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>300</x>
+      <y>370</y>
+      <w>370</w>
+      <h>600</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>350.0;570.0;240.0;570.0;240.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1070</x>
+      <y>1610</y>
+      <w>210</w>
+      <h>390</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>190.0;10.0;10.0;10.0;10.0;370.0;190.0;370.0</additional_attributes>
+  </element>
+</diagram>

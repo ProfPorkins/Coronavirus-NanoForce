@@ -26,7 +26,7 @@ Links to documentation on various aspects of the architecture and code are found
 * [Systems](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/Systems.md)
 * [Renderers](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/Renderers.md)
 * [Levels](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/Levels.md)
-* Game Model
+* [Game Model](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/GameModel.md)
 
 A few answers to questions some might have:
 

@@ -41,7 +41,7 @@
 +initializeViruses
 +findSafeStart() : Point2
 +collidesWithBorder(entity : Entity) : boolean
-+reflectFromBorder(entity : Entity) : Vector2</panel_attributes>
++bounceOffBorder(entity : Entity) : Vector2</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
