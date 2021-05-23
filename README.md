@@ -1,8 +1,8 @@
 # Coronavirus - Nano Force
 
-This repository contains the source code for the _Coronavirus - Nano Force_ game.  The source doesn't include the Steam specifics like the leader boards, achievements, and Steam overlay, but it is otherwise the complete source code.  The reason for making it publicly available is to provide an example of a simple, but complete game.
+This repository contains the source code for the _Coronavirus - Nano Force_ game.  The source doesn't include the Steam specifics like the leader boards, achievements, and Steam overlay, but it is otherwise the complete source code.  In fact, while working on the documentation, I've made revisions to the code, that aren't in the release available on Steam.  None of the changes affect the game play, they are improvements to the implementation.  The reason for making it publicly available is to provide an example of a simple, but complete game.
 
-Currently (5/7/2021) there isn't much writeup, but it is coming.  Over the next few weeks I plan to provide some detail on the overall design and discussion of the implementation.
+As of 5/23/2021 the core documentation/writeup is complete.  There are other parts of the code and design that can be discussed (e.g., Particle System) and will likely be done as I have time and interest.
 
 ## Game Design
 
