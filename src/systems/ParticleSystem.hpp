@@ -30,8 +30,8 @@ THE SOFTWARE.
 #include <array>
 #include <chrono>
 #include <cstdint>
-#include <memory>
 #include <deque>
+#include <memory>
 
 // Forward declaration for the 'friend use below'
 namespace renderers
