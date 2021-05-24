@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 #include <mutex>
 #include <optional>
-#include <queue>
+#include <deque>
 
 // ------------------------------------------------------------------
 //
@@ -45,7 +45,7 @@ class ConcurrentQueue
     {
         std::lock_guard<std::mutex> lock(m_mutex);
 
-        m_queue.push(item);
+        m_queue.push_back(item);
     }
 
     // ------------------------------------------------------------------
@@ -62,7 +62,7 @@ class ConcurrentQueue
         if (!m_queue.empty())
         {
             auto item = m_queue.front();
-            m_queue.pop();
+            m_queue.pop_front();
             return item;
         }
 
@@ -72,6 +72,6 @@ class ConcurrentQueue
     std::size_t size() { return m_queue.size(); }
 
   private:
-    std::queue<T> m_queue;
+    std::deque<T> m_queue;
     std::mutex m_mutex;
 };
