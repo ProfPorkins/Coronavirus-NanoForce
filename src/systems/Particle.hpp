@@ -32,11 +32,6 @@ namespace systems
 {
     struct Particle
     {
-        Particle()
-        {
-            sprite = std::make_unique<sf::Sprite>();
-        }
-
         float alphaStart{ 1.0f };
         float alphaEnd{ 1.0f };
         float alpha{ 1.0f };
@@ -50,6 +45,6 @@ namespace systems
         float rotation{ 0.0f };
         std::chrono::microseconds lifetime{ 0 };
         std::chrono::microseconds alive{ 0 };
-        std::unique_ptr<sf::Sprite> sprite;
+        sf::Sprite sprite;
     };
 } // namespace systems

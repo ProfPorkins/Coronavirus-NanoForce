@@ -36,10 +36,10 @@ namespace renderers
         for (decltype(ps.m_particleCount) p = 0; p < ps.m_particleCount; p++)
         {
             auto& particle = ps.m_inUse[p];
-            particle->sprite->setPosition(particle->center);
-            particle->sprite->setRotation(particle->rotation);
+            particle->sprite.setPosition(particle->center);
+            particle->sprite.setRotation(particle->rotation);
 
-            renderTarget.draw(*particle->sprite);
+            renderTarget.draw(particle->sprite);
         }
     }
 

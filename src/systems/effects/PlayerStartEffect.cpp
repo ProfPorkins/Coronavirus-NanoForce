@@ -62,9 +62,9 @@ namespace systems
                 // The speed depends on how far out the particle is.  All particles should finish at the same
                 // time on the center of the player
                 p->speed = -(distance / m_lifetime.count());
-                p->sprite->setTexture(*m_texture);
-                p->sprite->setOrigin(p->sprite->getTexture()->getSize().x / 2.0f, p->sprite->getTexture()->getSize().y / 2.0f);
-                p->sprite->setScale(math::getViewScale(p->size, p->sprite->getTexture()));
+                p->sprite.setTexture(*m_texture);
+                p->sprite.setOrigin(p->sprite.getTexture()->getSize().x / 2.0f, p->sprite.getTexture()->getSize().y / 2.0f);
+                p->sprite.setScale(math::getViewScale(p->size, p->sprite.getTexture()));
 
                 addParticle(std::move(p));
             }

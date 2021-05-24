@@ -77,9 +77,9 @@ namespace systems
                 // Adjust the center by the distance the particle should start from the effect center
                 p->center = { m_center.x + p->direction.x * m_atDistance, m_center.y + p->direction.y * m_atDistance };
                 p->speed = m_speed;
-                p->sprite->setTexture(*m_texture);
-                p->sprite->setOrigin(p->sprite->getTexture()->getSize().x / 2.0f, p->sprite->getTexture()->getSize().y / 2.0f);
-                p->sprite->setScale(math::getViewScale(p->size, p->sprite->getTexture()));
+                p->sprite.setTexture(*m_texture);
+                p->sprite.setOrigin(p->sprite.getTexture()->getSize().x / 2.0f, p->sprite.getTexture()->getSize().y / 2.0f);
+                p->sprite.setScale(math::getViewScale(p->size, p->sprite.getTexture()));
 
                 addParticle(std::move(p));
             }

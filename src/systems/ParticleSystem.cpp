@@ -72,7 +72,7 @@ namespace systems
                 particle->size = math::lerp(static_cast<float>(particle->alive.count()), 0.0f, static_cast<float>(particle->lifetime.count()), particle->sizeStart, particle->sizeEnd);
                 if (particle->sizeStart != particle->sizeEnd)
                 {
-                    particle->sprite->setScale(math::getViewScale(particle->size, particle->sprite->getTexture()));
+                    particle->sprite.setScale(math::getViewScale(particle->size, particle->sprite.getTexture()));
                 }
 
                 // Update alpha transparency
