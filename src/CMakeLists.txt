@@ -170,13 +170,11 @@ set(CLIENT_SYSTEMS_SOURCES
 
 set(CLIENT_PARTICLE_EFFECTS_HEADERS
     systems/effects/CircleExpansionEffect.hpp
-    systems/effects/ExplosionEffect.hpp
     systems/effects/ParticleEffect.hpp
     systems/effects/PlayerStartEffect.hpp
     )
 set(CLIENT_PARTICLE_EFFECTS_SOURCES
     systems/effects/CircleExpansionEffect.cpp
-    systems/effects/ExplosionEffect.cpp
     systems/effects/ParticleEffect.cpp
     systems/effects/PlayerStartEffect.cpp
     )    

@@ -25,6 +25,7 @@ THE SOFTWARE.
 #include "ParticleEffect.hpp"
 #include "misc/math.hpp"
 
+#include <SFML/Graphics.hpp>
 #include <cstdint>
 #include <memory>
 #include <random>

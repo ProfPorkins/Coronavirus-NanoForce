@@ -24,7 +24,6 @@ THE SOFTWARE.
 
 #include "systems/Particle.hpp"
 
-#include <SFML/Graphics.hpp>
 #include <chrono>
 #include <functional>
 #include <memory>

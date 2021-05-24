@@ -43,7 +43,6 @@ THE SOFTWARE.
 #include "misc/math.hpp"
 #include "misc/misc.hpp"
 #include "systems/effects/CircleExpansionEffect.hpp"
-#include "systems/effects/ExplosionEffect.hpp"
 #include "systems/effects/PlayerStartEffect.hpp"
 
 #include <chrono>
