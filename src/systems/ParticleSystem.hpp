@@ -73,7 +73,6 @@ namespace systems
         {
             if (!m_available.empty())
             {
-
                 // Yuck!
                 auto p = std::move(m_available.front());
                 m_available.pop_front();
