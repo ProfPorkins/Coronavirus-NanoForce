@@ -84,7 +84,7 @@ namespace systems
             else
             {
                 // Send it back to the available queue
-                m_available.push(std::move(particle));
+                m_available.push_back(std::move(particle));
             }
         }
         m_particleCount = keeperCount;
@@ -104,7 +104,7 @@ namespace systems
         while (effectCount-- > 0)
         {
             auto effect = std::move(m_effects.front());
-            m_effects.pop();
+            m_effects.pop_front();
             effect->update(
                 elapsedTime,
                 [this]() { return getAvailableParticle(); },
@@ -112,7 +112,7 @@ namespace systems
             // Put it back in the queue if its lifetime hasn't expired
             if (effect->getAlive() < effect->getLifetime())
             {
-                m_effects.push(std::move(effect));
+                m_effects.push_back(std::move(effect));
             }
         }
     }
@@ -121,7 +121,7 @@ namespace systems
     {
         while (m_available.size() < MAX_PARTICLES)
         {
-            m_available.push(std::make_unique<Particle>());
+            m_available.push_back(std::make_unique<Particle>());
         }
     }
 

@@ -31,7 +31,7 @@ THE SOFTWARE.
 #include <chrono>
 #include <cstdint>
 #include <memory>
-#include <queue>
+#include <deque>
 
 // Forward declaration for the 'friend use below'
 namespace renderers
@@ -56,16 +56,16 @@ namespace systems
         ParticleSystem();
 
         void update(const std::chrono::microseconds elapsedTime);
-        void addEffect(std::unique_ptr<ParticleEffect> effect) { m_effects.push(std::move(effect)); }
+        void addEffect(std::unique_ptr<ParticleEffect> effect) { m_effects.push_back(std::move(effect)); }
 
       private:
         friend renderers::ParticleSystem;
 
         static const auto MAX_PARTICLES = 10'000; // NOTE: Purely arbitrary number for now, no specific reason for it.
-        std::queue<std::unique_ptr<Particle>> m_available;
+        std::deque<std::unique_ptr<Particle>> m_available;
         std::array<std::unique_ptr<Particle>, MAX_PARTICLES> m_inUse; // This has to be a random access container for the particle system rendering to use and not have to keep removing/adding things to a queue-like container
         std::uint16_t m_particleCount{ 0 };
-        std::queue<std::unique_ptr<ParticleEffect>> m_effects;
+        std::deque<std::unique_ptr<ParticleEffect>> m_effects;
 
         void updateParticles(const std::chrono::microseconds& elapsedTime);
         void updateEffects(const std::chrono::microseconds& elapsedTime);
@@ -76,7 +76,7 @@ namespace systems
 
                 // Yuck!
                 auto p = std::move(m_available.front());
-                m_available.pop();
+                m_available.pop_front();
                 return p;
             }
             return nullptr; // Could return an optional, but I'm fine with nullptr for this.
