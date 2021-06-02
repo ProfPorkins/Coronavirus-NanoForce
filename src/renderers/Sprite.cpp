@@ -22,11 +22,11 @@ THE SOFTWARE.
 
 #include "Sprite.hpp"
 
-#include "services/Configuration.hpp"
 #include "components/Orientation.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"
 #include "misc/math.hpp"
+#include "services/Configuration.hpp"
 
 namespace renderers
 {

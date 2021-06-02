@@ -22,10 +22,6 @@ THE SOFTWARE.
 
 #include "Bomb.hpp"
 
-#include "services/Configuration.hpp"
-#include "services/ConfigurationPath.hpp"
-#include "services/ContentKey.hpp"
-#include "services/SoundPlayer.hpp"
 #include "components/Damage.hpp"
 #include "components/Lifetime.hpp"
 #include "components/Momentum.hpp"
@@ -35,6 +31,10 @@ THE SOFTWARE.
 #include "entities/Bullet.hpp"
 #include "misc/math.hpp"
 #include "misc/misc.hpp"
+#include "services/Configuration.hpp"
+#include "services/ConfigurationPath.hpp"
+#include "services/ContentKey.hpp"
+#include "services/SoundPlayer.hpp"
 
 namespace entities
 {

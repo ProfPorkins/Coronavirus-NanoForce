@@ -22,9 +22,9 @@ THE SOFTWARE.
 
 #include "math.hpp"
 
-#include "services/Configuration.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"
+#include "services/Configuration.hpp"
 
 #include <chrono>
 #include <cmath>

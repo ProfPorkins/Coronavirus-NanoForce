@@ -22,12 +22,12 @@ THE SOFTWARE.
 
 #pragma once
 
+#include "UIFramework/Text.hpp"
+#include "View.hpp"
 #include "services/Configuration.hpp"
 #include "services/ConfigurationPath.hpp"
 #include "services/Content.hpp"
 #include "services/ContentKey.hpp"
-#include "UIFramework/Text.hpp"
-#include "View.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 

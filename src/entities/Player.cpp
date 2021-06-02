@@ -22,11 +22,6 @@ THE SOFTWARE.
 
 #include "Player.hpp"
 
-#include "services/Configuration.hpp"
-#include "services/ConfigurationPath.hpp"
-#include "services/Content.hpp"
-#include "services/ContentKey.hpp"
-#include "services/SoundPlayer.hpp"
 #include "components/Drag.hpp"
 #include "components/Momentum.hpp"
 #include "components/Orientation.hpp"
@@ -35,6 +30,11 @@ THE SOFTWARE.
 #include "entities/WeaponEmpty.hpp"
 #include "entities/WeaponGun.hpp"
 #include "misc/math.hpp"
+#include "services/Configuration.hpp"
+#include "services/ConfigurationPath.hpp"
+#include "services/Content.hpp"
+#include "services/ContentKey.hpp"
+#include "services/SoundPlayer.hpp"
 
 #include <algorithm>
 #include <cmath>

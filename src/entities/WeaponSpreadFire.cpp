@@ -22,7 +22,6 @@ THE SOFTWARE.
 
 #include "WeaponSpreadFire.hpp"
 
-#include "services/ContentKey.hpp"
 #include "components/Damage.hpp"
 #include "components/Lifetime.hpp"
 #include "components/Momentum.hpp"
@@ -30,6 +29,7 @@ THE SOFTWARE.
 #include "components/Position.hpp"
 #include "components/Size.hpp"
 #include "misc/math.hpp"
+#include "services/ContentKey.hpp"
 
 namespace entities
 {

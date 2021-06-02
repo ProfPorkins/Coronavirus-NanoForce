@@ -22,8 +22,6 @@ THE SOFTWARE.
 
 #include "Virus.hpp"
 
-#include "services/Configuration.hpp"
-#include "services/ConfigurationPath.hpp"
 #include "components//Age.hpp"
 #include "components/Birth.hpp"
 #include "components/Drag.hpp"
@@ -34,6 +32,8 @@ THE SOFTWARE.
 #include "components/Position.hpp"
 #include "components/Size.hpp"
 #include "misc/math.hpp"
+#include "services/Configuration.hpp"
+#include "services/ConfigurationPath.hpp"
 
 #include <cmath>
 

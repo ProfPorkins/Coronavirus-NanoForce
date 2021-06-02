@@ -22,11 +22,11 @@ THE SOFTWARE.
 
 #include "Movement.hpp"
 
-#include "services/Configuration.hpp"
 #include "components/Drag.hpp"
 #include "components/Momentum.hpp"
 #include "components/Orientation.hpp"
 #include "components/Position.hpp"
+#include "services/Configuration.hpp"
 
 namespace systems
 {

@@ -22,11 +22,6 @@ THE SOFTWARE.
 
 #include "GameModel.hpp"
 
-#include "services/Configuration.hpp"
-#include "services/ConfigurationPath.hpp"
-#include "services/Content.hpp"
-#include "services/ContentKey.hpp"
-#include "services/SoundPlayer.hpp"
 #include "components/Damage.hpp"
 #include "components/Health.hpp"
 #include "components/Lifetime.hpp"
@@ -42,6 +37,11 @@ THE SOFTWARE.
 #include "levels/PetriDish.hpp"
 #include "misc/math.hpp"
 #include "misc/misc.hpp"
+#include "services/Configuration.hpp"
+#include "services/ConfigurationPath.hpp"
+#include "services/Content.hpp"
+#include "services/ContentKey.hpp"
+#include "services/SoundPlayer.hpp"
 #include "systems/effects/CircleExpansionEffect.hpp"
 #include "systems/effects/PlayerStartEffect.hpp"
 

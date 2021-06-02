@@ -22,12 +22,12 @@ THE SOFTWARE.
 
 #include "Weapon.hpp"
 
+#include "misc/misc.hpp"
 #include "services/Configuration.hpp"
 #include "services/ConfigurationPath.hpp"
 #include "services/Content.hpp"
 #include "services/ContentKey.hpp"
 #include "services/SoundPlayer.hpp"
-#include "misc/misc.hpp"
 
 namespace entities
 {

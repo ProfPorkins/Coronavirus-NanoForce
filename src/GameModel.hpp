@@ -38,7 +38,7 @@ THE SOFTWARE.
 #include "systems/AnimatedSprite.hpp"
 #include "systems/Birth.hpp"
 #include "systems/Health.hpp"
-#include "systems/KeyboardInput.hpp"
+#include "services/KeyboardInput.hpp"
 #include "systems/Lifetime.hpp"
 #include "systems/Movement.hpp"
 #include "systems/ParticleSystem.hpp"
@@ -78,7 +78,7 @@ class GameModel
     std::chrono::milliseconds m_timePlayed{ 0 };
     std::uint32_t m_virusesKilled{ 0 };
 
-    systems::KeyboardInput m_sysKeyboard;
+    KeyboardInput m_sysKeyboard;
     systems::Movement m_sysMovement;
     systems::Lifetime m_sysLifetime;
     systems::ParticleSystem m_sysParticle;

@@ -22,13 +22,13 @@ THE SOFTWARE.
 
 #include "PetriDish.hpp"
 
-#include "services/Configuration.hpp"
-#include "services/ConfigurationPath.hpp"
-#include "services/Content.hpp"
 #include "components/Momentum.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"
 #include "entities/Entity.hpp"
+#include "services/Configuration.hpp"
+#include "services/ConfigurationPath.hpp"
+#include "services/Content.hpp"
 
 #include <chrono>
 

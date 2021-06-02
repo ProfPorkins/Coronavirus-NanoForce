@@ -22,8 +22,8 @@ THE SOFTWARE.
 
 #include "ParticleSystem.hpp"
 
-#include "services/Configuration.hpp"
 #include "effects/ParticleEffect.hpp"
+#include "services/Configuration.hpp"
 
 namespace systems
 {

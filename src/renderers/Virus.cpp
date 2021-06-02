@@ -22,10 +22,10 @@ THE SOFTWARE.
 
 #include "Virus.hpp"
 
-#include "services/Configuration.hpp"
 #include "components/Orientation.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"
+#include "services/Configuration.hpp"
 
 #include <cmath>
 

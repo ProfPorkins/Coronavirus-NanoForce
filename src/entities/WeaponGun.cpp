@@ -22,13 +22,13 @@ THE SOFTWARE.
 
 #include "WeaponGun.hpp"
 
-#include "services/ContentKey.hpp"
 #include "components/Momentum.hpp"
 #include "components/Orientation.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"
 #include "entities/Bullet.hpp"
 #include "misc/math.hpp"
+#include "services/ContentKey.hpp"
 
 namespace entities
 {

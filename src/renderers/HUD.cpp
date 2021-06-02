@@ -22,13 +22,13 @@ THE SOFTWARE.
 
 #include "HUD.hpp"
 
+#include "components/Size.hpp"
+#include "misc/math.hpp"
+#include "misc/misc.hpp"
 #include "services/Configuration.hpp"
 #include "services/ConfigurationPath.hpp"
 #include "services/Content.hpp"
 #include "services/ContentKey.hpp"
-#include "components/Size.hpp"
-#include "misc/math.hpp"
-#include "misc/misc.hpp"
 
 #include <string>
 

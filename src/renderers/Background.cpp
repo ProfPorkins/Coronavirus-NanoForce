@@ -22,8 +22,8 @@ THE SOFTWARE.
 
 #include "Background.hpp"
 
-#include "services/Configuration.hpp"
 #include "misc/math.hpp"
+#include "services/Configuration.hpp"
 
 namespace renderers
 {

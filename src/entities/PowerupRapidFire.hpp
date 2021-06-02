@@ -22,10 +22,10 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "services/ConfigurationPath.hpp"
 #include "Powerup.hpp"
 #include "WeaponRapidFire.hpp"
 #include "misc/math.hpp"
+#include "services/ConfigurationPath.hpp"
 
 namespace entities
 {

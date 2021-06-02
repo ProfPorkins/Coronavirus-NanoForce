@@ -22,11 +22,11 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "services/Configuration.hpp"
-#include "services/Content.hpp"
 #include "MenuView.hpp"
 #include "UIFramework/MenuItem.hpp"
 #include "UIFramework/Text.hpp"
+#include "services/Configuration.hpp"
+#include "services/Content.hpp"
 
 #include <cstdint>
 #include <vector>

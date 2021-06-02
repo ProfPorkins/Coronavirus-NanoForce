@@ -22,12 +22,12 @@ THE SOFTWARE.
 
 #include "Level.hpp"
 
-#include "services/Configuration.hpp"
-#include "services/Content.hpp"
 #include "entities/PowerupBomb.hpp"
 #include "entities/PowerupRapidFire.hpp"
 #include "entities/PowerupSpreadFire.hpp"
 #include "misc/misc.hpp"
+#include "services/Configuration.hpp"
+#include "services/Content.hpp"
 
 namespace levels
 {

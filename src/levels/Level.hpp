@@ -22,10 +22,10 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "services/ConfigurationPath.hpp"
 #include "entities/Powerup.hpp"
 #include "entities/Virus.hpp"
 #include "misc/math.hpp"
+#include "services/ConfigurationPath.hpp"
 
 #include <algorithm>
 #include <atomic>

@@ -141,11 +141,13 @@ set(CLIENT_SERVICES_HEADERS
     services/ConfigurationPath.hpp
     services/Content.hpp
     services/ContentKey.hpp
+    services/KeyboardInput.hpp
     services/SoundPlayer.hpp
     )
 set(CLIENT_SERVICES_SOURCES
     services/Configuration.cpp
     services/Content.cpp
+    services/KeyboardInput.cpp
     services/SoundPlayer.cpp
     )
 
@@ -154,7 +156,6 @@ set(CLIENT_SYSTEMS_HEADERS
     systems/AnimatedSprite.hpp
     systems/Birth.hpp
     systems/Health.hpp
-    systems/KeyboardInput.hpp
     systems/Lifetime.hpp
     systems/Movement.hpp
     systems/Particle.hpp
@@ -165,7 +166,6 @@ set(CLIENT_SYSTEMS_SOURCES
     systems/AnimatedSprite.cpp
     systems/Birth.cpp
     systems/Health.cpp
-    systems/KeyboardInput.cpp
     systems/Lifetime.cpp
     systems/Movement.cpp
     systems/ParticleSystem.cpp
