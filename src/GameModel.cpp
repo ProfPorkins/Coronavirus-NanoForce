@@ -41,6 +41,7 @@ THE SOFTWARE.
 #include "services/ConfigurationPath.hpp"
 #include "services/Content.hpp"
 #include "services/ContentKey.hpp"
+#include "services/KeyboardInput.hpp"
 #include "services/SoundPlayer.hpp"
 #include "systems/effects/CircleExpansionEffect.hpp"
 #include "systems/effects/PlayerStartEffect.hpp"
@@ -162,17 +163,19 @@ void GameModel::shutdown()
     {
         Content::get<sf::Music>(m_level->getBackgroundMusicKey())->stop();
     }
+
+    KeyboardInput::instance().unregisterAll();
 }
 
-void GameModel::signalKeyPressed(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now)
-{
-    m_sysKeyboard.signalKeyPressed(event, elapsedTime, now);
-}
-
-void GameModel::signalKeyReleased(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now)
-{
-    m_sysKeyboard.signalKeyReleased(event, elapsedTime, now);
-}
+//void GameModel::signalKeyPressed(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now)
+//{
+//    m_sysKeyboard.signalKeyPressed(event, elapsedTime, now);
+//}
+//
+//void GameModel::signalKeyReleased(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now)
+//{
+//    m_sysKeyboard.signalKeyReleased(event, elapsedTime, now);
+//}
 
 // --------------------------------------------------------------
 //
@@ -181,7 +184,6 @@ void GameModel::signalKeyReleased(sf::Event::KeyEvent event, const std::chrono::
 // --------------------------------------------------------------
 void GameModel::update(const std::chrono::microseconds elapsedTime)
 {
-    m_sysKeyboard.update(elapsedTime);
     m_sysParticle.update(elapsedTime);
 
     m_updatePlayer(elapsedTime);
@@ -384,7 +386,7 @@ void GameModel::onPlayerDeath()
     auto orientation = m_player->getComponent<components::Orientation>()->get();
     m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER, position->get(), 0.0f, 0.0f, size->getOuterRadius(), 0.01f, orientation, misc::msTous(std::chrono::milliseconds(2000))));
 
-    m_sysKeyboard.unregisterAll();
+    KeyboardInput::instance().unregisterAll();
     if (m_remainingNanoBots > 0)
     {
         m_remainingNanoBots--;
@@ -444,13 +446,13 @@ void GameModel::startPlayer(math::Point2f position)
 
     // A copy of the pointer is needed, because the controls might still happen during the next update when the player dies
     auto player = m_player;
-    m_sysKeyboard.registerKeyPressedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { player->startThrust(); });
-    m_sysKeyboard.registerKeyReleasedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { player->endThrust(); });
-    m_sysKeyboard.registerHandler(Configuration::get<std::string>(config::KEYBOARD_LEFT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { player->rotateLeft(elapsedTime); });
-    m_sysKeyboard.registerHandler(Configuration::get<std::string>(config::KEYBOARD_RIGHT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { player->rotateRight(elapsedTime); });
+    KeyboardInput::instance().registerKeyPressedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { player->startThrust(); });
+    KeyboardInput::instance().registerKeyReleasedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { player->endThrust(); });
+    KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_LEFT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { player->rotateLeft(elapsedTime); });
+    KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_RIGHT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { player->rotateRight(elapsedTime); });
     //
     // Primary weapon fire
-    m_sysKeyboard.registerHandler(
+    KeyboardInput::instance().registerHandler(
         Configuration::get<std::string>(config::KEYBOARD_PRIMARY_FIRE), true, std::chrono::microseconds(0),
         [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime) {
             player->getPrimaryWeapon()->fire(
@@ -460,7 +462,7 @@ void GameModel::startPlayer(math::Point2f position)
 
     //
     // Secondary weapon fire
-    m_sysKeyboard.registerHandler(
+    KeyboardInput::instance().registerHandler(
         Configuration::get<std::string>(config::KEYBOARD_SECONDARY_FIRE), true, std::chrono::microseconds(0),
         [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime) {
             player->getSecondaryWeapon()->fire(

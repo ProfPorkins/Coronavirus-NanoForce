@@ -58,14 +58,14 @@ namespace views
                 m_nextState = ViewState::LevelSelect;
                 break;
             default:
-                m_model->signalKeyPressed(event, elapsedTime, now);
+                //m_model->signalKeyPressed(event, elapsedTime, now);
                 break;
         }
     }
 
     void Gameplay::signalKeyReleased(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now)
     {
-        m_model->signalKeyReleased(event, elapsedTime, now);
+        //m_model->signalKeyReleased(event, elapsedTime, now);
     }
 
     ViewState Gameplay::update(const std::chrono::microseconds elapsedTime, [[maybe_unused]] const std::chrono::system_clock::time_point now)

@@ -24,6 +24,7 @@ THE SOFTWARE.
 #include "services/ConfigurationPath.hpp"
 #include "services/Content.hpp"
 #include "services/ContentKey.hpp"
+#include "services/KeyboardInput.hpp"
 #include "services/SoundPlayer.hpp"
 #include "views/About.hpp"
 #include "views/Credits.hpp"
@@ -243,6 +244,10 @@ int main()
     }
 
     //
+    // The KeyboardInput singleton needs to be specifically initialized
+    KeyboardInput::instance().initialize();
+
+    //
     // Create and activate the window for rendering on the main thread
     auto window = prepareWindow();
     prepareView(window);
@@ -304,11 +309,13 @@ int main()
                 case sf::Event::KeyPressed:
                 {
                     view->signalKeyPressed(event.key, elapsedTime, currentTime);
+                    KeyboardInput::instance().signalKeyPressed(event.key, elapsedTime, currentTime);
                 }
                 break;
                 case sf::Event::KeyReleased:
                 {
                     view->signalKeyReleased(event.key, elapsedTime, currentTime);
+                    KeyboardInput::instance().signalKeyReleased(event.key, elapsedTime, currentTime);
                 }
                 break;
                 case sf::Event::MouseMoved:
@@ -337,6 +344,7 @@ int main()
 
         //
         // Execute the remaining game loop steps
+        KeyboardInput::instance().update(elapsedTime);
         auto nextViewState = view->update(elapsedTime, currentTime);
         view->render(*window, elapsedTime);
 

@@ -22,6 +22,13 @@ THE SOFTWARE.
 
 #include "KeyboardInput.hpp"
 
+bool KeyboardInput::initialize()
+{
+    initializeStringToKeyMapping();
+
+    return true;
+}
+
 void KeyboardInput::registerHandler(std::string key, bool repeat, std::chrono::microseconds rate, std::function<void(std::chrono::microseconds)> handler)
 {
     m_handlers[m_stringToKey[key]] = { repeat, rate, handler };

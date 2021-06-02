@@ -38,7 +38,6 @@ THE SOFTWARE.
 #include "systems/AnimatedSprite.hpp"
 #include "systems/Birth.hpp"
 #include "systems/Health.hpp"
-#include "services/KeyboardInput.hpp"
 #include "systems/Lifetime.hpp"
 #include "systems/Movement.hpp"
 #include "systems/ParticleSystem.hpp"
@@ -64,8 +63,8 @@ class GameModel
     void initialize();
     void shutdown();
 
-    void signalKeyPressed(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now);
-    void signalKeyReleased(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now);
+    //void signalKeyPressed(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now);
+    //void signalKeyReleased(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now);
 
     void update(const std::chrono::microseconds elapsedTime);
     void render(sf::RenderTarget& renderTarget, const std::chrono::microseconds elapsedTime);
@@ -78,7 +77,6 @@ class GameModel
     std::chrono::milliseconds m_timePlayed{ 0 };
     std::uint32_t m_virusesKilled{ 0 };
 
-    KeyboardInput m_sysKeyboard;
     systems::Movement m_sysMovement;
     systems::Lifetime m_sysLifetime;
     systems::ParticleSystem m_sysParticle;

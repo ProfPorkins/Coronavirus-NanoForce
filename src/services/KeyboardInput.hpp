@@ -28,13 +28,29 @@ THE SOFTWARE.
 #include <string>
 #include <unordered_map>
 
+// --------------------------------------------------------------
+//
+// Keyboard input handler
+//
+// Note: This is a Singleton
+//
+// --------------------------------------------------------------
 class KeyboardInput
 {
   public:
-    KeyboardInput()
+    KeyboardInput(const KeyboardInput&) = delete;
+    KeyboardInput(KeyboardInput&&) = delete;
+    KeyboardInput& operator=(const KeyboardInput&) = delete;
+    KeyboardInput& operator=(KeyboardInput&&) = delete;
+
+    static auto& instance()
     {
-        initializeStringToKeyMapping();
+        static KeyboardInput instance;
+        return instance;
     }
+
+    bool initialize();
+
     void registerHandler(std::string key, bool repeat, std::chrono::microseconds rate, std::function<void(std::chrono::microseconds)> handler);
     void registerHandler(std::string key, std::function<void(std::chrono::microseconds)> handler);
     void registerKeyPressedHandler(std::string key, std::function<void()> handler);
@@ -49,6 +65,7 @@ class KeyboardInput
     void update(const std::chrono::microseconds elapsedTime);
 
   private:
+    KeyboardInput() {}
     struct InputInfo
     {
         InputInfo() = default;
