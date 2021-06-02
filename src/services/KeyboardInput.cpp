@@ -161,6 +161,7 @@ void KeyboardInput::initializeStringToKeyMapping()
     m_stringToKey["left"] = sf::Keyboard::Left;
     m_stringToKey["right"] = sf::Keyboard::Right;
     m_stringToKey["space"] = sf::Keyboard::Space;
+    m_stringToKey["enter"] = sf::Keyboard::Enter;
     m_stringToKey["escape"] = sf::Keyboard::Escape;
 
     m_stringToKey["a"] = sf::Keyboard::A;

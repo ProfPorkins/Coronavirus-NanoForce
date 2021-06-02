@@ -44,7 +44,11 @@ namespace views
         m_model = std::make_unique<GameModel>();
         m_model->initialize();
 
-        KeyboardInput::instance().registerKeyPressedHandler("escape", [this]() { m_nextState = ViewState::LevelSelect; });
+        //
+        // Using key released here, makes it so that when it goes back to the LevelSelect view, we have guaranteed to have
+        // no pending 'escape' key pressed events that would cause it to immediately step back to the main menu view.  This
+        // is a little hacky, I realize that.  Should/need come back and solve this in a more robust way.
+        KeyboardInput::instance().registerKeyReleasedHandler("escape", [this]() { m_nextState = ViewState::LevelSelect; });
 
         return true;
     }
@@ -52,7 +56,7 @@ namespace views
     void Gameplay::stop()
     {
         m_model->shutdown();
-        KeyboardInput::instance().unregisterKeyPressedHandler("escape");
+        KeyboardInput::instance().unregisterKeyReleasedHandler("escape");
     }
 
     ViewState Gameplay::update(const std::chrono::microseconds elapsedTime, [[maybe_unused]] const std::chrono::system_clock::time_point now)

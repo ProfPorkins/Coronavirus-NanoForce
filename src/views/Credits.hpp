@@ -26,6 +26,7 @@ THE SOFTWARE.
 #include "UIFramework/Text.hpp"
 #include "services/Configuration.hpp"
 #include "services/Content.hpp"
+#include "services/KeyboardInput.hpp"
 
 #include <string>
 #include <vector>
@@ -42,8 +43,7 @@ namespace views
       public:
         using MenuView::MenuView;
         virtual bool start() override;
-
-        virtual void signalKeyPressed(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
+        virtual void stop() override { KeyboardInput::instance().unregisterKeyPressedHandler("escape"); }
 
         virtual ViewState update(const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
         virtual void render(sf::RenderTarget& renderTarget, const std::chrono::microseconds elapsedTime) override;

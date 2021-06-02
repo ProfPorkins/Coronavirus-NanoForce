@@ -33,6 +33,30 @@ namespace views
         // Need to ensure the next state stays LevelSelect before checking to see if
         // the view is already initialized.
         m_nextState = ViewState::LevelSelect;
+
+        KeyboardInput::instance().registerKeyPressedHandler("escape", [this]() { m_nextState = ViewState::MainMenu; });
+        KeyboardInput::instance().registerKeyPressedHandler("down",
+                                                            [this]() {
+                                                                m_menuItems[m_activeMenuItem]->setInactive();
+                                                                m_activeMenuItem = (static_cast<std::size_t>(m_activeMenuItem) + 1) % m_menuItems.size();
+                                                                m_menuItems[m_activeMenuItem]->setActive();
+                                                            });
+        KeyboardInput::instance().registerKeyPressedHandler("up",
+                                                            [this]() {
+                                                                m_menuItems[m_activeMenuItem]->setInactive();
+                                                                m_activeMenuItem--;
+                                                                if (m_activeMenuItem < 0)
+                                                                {
+
+                                                                    m_activeMenuItem = static_cast<std::int8_t>(m_menuItems.size() - 1);
+                                                                }
+                                                                m_menuItems[m_activeMenuItem]->setActive();
+                                                            });
+        KeyboardInput::instance().registerKeyPressedHandler("enter",
+                                                            [this]() {
+                                                                m_menuItems[m_activeMenuItem]->select();
+                                                            });
+
         if (m_initialized)
             return true;
 
@@ -172,29 +196,12 @@ namespace views
         return true;
     }
 
-    void LevelSelect::signalKeyPressed([[maybe_unused]] sf::Event::KeyEvent event, [[maybe_unused]] const std::chrono::microseconds elapsedTime, [[maybe_unused]] const std::chrono::system_clock::time_point now)
+    void LevelSelect::stop()
     {
-        switch (event.code)
-        {
-            case sf::Keyboard::Down:
-                m_menuItems[m_activeMenuItem]->setInactive();
-                m_activeMenuItem = (static_cast<std::size_t>(m_activeMenuItem) + 1) % m_menuItems.size();
-                m_menuItems[m_activeMenuItem]->setActive();
-                break;
-            case sf::Keyboard::Up:
-                m_menuItems[m_activeMenuItem]->setInactive();
-                m_activeMenuItem--;
-                if (m_activeMenuItem < 0)
-                    m_activeMenuItem = static_cast<std::int8_t>(m_menuItems.size() - 1);
-                m_menuItems[m_activeMenuItem]->setActive();
-                break;
-            case sf::Keyboard::Escape:
-                m_nextState = ViewState::MainMenu;
-                break;
-            default:
-                m_menuItems[m_activeMenuItem]->signalKeyPressed(event, elapsedTime);
-                break;
-        }
+        KeyboardInput::instance().unregisterKeyPressedHandler("escape");
+        KeyboardInput::instance().unregisterKeyPressedHandler("up");
+        KeyboardInput::instance().unregisterKeyPressedHandler("down");
+        KeyboardInput::instance().unregisterKeyPressedHandler("enter");
     }
 
     void LevelSelect::signalMouseMoved(math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime)

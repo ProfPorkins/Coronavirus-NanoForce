@@ -76,19 +76,9 @@ namespace views
             item->setPosition({ -item->getRegion().width / 2.0f, item->getRegion().top });
         }
 
-        return true;
-    }
+        KeyboardInput::instance().registerKeyPressedHandler("escape", [this]() { m_nextState = ViewState::MainMenu; });
 
-    void Credits::signalKeyPressed([[maybe_unused]] sf::Event::KeyEvent event, [[maybe_unused]] const std::chrono::microseconds elapsedTime, [[maybe_unused]] const std::chrono::system_clock::time_point now)
-    {
-        switch (event.code)
-        {
-            case sf::Keyboard::Escape:
-                m_nextState = ViewState::MainMenu;
-                break;
-            default: // Needed to eliminate unused enumeration compiler warning
-                break;
-        }
+        return true;
     }
 
     ViewState Credits::update(const std::chrono::microseconds elapsedTime, [[maybe_unused]] const std::chrono::system_clock::time_point now)
