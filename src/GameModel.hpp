@@ -63,9 +63,6 @@ class GameModel
     void initialize();
     void shutdown();
 
-    //void signalKeyPressed(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now);
-    //void signalKeyReleased(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now);
-
     void update(const std::chrono::microseconds elapsedTime);
     void render(sf::RenderTarget& renderTarget, const std::chrono::microseconds elapsedTime);
 
@@ -117,4 +114,5 @@ class GameModel
     void startPlayer(math::Point2f position);
 
     bool contentReady();
+    void unregisterInputHandlers();
 };

@@ -22,6 +22,8 @@ THE SOFTWARE.
 
 #include "Gameplay.hpp"
 
+#include "services/KeyboardInput.hpp"
+
 namespace views
 {
 
@@ -42,30 +44,15 @@ namespace views
         m_model = std::make_unique<GameModel>();
         m_model->initialize();
 
+        KeyboardInput::instance().registerKeyPressedHandler("escape", [this]() { m_nextState = ViewState::LevelSelect; });
+
         return true;
     }
 
     void Gameplay::stop()
     {
         m_model->shutdown();
-    }
-
-    void Gameplay::signalKeyPressed(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now)
-    {
-        switch (event.code)
-        {
-            case sf::Keyboard::Escape:
-                m_nextState = ViewState::LevelSelect;
-                break;
-            default:
-                //m_model->signalKeyPressed(event, elapsedTime, now);
-                break;
-        }
-    }
-
-    void Gameplay::signalKeyReleased(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now)
-    {
-        //m_model->signalKeyReleased(event, elapsedTime, now);
+        KeyboardInput::instance().unregisterKeyPressedHandler("escape");
     }
 
     ViewState Gameplay::update(const std::chrono::microseconds elapsedTime, [[maybe_unused]] const std::chrono::system_clock::time_point now)

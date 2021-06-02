@@ -42,9 +42,6 @@ namespace views
         virtual bool start() override;
         virtual void stop() override;
 
-        virtual void signalKeyPressed(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
-        virtual void signalKeyReleased(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
-
         virtual ViewState update(const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
         virtual void render(sf::RenderTarget& renderTarget, const std::chrono::microseconds elapsedTime) override;
 

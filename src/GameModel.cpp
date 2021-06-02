@@ -167,16 +167,6 @@ void GameModel::shutdown()
     KeyboardInput::instance().unregisterAll();
 }
 
-//void GameModel::signalKeyPressed(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now)
-//{
-//    m_sysKeyboard.signalKeyPressed(event, elapsedTime, now);
-//}
-//
-//void GameModel::signalKeyReleased(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now)
-//{
-//    m_sysKeyboard.signalKeyReleased(event, elapsedTime, now);
-//}
-
 // --------------------------------------------------------------
 //
 // This is where everything performs its update.
@@ -386,7 +376,7 @@ void GameModel::onPlayerDeath()
     auto orientation = m_player->getComponent<components::Orientation>()->get();
     m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER, position->get(), 0.0f, 0.0f, size->getOuterRadius(), 0.01f, orientation, misc::msTous(std::chrono::milliseconds(2000))));
 
-    KeyboardInput::instance().unregisterAll();
+    unregisterInputHandlers();
     if (m_remainingNanoBots > 0)
     {
         m_remainingNanoBots--;
@@ -565,4 +555,21 @@ void GameModel::loadContent()
 bool GameModel::contentReady()
 {
     return (!Content::instance().isError() && !Content::instance().anyPending());
+}
+
+// --------------------------------------------------------------
+//
+// Unregister the handlers setup for the game model.  Can't use
+// .unregisterAll, because the view also has handler(s) registered.
+//
+// --------------------------------------------------------------
+void GameModel::unregisterInputHandlers()
+{
+    KeyboardInput::instance().unregisterKeyPressedHandler(Configuration::get<std::string>(config::KEYBOARD_UP));
+    KeyboardInput::instance().unregisterKeyReleasedHandler(Configuration::get<std::string>(config::KEYBOARD_UP));
+    KeyboardInput::instance().unregisterHandler(Configuration::get<std::string>(config::KEYBOARD_LEFT));
+    KeyboardInput::instance().unregisterHandler(Configuration::get<std::string>(config::KEYBOARD_RIGHT));
+
+    KeyboardInput::instance().unregisterHandler(Configuration::get<std::string>(config::KEYBOARD_PRIMARY_FIRE));
+    KeyboardInput::instance().unregisterHandler(Configuration::get<std::string>(config::KEYBOARD_SECONDARY_FIRE));
 }
