@@ -22,8 +22,8 @@ THE SOFTWARE.
 
 #include "Activate.hpp"
 
-#include "ContentKey.hpp"
-#include "SoundPlayer.hpp"
+#include "services/ContentKey.hpp"
+#include "services/SoundPlayer.hpp"
 
 namespace ui
 {

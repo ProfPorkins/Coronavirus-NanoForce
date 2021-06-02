@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 #include "About.hpp"
 
-#include "Configuration.hpp"
+#include "services/Configuration.hpp"
 
 namespace views
 {

@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 #include "CircleExpansionEffect.hpp"
 
-#include "Content.hpp"
+#include "services/Content.hpp"
 #include "systems/Particle.hpp"
 
 #include <cmath>

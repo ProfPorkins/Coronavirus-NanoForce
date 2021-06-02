@@ -38,19 +38,11 @@ include_directories(ThirdParty/rapidjson/include)
 # Manually specifying all the source files.
 #
 set(CLIENT_HEADER_FILES
-    ConfigurationPath.hpp
-    Configuration.hpp
-    Content.hpp
-    ContentKey.hpp
     GameModel.hpp
-    SoundPlayer.hpp
     )
 set(CLIENT_SOURCE_FILES
     main.cpp
-    Configuration.cpp
-    Content.cpp
     GameModel.cpp
-    SoundPlayer.cpp
     )
 
 set(CLIENT_COMPONENTS_HEADERS
@@ -110,7 +102,6 @@ set(CLIENT_LEVEL_HEADERS
     levels/PetriDish.hpp
     levels/LevelName.hpp
     )
-
 set(CLIENT_LEVEL_SOURCES
     levels/Level.cpp
     levels/PetriDish.cpp
@@ -121,7 +112,6 @@ set(CLIENT_MISC_HEADERS
     misc/math.hpp
     misc/misc.hpp
     )
-
 set(CLIENT_MISC_SOURCES
     misc/math.cpp
     misc/misc.cpp
@@ -144,6 +134,19 @@ set(CLIENT_RENDERERS_SOURCES
     renderers/ParticleSystem.cpp
     renderers/Sprite.cpp
     renderers/Virus.cpp
+    )
+
+set(CLIENT_SERVICES_HEADERS
+    services/Configuration.hpp
+    services/ConfigurationPath.hpp
+    services/Content.hpp
+    services/ContentKey.hpp
+    services/SoundPlayer.hpp
+    )
+set(CLIENT_SERVICES_SOURCES
+    services/Configuration.cpp
+    services/Content.cpp
+    services/SoundPlayer.cpp
     )
 
 set(CLIENT_SYSTEMS_HEADERS
@@ -243,6 +246,9 @@ source_group("Misc\\Source Files" FILES ${CLIENT_MISC_SOURCES})
 source_group("Renderers\\Header Files" FILES ${CLIENT_RENDERERS_HEADERS})
 source_group("Renderers\\Source Files" FILES ${CLIENT_RENDERERS_SOURCES})
 
+source_group("Services\\Header Files" FILES ${CLIENT_SERVICES_HEADERS})
+source_group("Services\\Source Files" FILES ${CLIENT_SERVICES_SOURCES})
+
 source_group("UI\\Framework\\Header Files" FILES ${CLIENT_UIFRAMEWORK_HEADERS})
 source_group("UI\\Framework\\Source Files" FILES ${CLIENT_UIFRAMEWORK_SOURCES})
 
@@ -267,6 +273,8 @@ set(CLIENT_CODE_FILES
     ${CLIENT_PARTICLE_EFFECTS_SOURCES}
     ${CLIENT_RENDERERS_HEADERS}
     ${CLIENT_RENDERERS_SOURCES}
+    ${CLIENT_SERVICES_HEADERS}
+    ${CLIENT_SERVICES_SOURCES}
     ${CLIENT_SYSTEMS_HEADERS}
     ${CLIENT_SYSTEMS_SOURCES}
     ${CLIENT_UIFRAMEWORK_HEADERS}

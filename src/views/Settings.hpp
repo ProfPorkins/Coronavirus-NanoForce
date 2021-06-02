@@ -22,9 +22,9 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "Configuration.hpp"
-#include "Content.hpp"
-#include "ContentKey.hpp"
+#include "services/Configuration.hpp"
+#include "services/Content.hpp"
+#include "services/ContentKey.hpp"
 #include "MenuView.hpp"
 #include "UIFramework/Element.hpp"
 #include "UIFramework/Text.hpp"

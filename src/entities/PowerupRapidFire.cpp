@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 #include "PowerupRapidFire.hpp"
 
-#include "Configuration.hpp"
+#include "services/Configuration.hpp"
 
 namespace entities
 {

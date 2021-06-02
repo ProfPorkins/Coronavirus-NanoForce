@@ -20,9 +20,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "Configuration.hpp"
+#include "services/Configuration.hpp"
 
-#include "ConfigurationPath.hpp"
+#include "services/ConfigurationPath.hpp"
 
 #include <chrono>
 #include <cstdint>

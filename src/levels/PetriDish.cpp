@@ -22,9 +22,9 @@ THE SOFTWARE.
 
 #include "PetriDish.hpp"
 
-#include "Configuration.hpp"
-#include "ConfigurationPath.hpp"
-#include "Content.hpp"
+#include "services/Configuration.hpp"
+#include "services/ConfigurationPath.hpp"
+#include "services/Content.hpp"
 #include "components/Momentum.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"

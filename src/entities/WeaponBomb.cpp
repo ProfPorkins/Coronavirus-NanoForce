@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 #include "WeaponBomb.hpp"
 
-#include "ContentKey.hpp"
+#include "services/ContentKey.hpp"
 #include "components/Momentum.hpp"
 #include "components/Orientation.hpp"
 #include "components/Position.hpp"

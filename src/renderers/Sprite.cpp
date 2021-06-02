@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 #include "Sprite.hpp"
 
-#include "Configuration.hpp"
+#include "services/Configuration.hpp"
 #include "components/Orientation.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"

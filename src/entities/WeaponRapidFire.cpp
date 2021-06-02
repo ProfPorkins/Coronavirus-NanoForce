@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 #include "WeaponRapidFire.hpp"
 
-#include "ContentKey.hpp"
+#include "services/ContentKey.hpp"
 #include "components/Damage.hpp"
 #include "components/Lifetime.hpp"
 #include "components/Momentum.hpp"

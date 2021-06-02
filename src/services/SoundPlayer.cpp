@@ -20,10 +20,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "SoundPlayer.hpp"
+#include "services/SoundPlayer.hpp"
 
-#include "Content.hpp"
-#include "ContentKey.hpp"
+#include "services/Content.hpp"
+#include "services/ContentKey.hpp"
 
 // --------------------------------------------------------------
 //

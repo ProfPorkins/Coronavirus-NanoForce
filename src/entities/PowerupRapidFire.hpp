@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "ConfigurationPath.hpp"
+#include "services/ConfigurationPath.hpp"
 #include "Powerup.hpp"
 #include "WeaponRapidFire.hpp"
 #include "misc/math.hpp"

@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 #include "Selection.hpp"
 
-#include "Content.hpp"
+#include "services/Content.hpp"
 
 #include <algorithm> // std::max
 

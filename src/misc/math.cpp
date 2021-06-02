@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 #include "math.hpp"
 
-#include "Configuration.hpp"
+#include "services/Configuration.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"
 

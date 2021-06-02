@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 #include "Text.hpp"
 
-#include "Configuration.hpp"
+#include "services/Configuration.hpp"
 
 namespace ui
 {

@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 #include "Movement.hpp"
 
-#include "Configuration.hpp"
+#include "services/Configuration.hpp"
 #include "components/Drag.hpp"
 #include "components/Momentum.hpp"
 #include "components/Orientation.hpp"

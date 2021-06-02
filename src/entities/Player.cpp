@@ -22,11 +22,11 @@ THE SOFTWARE.
 
 #include "Player.hpp"
 
-#include "Configuration.hpp"
-#include "ConfigurationPath.hpp"
-#include "Content.hpp"
-#include "ContentKey.hpp"
-#include "SoundPlayer.hpp"
+#include "services/Configuration.hpp"
+#include "services/ConfigurationPath.hpp"
+#include "services/Content.hpp"
+#include "services/ContentKey.hpp"
+#include "services/SoundPlayer.hpp"
 #include "components/Drag.hpp"
 #include "components/Momentum.hpp"
 #include "components/Orientation.hpp"

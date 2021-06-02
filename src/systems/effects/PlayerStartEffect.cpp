@@ -22,8 +22,8 @@ THE SOFTWARE.
 
 #include "PlayerStartEffect.hpp"
 
-#include "Content.hpp"
-#include "ContentKey.hpp"
+#include "services/Content.hpp"
+#include "services/ContentKey.hpp"
 #include "systems/Particle.hpp"
 
 #include <cmath>

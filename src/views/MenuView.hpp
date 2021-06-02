@@ -22,10 +22,10 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "Configuration.hpp"
-#include "ConfigurationPath.hpp"
-#include "Content.hpp"
-#include "ContentKey.hpp"
+#include "services/Configuration.hpp"
+#include "services/ConfigurationPath.hpp"
+#include "services/Content.hpp"
+#include "services/ContentKey.hpp"
 #include "UIFramework/Text.hpp"
 #include "View.hpp"
 

@@ -22,8 +22,8 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "Configuration.hpp"
-#include "Content.hpp"
+#include "services/Configuration.hpp"
+#include "services/Content.hpp"
 #include "MenuView.hpp"
 #include "UIFramework/Text.hpp"
 

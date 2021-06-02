@@ -20,11 +20,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "Configuration.hpp"
-#include "ConfigurationPath.hpp"
-#include "Content.hpp"
-#include "ContentKey.hpp"
-#include "SoundPlayer.hpp"
+#include "services/Configuration.hpp"
+#include "services/ConfigurationPath.hpp"
+#include "services/Content.hpp"
+#include "services/ContentKey.hpp"
+#include "services/SoundPlayer.hpp"
 #include "views/About.hpp"
 #include "views/Credits.hpp"
 #include "views/Gameplay.hpp"

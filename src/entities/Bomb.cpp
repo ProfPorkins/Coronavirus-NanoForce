@@ -22,10 +22,10 @@ THE SOFTWARE.
 
 #include "Bomb.hpp"
 
-#include "Configuration.hpp"
-#include "ConfigurationPath.hpp"
-#include "ContentKey.hpp"
-#include "SoundPlayer.hpp"
+#include "services/Configuration.hpp"
+#include "services/ConfigurationPath.hpp"
+#include "services/ContentKey.hpp"
+#include "services/SoundPlayer.hpp"
 #include "components/Damage.hpp"
 #include "components/Lifetime.hpp"
 #include "components/Momentum.hpp"

@@ -22,8 +22,8 @@ THE SOFTWARE.
 
 #include "Virus.hpp"
 
-#include "Configuration.hpp"
-#include "ConfigurationPath.hpp"
+#include "services/Configuration.hpp"
+#include "services/ConfigurationPath.hpp"
 #include "components//Age.hpp"
 #include "components/Birth.hpp"
 #include "components/Drag.hpp"

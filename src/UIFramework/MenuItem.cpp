@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 #include "MenuItem.hpp"
 
-#include "Content.hpp"
+#include "services/Content.hpp"
 
 namespace ui
 {
