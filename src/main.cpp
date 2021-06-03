@@ -328,12 +328,14 @@ int main()
                 {
                     auto viewCoords = window->mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y }, window->getView());
                     view->signalMousePressed(event.mouseButton.button, { viewCoords.x, viewCoords.y }, elapsedTime);
+                    MouseInput::instance().signalMousePressed(event.mouseButton.button, { viewCoords.x, viewCoords.y });
                 }
                 break;
                 case sf::Event::MouseButtonReleased:
                 {
                     auto viewCoords = window->mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y }, window->getView());
                     view->signalMouseReleased(event.mouseButton.button, { viewCoords.x, viewCoords.y }, elapsedTime);
+                    MouseInput::instance().signalMouseReleased(event.mouseButton.button, { viewCoords.x, viewCoords.y });
                 }
                 break;
                 default:

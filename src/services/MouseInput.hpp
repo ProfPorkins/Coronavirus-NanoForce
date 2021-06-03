@@ -22,11 +22,14 @@ THE SOFTWARE.
 
 #pragma once
 
+#include "misc/math.hpp"
+
 #include <SFML/Window/Event.hpp>
 #include <chrono>
 #include <functional>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 // --------------------------------------------------------------
 //
@@ -38,6 +41,8 @@ THE SOFTWARE.
 class MouseInput
 {
   public:
+    using ButtonHandler = std::function<void(sf::Mouse::Button, math::Point2f, const std::chrono::microseconds)>;
+
     MouseInput(const MouseInput&) = delete;
     MouseInput(MouseInput&&) = delete;
     MouseInput& operator=(const MouseInput&) = delete;
@@ -51,18 +56,40 @@ class MouseInput
 
     bool initialize();
 
-    std::uint32_t registerKeyPressedHandler(std::function<void(sf::Keyboard::Key)> handler);
-    std::uint32_t registerKeyReleasedHandler(std::function<void(sf::Keyboard::Key)> handler);
+    std::uint32_t registerMousePressedHandler(ButtonHandler handler);
+    std::uint32_t registerMouseReleasedHandler(ButtonHandler handler);
 
-    void unregisterKeyPressedHandler(std::uint32_t id);
-    void unregisterKeyReleasedHandler(std::uint32_t id);
+    void unregisterMousePressedHandler(std::uint32_t id);
+    void unregisterMouseReleasedHandler(std::uint32_t id);
 
+    void signalMouseMoved(math::Point2f point, std::chrono::microseconds elapsedTime);
+    void signalMousePressed(sf::Mouse::Button button, math::Point2f point);
+    void signalMouseReleased(sf::Mouse::Button button, math::Point2f point);
     void update(const std::chrono::microseconds elapsedTime);
 
   private:
     MouseInput() {}
 
+    struct ButtonInfo
+    {
+        ButtonInfo() = default;
+
+        ButtonInfo(sf::Mouse::Button button, math::Point2f point) :
+            button(button),
+            point(point)
+        {
+        }
+
+        sf::Mouse::Button button;
+        math::Point2f point;
+    };
+
     std::uint32_t nextId{ 0 };
+    std::vector<ButtonInfo> m_pressed;
+    std::vector<ButtonInfo> m_released;
+
+    std::unordered_map<std::uint32_t, ButtonHandler> m_handlersPressed;
+    std::unordered_map<std::uint32_t, ButtonHandler> m_handlersReleased;
 
     auto getNextId() { return nextId++; }
 };
