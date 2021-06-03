@@ -25,6 +25,7 @@ THE SOFTWARE.
 #include "services/Content.hpp"
 #include "services/ContentKey.hpp"
 #include "services/KeyboardInput.hpp"
+#include "services/MouseInput.hpp"
 #include "services/SoundPlayer.hpp"
 #include "views/About.hpp"
 #include "views/Credits.hpp"
@@ -244,8 +245,9 @@ int main()
     }
 
     //
-    // The KeyboardInput singleton needs to be specifically initialized
+    // The KeyboardInput & MouseInput singletons need to be specifically initialized
     KeyboardInput::instance().initialize();
+    MouseInput::instance().initialize();
 
     //
     // Create and activate the window for rendering on the main thread
@@ -345,6 +347,7 @@ int main()
 
         // 1: Process Input
         KeyboardInput::instance().update(elapsedTime);
+        MouseInput::instance().update(elapsedTime);
 
         // 2: Update
         auto nextViewState = view->update(elapsedTime, currentTime);
