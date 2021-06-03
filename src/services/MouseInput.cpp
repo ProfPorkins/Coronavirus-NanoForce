@@ -68,7 +68,7 @@ void MouseInput::unregisterMouseReleasedHandler(std::uint32_t id)
 
 void MouseInput::signalMouseMoved(math::Point2f point)
 {
-    m_moved.push_back({ point });
+    m_moved.push_back(point);
 }
 
 void MouseInput::signalMousePressed(sf::Mouse::Button button, math::Point2f point)
@@ -107,7 +107,7 @@ void MouseInput::update(const std::chrono::microseconds elapsedTime)
 
     //
     // Invoke all the mouse moved handlers
-    for (auto&& [point] : m_moved)
+    for (auto&& point : m_moved)
     {
         for (auto&& [id, handler] : m_handlersMoved)
         {

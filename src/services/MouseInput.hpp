@@ -87,20 +87,8 @@ class MouseInput
         math::Point2f point;
     };
 
-    struct MoveInfo
-    {
-        MoveInfo() = default;
-
-        MoveInfo(math::Point2f point) :
-            point(point)
-        {
-        }
-
-        math::Point2f point;
-    };
-
     std::uint32_t nextId{ 0 };
-    std::vector<MoveInfo> m_moved;
+    std::vector<math::Point2f> m_moved;
     std::vector<ButtonInfo> m_pressed;
     std::vector<ButtonInfo> m_released;
 
