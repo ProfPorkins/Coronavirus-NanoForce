@@ -322,6 +322,7 @@ int main()
                 {
                     auto viewCoords = window->mapPixelToCoords({ event.mouseMove.x, event.mouseMove.y }, window->getView());
                     view->signalMouseMoved({ viewCoords.x, viewCoords.y }, elapsedTime);
+                    MouseInput::instance().signalMouseMoved({ viewCoords.x, viewCoords.y });
                 }
                 break;
                 case sf::Event::MouseButtonPressed:

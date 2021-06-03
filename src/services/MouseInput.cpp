@@ -27,6 +27,14 @@ bool MouseInput::initialize()
     return true;
 }
 
+std::uint32_t MouseInput::registerMouseMovedHandler(MoveHandler handler)
+{
+    auto id = getNextId();
+    m_handlersMoved[id] = handler;
+
+    return id;
+}
+
 std::uint32_t MouseInput::registerMousePressedHandler(ButtonHandler handler)
 {
     auto id = getNextId();
@@ -43,6 +51,11 @@ std::uint32_t MouseInput::registerMouseReleasedHandler(ButtonHandler handler)
     return id;
 }
 
+void MouseInput::unregisterMouseMovedHandler(std::uint32_t id)
+{
+    m_handlersMoved.erase(id);
+}
+
 void MouseInput::unregisterMousePressedHandler(std::uint32_t id)
 {
     m_handlersPressed.erase(id);
@@ -51,6 +64,11 @@ void MouseInput::unregisterMousePressedHandler(std::uint32_t id)
 void MouseInput::unregisterMouseReleasedHandler(std::uint32_t id)
 {
     m_handlersReleased.erase(id);
+}
+
+void MouseInput::signalMouseMoved(math::Point2f point)
+{
+    m_moved.push_back({ point });
 }
 
 void MouseInput::signalMousePressed(sf::Mouse::Button button, math::Point2f point)
@@ -86,4 +104,15 @@ void MouseInput::update(const std::chrono::microseconds elapsedTime)
         }
     }
     m_released.clear();
+
+    //
+    // Invoke all the mouse moved handlers
+    for (auto&& [point] : m_moved)
+    {
+        for (auto&& [id, handler] : m_handlersMoved)
+        {
+            handler(point, elapsedTime);
+        }
+    }
+    m_moved.clear();
 }

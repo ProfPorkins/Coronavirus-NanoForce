@@ -42,6 +42,7 @@ class MouseInput
 {
   public:
     using ButtonHandler = std::function<void(sf::Mouse::Button, math::Point2f, const std::chrono::microseconds)>;
+    using MoveHandler = std::function<void(math::Point2f, const std::chrono::microseconds)>;
 
     MouseInput(const MouseInput&) = delete;
     MouseInput(MouseInput&&) = delete;
@@ -56,13 +57,15 @@ class MouseInput
 
     bool initialize();
 
+    std::uint32_t registerMouseMovedHandler(MoveHandler handler);
     std::uint32_t registerMousePressedHandler(ButtonHandler handler);
     std::uint32_t registerMouseReleasedHandler(ButtonHandler handler);
 
+    void unregisterMouseMovedHandler(std::uint32_t id);
     void unregisterMousePressedHandler(std::uint32_t id);
     void unregisterMouseReleasedHandler(std::uint32_t id);
 
-    void signalMouseMoved(math::Point2f point, std::chrono::microseconds elapsedTime);
+    void signalMouseMoved(math::Point2f point);
     void signalMousePressed(sf::Mouse::Button button, math::Point2f point);
     void signalMouseReleased(sf::Mouse::Button button, math::Point2f point);
     void update(const std::chrono::microseconds elapsedTime);
@@ -84,10 +87,24 @@ class MouseInput
         math::Point2f point;
     };
 
+    struct MoveInfo
+    {
+        MoveInfo() = default;
+
+        MoveInfo(math::Point2f point) :
+            point(point)
+        {
+        }
+
+        math::Point2f point;
+    };
+
     std::uint32_t nextId{ 0 };
+    std::vector<MoveInfo> m_moved;
     std::vector<ButtonInfo> m_pressed;
     std::vector<ButtonInfo> m_released;
 
+    std::unordered_map<std::uint32_t, MoveHandler> m_handlersMoved;
     std::unordered_map<std::uint32_t, ButtonHandler> m_handlersPressed;
     std::unordered_map<std::uint32_t, ButtonHandler> m_handlersReleased;
 
