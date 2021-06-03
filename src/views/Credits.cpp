@@ -76,7 +76,7 @@ namespace views
             item->setPosition({ -item->getRegion().width / 2.0f, item->getRegion().top });
         }
 
-        KeyboardInput::instance().registerKeyPressedHandler("escape", [this]() { m_nextState = ViewState::MainMenu; });
+        KeyboardInput::instance().registerKeyReleasedHandler("escape", [this]() { m_nextState = ViewState::MainMenu; });
 
         return true;
     }

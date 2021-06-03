@@ -43,8 +43,8 @@ namespace views
       public:
         using MenuView::MenuView;
         virtual bool start() override;
+        virtual void stop() override;
 
-        virtual void signalKeyPressed(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
         virtual void signalMouseMoved(math::Point2f point, const std::chrono::microseconds elapsedTime) override;
         virtual void signalMouseReleased(sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime) override;
 

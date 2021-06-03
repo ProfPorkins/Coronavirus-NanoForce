@@ -42,13 +42,12 @@ namespace views
       public:
         using MenuView::MenuView;
         virtual bool start() override;
-        virtual void stop() override { KeyboardInput::instance().unregisterKeyPressedHandler("escape"); }
+        virtual void stop() override { KeyboardInput::instance().unregisterKeyReleasedHandler("escape"); }
 
         virtual ViewState update(const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
         virtual void render(sf::RenderTarget& renderTarget, const std::chrono::microseconds elapsedTime) override;
 
       private:
-        bool m_initialized{ false };
         ViewState m_nextState{ ViewState::About };
 
         std::vector<std::shared_ptr<ui::Text>> m_items;

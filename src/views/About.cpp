@@ -29,11 +29,7 @@ namespace views
     bool About::start()
     {
         MenuView::start();
-        // Need to ensure the next state stays the About view before checking to see if
-        // the view is already initialized.
         m_nextState = ViewState::About;
-        if (m_initialized)
-            return true;
 
         //
         // Wipe everything out and reset the story every time
@@ -71,7 +67,7 @@ namespace views
             item->setPosition({ -item->getRegion().width / 2.0f, item->getRegion().top });
         }
 
-        KeyboardInput::instance().registerKeyPressedHandler("escape", [this]() { m_nextState = ViewState::MainMenu; });
+        KeyboardInput::instance().registerKeyReleasedHandler("escape", [this]() { m_nextState = ViewState::MainMenu; });
 
         return true;
     }

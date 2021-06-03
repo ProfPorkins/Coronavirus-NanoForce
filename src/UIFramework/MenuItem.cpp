@@ -23,6 +23,7 @@ THE SOFTWARE.
 #include "MenuItem.hpp"
 
 #include "services/Content.hpp"
+#include "services/KeyboardInput.hpp"
 
 namespace ui
 {
@@ -43,16 +44,17 @@ namespace ui
     {
     }
 
-    void MenuItem::signalKeyPressed(sf::Event::KeyEvent event, [[maybe_unused]] std::chrono::microseconds elapsedTime)
+    void MenuItem::start()
     {
-        switch (event.code)
-        {
-            case sf::Keyboard::Enter:
+        m_handlerId = KeyboardInput::instance().registerKeyReleasedHandler([this](sf::Keyboard::Key key) {
+            if (this->isActive() && key == sf::Keyboard::Enter) {
                 this->select();
-                break;
-            default: // Needed to eliminate unused enumeration compiler warning
-                break;
-        }
+            } });
+    }
+
+    void MenuItem::stop()
+    {
+        KeyboardInput::instance().unregisterKeyReleasedHandler(m_handlerId);
     }
 
     void MenuItem::signalMouseReleased([[maybe_unused]] sf::Mouse::Button button, math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime)

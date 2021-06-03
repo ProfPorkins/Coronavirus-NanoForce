@@ -57,9 +57,9 @@ namespace ui
                     m_inactiveLabel.getRegion().height * 1.5f * 2.0f });
     }
 
-    void KeyboardOption::signalKeyPressed(sf::Event::KeyEvent event, [[maybe_unused]] std::chrono::microseconds elapsedTime)
+    void KeyboardOption::onKeyPressed(sf::Keyboard::Key key)
     {
-        if (!m_expectingInput && event.code == sf::Keyboard::Enter)
+        if (!m_expectingInput && key == sf::Keyboard::Enter)
         {
             m_onStart();
             m_expectingInput = true;
@@ -67,15 +67,15 @@ namespace ui
         if (!m_expectingInput)
             return;
 
-        if (event.code >= sf::Keyboard::A && event.code <= sf::Keyboard::Z)
+        if (key >= sf::Keyboard::A && key <= sf::Keyboard::Z)
         {
             // This is a simple conversion from the SFML code to an ASCI character.
             // This isn't internationalizable, but guess I'll cross that road when it comes
-            char key = static_cast<char>('a' + event.code - sf::Keyboard::A);
-            acceptInput(std::string(1, key));
+            char keyValue = static_cast<char>('a' + key - sf::Keyboard::A);
+            acceptInput(std::string(1, keyValue));
         }
 
-        switch (event.code)
+        switch (key)
         {
             case sf::Keyboard::Escape:
                 m_onComplete("esc");

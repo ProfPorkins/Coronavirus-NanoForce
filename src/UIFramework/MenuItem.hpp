@@ -47,7 +47,9 @@ namespace ui
         MenuItem(float left, float top, const std::string text, std::shared_ptr<sf::Font> font, sf::Color color, sf::Color activeColor, unsigned int fontSize, std::function<void()> handler);
         MenuItem(const std::string text, std::shared_ptr<sf::Font> font, sf::Color color, sf::Color activeColor, unsigned int fontSize, std::function<void()> handler);
 
-        virtual void signalKeyPressed(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime) override;
+        virtual void start() override;
+        virtual void stop() override;
+
         virtual void signalMouseReleased(sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime) override;
 
         virtual void render(sf::RenderTarget& renderTarget) override;
@@ -63,5 +65,6 @@ namespace ui
         Text m_activeLabel;
         Text* m_displayLabel;
         std::function<void()> m_handler;
+        std::uint32_t m_handlerId{ 0 };
     };
 } // namespace ui

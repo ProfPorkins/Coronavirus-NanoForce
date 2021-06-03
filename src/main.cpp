@@ -308,13 +308,11 @@ int main()
             {
                 case sf::Event::KeyPressed:
                 {
-                    view->signalKeyPressed(event.key, elapsedTime, currentTime);
                     KeyboardInput::instance().signalKeyPressed(event.key, elapsedTime, currentTime);
                 }
                 break;
                 case sf::Event::KeyReleased:
                 {
-                    view->signalKeyReleased(event.key, elapsedTime, currentTime);
                     KeyboardInput::instance().signalKeyReleased(event.key, elapsedTime, currentTime);
                 }
                 break;
@@ -343,9 +341,15 @@ int main()
         }
 
         //
-        // Execute the remaining game loop steps
+        // Execute the standard game loop steps
+
+        // 1: Process Input
         KeyboardInput::instance().update(elapsedTime);
+
+        // 2: Update
         auto nextViewState = view->update(elapsedTime, currentTime);
+
+        // 3: Render
         view->render(*window, elapsedTime);
 
         //
@@ -354,7 +358,7 @@ int main()
         window->display();
 
         //
-        // Constantly check to see if the view state should change.
+        // Constantly check to see if the view should change.
         if (nextViewState != viewState)
         {
             if (nextViewState == views::ViewState::Exit)

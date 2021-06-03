@@ -47,7 +47,10 @@ namespace ui
         }
         virtual ~Element() {}
 
-        virtual void signalKeyPressed([[maybe_unused]] sf::Event::KeyEvent event, [[maybe_unused]] std::chrono::microseconds elapsedTime){};
+        virtual void start() {}
+        virtual void stop() {}
+
+        virtual void onKeyPressed([[maybe_unused]] sf::Keyboard::Key key){};
         virtual void signalMouseMoved([[maybe_unused]] math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime){};
         virtual void signalMouseReleased([[maybe_unused]] sf::Mouse::Button button, [[maybe_unused]] math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime){};
 

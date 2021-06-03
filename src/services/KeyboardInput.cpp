@@ -39,9 +39,25 @@ void KeyboardInput::registerHandler(std::string key, std::function<void(std::chr
     m_handlers[m_stringToKey[key]] = { false, std::chrono::microseconds(0), handler };
 }
 
+std::uint32_t KeyboardInput::registerKeyPressedHandler(std::function<void(sf::Keyboard::Key)> handler)
+{
+    auto id = getNextId();
+    m_handlersAnyPressed[id] = handler;
+
+    return id;
+}
+
 void KeyboardInput::registerKeyPressedHandler(std::string key, std::function<void()> handler)
 {
     m_handlersPressed[m_stringToKey[key]] = handler;
+}
+
+std::uint32_t KeyboardInput::registerKeyReleasedHandler(std::function<void(sf::Keyboard::Key)> handler)
+{
+    auto id = getNextId();
+    m_handlersAnyReleased[id] = handler;
+
+    return id;
 }
 
 void KeyboardInput::registerKeyReleasedHandler(std::string key, std::function<void()> handler)
@@ -54,9 +70,19 @@ void KeyboardInput::unregisterHandler(std::string key)
     m_handlers.erase(m_stringToKey[key]);
 }
 
+void KeyboardInput::unregisterKeyPressedHandler(std::uint32_t id)
+{
+    m_handlersAnyPressed.erase(id);
+}
+
 void KeyboardInput::unregisterKeyPressedHandler(std::string key)
 {
     m_handlersPressed.erase(m_stringToKey[key]);
+}
+
+void KeyboardInput::unregisterKeyReleasedHandler(std::uint32_t id)
+{
+    m_handlersAnyReleased.erase(id);
 }
 
 void KeyboardInput::unregisterKeyReleasedHandler(std::string key)
@@ -120,6 +146,14 @@ void KeyboardInput::update(const std::chrono::microseconds elapsedTime)
                 m_keyRepeat[key] = true;
             }
         }
+
+        //
+        // "any key pressed" handlers
+        for (auto&& handler : m_handlersAnyPressed)
+        {
+            handler.second.handler(key);
+        }
+
         //
         // "keypressed" handlers
         auto itrPressed = m_handlersPressed.find(key);
@@ -137,6 +171,13 @@ void KeyboardInput::update(const std::chrono::microseconds elapsedTime)
     // Key released handlers
     for (auto&& [key, event] : m_keysReleased)
     {
+        //
+        // "any key released" handlers
+        for (auto&& handler : m_handlersAnyReleased)
+        {
+            handler.second(key);
+        }
+
         auto itrReleased = m_handlersReleased.find(key);
         if (itrReleased != m_handlersReleased.end())
         {

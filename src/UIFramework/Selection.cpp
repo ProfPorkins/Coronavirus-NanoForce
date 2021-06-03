@@ -50,9 +50,9 @@ namespace ui
         });
     }
 
-    void Selection::signalKeyPressed(sf::Event::KeyEvent event, [[maybe_unused]] std::chrono::microseconds elapsedTime)
+    void Selection::onKeyPressed(sf::Keyboard::Key key)
     {
-        switch (event.code)
+        switch (key)
         {
             case sf::Keyboard::Left:
                 selectLeft();

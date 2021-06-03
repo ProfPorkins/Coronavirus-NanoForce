@@ -30,178 +30,181 @@ namespace views
     bool LevelSelect::start()
     {
         MenuView::start();
-        // Need to ensure the next state stays LevelSelect before checking to see if
-        // the view is already initialized.
         m_nextState = ViewState::LevelSelect;
 
-        KeyboardInput::instance().registerKeyPressedHandler("escape", [this]() { m_nextState = ViewState::MainMenu; });
-        KeyboardInput::instance().registerKeyPressedHandler("down",
-                                                            [this]() {
-                                                                m_menuItems[m_activeMenuItem]->setInactive();
-                                                                m_activeMenuItem = (static_cast<std::size_t>(m_activeMenuItem) + 1) % m_menuItems.size();
-                                                                m_menuItems[m_activeMenuItem]->setActive();
-                                                            });
-        KeyboardInput::instance().registerKeyPressedHandler("up",
-                                                            [this]() {
-                                                                m_menuItems[m_activeMenuItem]->setInactive();
-                                                                m_activeMenuItem--;
-                                                                if (m_activeMenuItem < 0)
-                                                                {
+        if (!m_initialized)
+        {
+            using namespace std::string_literals;
 
-                                                                    m_activeMenuItem = static_cast<std::int8_t>(m_menuItems.size() - 1);
-                                                                }
-                                                                m_menuItems[m_activeMenuItem]->setActive();
-                                                            });
-        KeyboardInput::instance().registerKeyPressedHandler("enter",
-                                                            [this]() {
-                                                                m_menuItems[m_activeMenuItem]->select();
-                                                            });
+            //
+            // Creating a text item of the whole alphabet so we can always find the
+            // tallest character in the font and use that for the height to separate menu items.
+            sf::Text alphabetTitle("ABCDEFGHIHKLMNOPQRTSUVWXYZ", *Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT), Configuration::get<std::uint8_t>(config::FONT_LEVEL_SELECT_TITLE_SIZE));
+            alphabetTitle.scale(Configuration::getGraphics().getScaleUI());
+            sf::Text alphabetItem("ABCDEFGHIHKLMNOPQRTSUVWXYZ", *Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT), Configuration::get<std::uint8_t>(config::FONT_LEVEL_SELECT_ITEM_SIZE));
+            alphabetItem.scale(Configuration::getGraphics().getScaleUI());
 
-        if (m_initialized)
-            return true;
+            auto coords = Configuration::getGraphics().getViewCoordinates();
+            auto top = -(coords.height / 2.0f) + (coords.height / 2.0f) * 0.35f;
+            m_titleTraining.setPosition({ -(m_titleTraining.getRegion().width / 2.0f), top });
+            top += alphabetTitle.getGlobalBounds().height * 1.5f;
 
-        using namespace std::string_literals;
+            //
+            // Prepare the level items
+            // TODO: It would be nice to dynamically build these from the configuration, but I'm a little too lazy
+            //       to do that for now.
+            auto trainLevel1 = std::make_shared<ui::MenuItem>(
+                0.0f, top,
+                Configuration::get<std::string>(config::TRAINING_LEVEL1_NAME),
+                Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
+                sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
+                [this]() {
+                    GameModel::selectLevel(levels::LevelName::Training1);
+                    m_nextState = ViewState::GamePlay;
+                });
+            m_menuItems.push_back(trainLevel1);
+            top += alphabetItem.getGlobalBounds().height * 1.5f;
 
-        //
-        // Creating a text item of the whole alphabet so we can always find the
-        // tallest character in the font and use that for the height to separate menu items.
-        sf::Text alphabetTitle("ABCDEFGHIHKLMNOPQRTSUVWXYZ", *Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT), Configuration::get<std::uint8_t>(config::FONT_LEVEL_SELECT_TITLE_SIZE));
-        alphabetTitle.scale(Configuration::getGraphics().getScaleUI());
-        sf::Text alphabetItem("ABCDEFGHIHKLMNOPQRTSUVWXYZ", *Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT), Configuration::get<std::uint8_t>(config::FONT_LEVEL_SELECT_ITEM_SIZE));
-        alphabetItem.scale(Configuration::getGraphics().getScaleUI());
+            auto trainLevel2 = std::make_shared<ui::MenuItem>(
+                0.0f, top,
+                Configuration::get<std::string>(config::TRAINING_LEVEL2_NAME),
+                Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
+                sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
+                [this]() {
+                    GameModel::selectLevel(levels::LevelName::Training2);
+                    m_nextState = ViewState::GamePlay;
+                });
+            m_menuItems.push_back(trainLevel2);
+            top += alphabetItem.getGlobalBounds().height * 1.5f;
 
-        auto coords = Configuration::getGraphics().getViewCoordinates();
-        auto top = -(coords.height / 2.0f) + (coords.height / 2.0f) * 0.35f;
-        m_titleTraining.setPosition({ -(m_titleTraining.getRegion().width / 2.0f), top });
-        top += alphabetTitle.getGlobalBounds().height * 1.5f;
+            auto trainLevel3 = std::make_shared<ui::MenuItem>(
+                0.0f, top,
+                Configuration::get<std::string>(config::TRAINING_LEVEL3_NAME),
+                Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
+                sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
+                [this]() {
+                    GameModel::selectLevel(levels::LevelName::Training3);
+                    m_nextState = ViewState::GamePlay;
+                });
+            m_menuItems.push_back(trainLevel3);
+            top += alphabetItem.getGlobalBounds().height * 1.5f;
 
-        //
-        // Prepare the level items
-        // TODO: It would be nice to dynamically build these from the configuration, but I'm a little too lazy
-        //       to do that for now.
-        auto trainLevel1 = std::make_shared<ui::MenuItem>(
-            0.0f, top,
-            Configuration::get<std::string>(config::TRAINING_LEVEL1_NAME),
-            Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
-            sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-            [this]() {
-                GameModel::selectLevel(levels::LevelName::Training1);
-                m_nextState = ViewState::GamePlay;
-            });
-        m_menuItems.push_back(trainLevel1);
-        top += alphabetItem.getGlobalBounds().height * 1.5f;
-
-        auto trainLevel2 = std::make_shared<ui::MenuItem>(
-            0.0f, top,
-            Configuration::get<std::string>(config::TRAINING_LEVEL2_NAME),
-            Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
-            sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-            [this]() {
-                GameModel::selectLevel(levels::LevelName::Training2);
-                m_nextState = ViewState::GamePlay;
-            });
-        m_menuItems.push_back(trainLevel2);
-        top += alphabetItem.getGlobalBounds().height * 1.5f;
-
-        auto trainLevel3 = std::make_shared<ui::MenuItem>(
-            0.0f, top,
-            Configuration::get<std::string>(config::TRAINING_LEVEL3_NAME),
-            Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
-            sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-            [this]() {
-                GameModel::selectLevel(levels::LevelName::Training3);
-                m_nextState = ViewState::GamePlay;
-            });
-        m_menuItems.push_back(trainLevel3);
-        top += alphabetItem.getGlobalBounds().height * 1.5f;
-
-        auto trainLevel4 = std::make_shared<ui::MenuItem>(
-            0.0f, top,
-            Configuration::get<std::string>(config::TRAINING_LEVEL4_NAME),
-            Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
-            sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-            [this]() { 
+            auto trainLevel4 = std::make_shared<ui::MenuItem>(
+                0.0f, top,
+                Configuration::get<std::string>(config::TRAINING_LEVEL4_NAME),
+                Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
+                sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
+                [this]() { 
                 GameModel::selectLevel(levels::LevelName::Training4);
                 m_nextState = ViewState::GamePlay; });
-        m_menuItems.push_back(trainLevel4);
-        top += alphabetItem.getGlobalBounds().height * 1.5f;
+            m_menuItems.push_back(trainLevel4);
+            top += alphabetItem.getGlobalBounds().height * 1.5f;
 
-        auto trainLevel5 = std::make_shared<ui::MenuItem>(
-            0.0f, top,
-            Configuration::get<std::string>(config::TRAINING_LEVEL5_NAME),
-            Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
-            sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-            [this]() {
-                GameModel::selectLevel(levels::LevelName::Training5);
-                m_nextState = ViewState::GamePlay;
-            });
-        m_menuItems.push_back(trainLevel5);
-        top += alphabetItem.getGlobalBounds().height * 2.0f;
+            auto trainLevel5 = std::make_shared<ui::MenuItem>(
+                0.0f, top,
+                Configuration::get<std::string>(config::TRAINING_LEVEL5_NAME),
+                Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
+                sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
+                [this]() {
+                    GameModel::selectLevel(levels::LevelName::Training5);
+                    m_nextState = ViewState::GamePlay;
+                });
+            m_menuItems.push_back(trainLevel5);
+            top += alphabetItem.getGlobalBounds().height * 2.0f;
 
-        m_titlePatient.setPosition({ -(m_titlePatient.getRegion().width / 2.0f), top });
-        top += alphabetTitle.getGlobalBounds().height * 1.5f;
+            m_titlePatient.setPosition({ -(m_titlePatient.getRegion().width / 2.0f), top });
+            top += alphabetTitle.getGlobalBounds().height * 1.5f;
 
-        auto patientLevel1 = std::make_shared<ui::MenuItem>(
-            0.0f, top,
-            Configuration::get<std::string>(config::PATIENT_LEVEL1_NAME),
-            Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
-            sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-            [this]() {
-                GameModel::selectLevel(levels::LevelName::Patient1);
-                m_nextState = ViewState::GamePlay;
-            });
-        m_menuItems.push_back(patientLevel1);
-        top += alphabetItem.getGlobalBounds().height * 1.5f;
+            auto patientLevel1 = std::make_shared<ui::MenuItem>(
+                0.0f, top,
+                Configuration::get<std::string>(config::PATIENT_LEVEL1_NAME),
+                Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
+                sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
+                [this]() {
+                    GameModel::selectLevel(levels::LevelName::Patient1);
+                    m_nextState = ViewState::GamePlay;
+                });
+            m_menuItems.push_back(patientLevel1);
+            top += alphabetItem.getGlobalBounds().height * 1.5f;
 
-        auto patientLevel2 = std::make_shared<ui::MenuItem>(
-            0.0f, top,
-            Configuration::get<std::string>(config::PATIENT_LEVEL2_NAME),
-            Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
-            sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-            [this]() {
-                GameModel::selectLevel(levels::LevelName::Patient2);
-                m_nextState = ViewState::GamePlay;
-            });
-        m_menuItems.push_back(patientLevel2);
-        top += alphabetItem.getGlobalBounds().height * 1.5f;
+            auto patientLevel2 = std::make_shared<ui::MenuItem>(
+                0.0f, top,
+                Configuration::get<std::string>(config::PATIENT_LEVEL2_NAME),
+                Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
+                sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
+                [this]() {
+                    GameModel::selectLevel(levels::LevelName::Patient2);
+                    m_nextState = ViewState::GamePlay;
+                });
+            m_menuItems.push_back(patientLevel2);
+            top += alphabetItem.getGlobalBounds().height * 1.5f;
 
-        auto patientLevel3 = std::make_shared<ui::MenuItem>(
-            0.0f, top,
-            Configuration::get<std::string>(config::PATIENT_LEVEL3_NAME),
-            Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
-            sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-            [this]() {
-                GameModel::selectLevel(levels::LevelName::Patient3);
-                m_nextState = ViewState::GamePlay;
-            });
-        m_menuItems.push_back(patientLevel3);
+            auto patientLevel3 = std::make_shared<ui::MenuItem>(
+                0.0f, top,
+                Configuration::get<std::string>(config::PATIENT_LEVEL3_NAME),
+                Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
+                sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
+                [this]() {
+                    GameModel::selectLevel(levels::LevelName::Patient3);
+                    m_nextState = ViewState::GamePlay;
+                });
+            m_menuItems.push_back(patientLevel3);
 
-        //
-        // Go through the items and center everything horizontally
-        for (auto&& item : m_menuItems)
-        {
-            item->setRegion({ -item->getRegion().width / 2.0f,
-                              item->getRegion().top,
-                              item->getRegion().width,
-                              alphabetItem.getGlobalBounds().height * 1.25f }); // TODO: This 1.25f should not be necessary!!
+            //
+            // Go through the items and center everything horizontally
+            for (auto&& item : m_menuItems)
+            {
+                item->setRegion({ -item->getRegion().width / 2.0f,
+                                  item->getRegion().top,
+                                  item->getRegion().width,
+                                  alphabetItem.getGlobalBounds().height * 1.25f }); // TODO: This 1.25f should not be necessary!!
+            }
+
+            //
+            // Select the first menu choice by default
+            m_activeMenuItem = 0;
+            m_menuItems[m_activeMenuItem]->setActive();
+
+            m_initialized = true;
         }
 
         //
-        // Select the first menu choice by default
-        m_activeMenuItem = 0;
-        m_menuItems[m_activeMenuItem]->setActive();
+        // Get the keyboard inputs registered
+        KeyboardInput::instance().registerKeyReleasedHandler("escape", [this]() { m_nextState = ViewState::MainMenu; });
+        KeyboardInput::instance().registerKeyReleasedHandler("down", [this]() {
+            m_menuItems[m_activeMenuItem]->setInactive();
+            m_activeMenuItem = (static_cast<std::size_t>(m_activeMenuItem) + 1) % m_menuItems.size();
+            m_menuItems[m_activeMenuItem]->setActive();
+        });
+        KeyboardInput::instance().registerKeyReleasedHandler("up", [this]() {
+            m_menuItems[m_activeMenuItem]->setInactive();
+            m_activeMenuItem--;
+            if (m_activeMenuItem < 0)
+            {
 
-        m_initialized = true;
+                m_activeMenuItem = static_cast<std::int8_t>(m_menuItems.size() - 1);
+            }
+            m_menuItems[m_activeMenuItem]->setActive();
+        });
+
+        for (auto&& menuItem : m_menuItems)
+        {
+            menuItem->start();
+        }
 
         return true;
     }
 
     void LevelSelect::stop()
     {
-        KeyboardInput::instance().unregisterKeyPressedHandler("escape");
-        KeyboardInput::instance().unregisterKeyPressedHandler("up");
-        KeyboardInput::instance().unregisterKeyPressedHandler("down");
-        KeyboardInput::instance().unregisterKeyPressedHandler("enter");
+        KeyboardInput::instance().unregisterKeyReleasedHandler("escape");
+        KeyboardInput::instance().unregisterKeyReleasedHandler("up");
+        KeyboardInput::instance().unregisterKeyReleasedHandler("down");
+
+        for (auto&& menuItem : m_menuItems)
+        {
+            menuItem->stop();
+        }
     }
 
     void LevelSelect::signalMouseMoved(math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime)

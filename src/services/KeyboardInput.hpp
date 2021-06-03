@@ -53,10 +53,15 @@ class KeyboardInput
 
     void registerHandler(std::string key, bool repeat, std::chrono::microseconds rate, std::function<void(std::chrono::microseconds)> handler);
     void registerHandler(std::string key, std::function<void(std::chrono::microseconds)> handler);
+    std::uint32_t registerKeyPressedHandler(std::function<void(sf::Keyboard::Key)> handler);
     void registerKeyPressedHandler(std::string key, std::function<void()> handler);
+    std::uint32_t registerKeyReleasedHandler(std::function<void(sf::Keyboard::Key)> handler);
     void registerKeyReleasedHandler(std::string key, std::function<void()> handler);
+
     void unregisterHandler(std::string key);
+    void unregisterKeyPressedHandler(std::uint32_t id);
     void unregisterKeyPressedHandler(std::string key);
+    void unregisterKeyReleasedHandler(std::uint32_t id);
     void unregisterKeyReleasedHandler(std::string key);
     void unregisterAll();
 
@@ -97,13 +102,31 @@ class KeyboardInput
         std::function<void()> handler{ nullptr };
     };
 
+    struct AnyKeyPressedInfo
+    {
+        AnyKeyPressedInfo() = default;
+
+        AnyKeyPressedInfo(std::function<void(sf::Keyboard::Key)> handler) :
+            handler(handler)
+        {
+        }
+
+        bool signaled{ false };
+        std::function<void(sf::Keyboard::Key)> handler{ nullptr };
+    };
+
+    std::uint32_t nextId{ 0 };
+
     std::unordered_map<std::string, sf::Keyboard::Key> m_stringToKey;
     std::unordered_map<sf::Keyboard::Key, sf::Event::KeyEvent> m_keysPressed;
     std::unordered_map<sf::Keyboard::Key, sf::Event::KeyEvent> m_keysReleased;
     std::unordered_map<sf::Keyboard::Key, bool> m_keyRepeat;
     std::unordered_map<sf::Keyboard::Key, InputInfo> m_handlers;
     std::unordered_map<sf::Keyboard::Key, KeyPressedInfo> m_handlersPressed;
+    std::unordered_map<std::uint32_t, AnyKeyPressedInfo> m_handlersAnyPressed;
     std::unordered_map<sf::Keyboard::Key, std::function<void()>> m_handlersReleased;
+    std::unordered_map<std::uint32_t, std::function<void(sf::Keyboard::Key)>> m_handlersAnyReleased;
 
     void initializeStringToKeyMapping();
+    auto getNextId() { return nextId++; }
 };

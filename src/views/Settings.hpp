@@ -45,8 +45,8 @@ namespace views
       public:
         using MenuView::MenuView;
         virtual bool start() override;
+        virtual void stop() override;
 
-        virtual void signalKeyPressed(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
         virtual void signalMouseMoved(math::Point2f point, const std::chrono::microseconds elapsedTime) override;
         virtual void signalMouseReleased(sf::Mouse::Button button, math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime) override;
 
@@ -63,7 +63,9 @@ namespace views
 
         std::vector<std::shared_ptr<ui::Element>> m_options; // both ui::Selection and ui::KeyboardOption
         std::int8_t m_activeOption;
+        std::uint32_t m_handlerId{ 0 };
 
+        void onKeyPressed(sf::Keyboard::Key key);
         void addFullScreenOption();
         void addResolutionOption();
         void addMusicOption();

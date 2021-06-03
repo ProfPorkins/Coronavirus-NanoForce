@@ -26,41 +26,41 @@ namespace views
 {
     bool MenuView::start()
     {
-        if (m_initialized)
-            return true;
-
-        using namespace std::string_literals;
-
-        //
-        // Prepare the background image for rendering
-        // Note: Only reason for testing if it is there is so that during
-        //       development the time to load the image doesn't have to be taken.
-        if (Content::has<sf::Texture>(content::KEY_IMAGE_MENU_BACKGROUND))
+        if (!m_initialized)
         {
-            auto texture = Content::get<sf::Texture>(content::KEY_IMAGE_MENU_BACKGROUND);
-            m_background.setTexture(*texture);
-            m_background.setOrigin({ texture->getSize().x / 2.0f, texture->getSize().y / 2.0f });
-            m_background.setPosition({ 0.0f, 0.0f });
-            auto aspectRatio = static_cast<float>(Configuration::getGraphics().getResolution().width) / Configuration::getGraphics().getResolution().height;
-            if (aspectRatio >= 1.0)
+            using namespace std::string_literals;
+
+            //
+            // Prepare the background image for rendering
+            // Note: Only reason for testing if it is there is so that during
+            //       development the time to load the image doesn't have to be taken.
+            if (Content::has<sf::Texture>(content::KEY_IMAGE_MENU_BACKGROUND))
             {
-                m_background.setScale({ Configuration::getGraphics().getViewCoordinates().width / texture->getSize().x,
-                                        Configuration::getGraphics().getViewCoordinates().width / texture->getSize().y });
+                auto texture = Content::get<sf::Texture>(content::KEY_IMAGE_MENU_BACKGROUND);
+                m_background.setTexture(*texture);
+                m_background.setOrigin({ texture->getSize().x / 2.0f, texture->getSize().y / 2.0f });
+                m_background.setPosition({ 0.0f, 0.0f });
+                auto aspectRatio = static_cast<float>(Configuration::getGraphics().getResolution().width) / Configuration::getGraphics().getResolution().height;
+                if (aspectRatio >= 1.0)
+                {
+                    m_background.setScale({ Configuration::getGraphics().getViewCoordinates().width / texture->getSize().x,
+                                            Configuration::getGraphics().getViewCoordinates().width / texture->getSize().y });
+                }
+                else
+                {
+                    // Try to make it look decent for vertical resolutions
+                    m_background.setScale({ Configuration::getGraphics().getViewCoordinates().width / texture->getSize().x,
+                                            Configuration::getGraphics().getViewCoordinates().height / texture->getSize().y });
+                }
             }
-            else
-            {
-                // Try to make it look decent for vertical resolutions
-                m_background.setScale({ Configuration::getGraphics().getViewCoordinates().width / texture->getSize().x,
-                                        Configuration::getGraphics().getViewCoordinates().height / texture->getSize().y });
-            }
+
+            //
+            // Offset the game title a little from the top of the view
+            m_title.setPosition({ -(m_title.getRegion().width / 2.0f),
+                                  -(Configuration::getGraphics().getViewCoordinates().height / 2.0f) + m_title.getRegion().height * 0.5f });
+
+            m_initialized = true;
         }
-
-        //
-        // Offset the game title a little from the top of the view
-        m_title.setPosition({ -(m_title.getRegion().width / 2.0f),
-                              -(Configuration::getGraphics().getViewCoordinates().height / 2.0f) + m_title.getRegion().height * 0.5f });
-
-        m_initialized = true;
 
         return true;
     }

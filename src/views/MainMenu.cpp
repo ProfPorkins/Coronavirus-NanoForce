@@ -22,100 +22,113 @@ THE SOFTWARE.
 
 #include "MainMenu.hpp"
 
+#include "services/KeyboardInput.hpp"
+
 namespace views
 {
     bool MainMenu::start()
     {
         MenuView::start();
-        // Need to ensure the next state stays the MainMenu before checking to see if
-        // the view is already initialized.
         m_nextState = ViewState::MainMenu;
-        if (m_initialized)
-            return true;
 
-        using namespace std::string_literals;
-
-        //
-        // Creating a text item of the whole alphabet so we can always find the
-        // tallest character in the font and use that for the height to separate menu items.
-        sf::Text alphabet("ABCDEFGHIHKLMNOPQRTSUVWXYZ", *Content::get<sf::Font>(content::KEY_FONT_MENU), Configuration::get<std::uint8_t>(config::FONT_MENU_SIZE));
-        alphabet.scale(Configuration::getGraphics().getScaleUI());
-
-        //
-        // Prepare the menu items
-        auto menuNewGame = std::make_shared<ui::MenuItem>(
-            "New Game"s,
-            Content::get<sf::Font>(content::KEY_FONT_MENU),
-            sf::Color::White, sf::Color::Yellow, alphabet.getCharacterSize(),
-            [this]() { m_nextState = ViewState::LevelSelect; });
-        m_menuItems.push_back(menuNewGame);
-
-        auto menuGraphicsOptions = std::make_shared<ui::MenuItem>(
-            "Settings"s, Content::get<sf::Font>(content::KEY_FONT_MENU),
-            sf::Color::White, sf::Color::Yellow, alphabet.getCharacterSize(),
-            [this]() { m_nextState = ViewState::Settings; });
-        m_menuItems.push_back(menuGraphicsOptions);
-
-        auto menuAbout = std::make_shared<ui::MenuItem>(
-            "About"s, Content::get<sf::Font>(content::KEY_FONT_MENU),
-            sf::Color::White, sf::Color::Yellow, alphabet.getCharacterSize(),
-            [this]() { m_nextState = ViewState::About; });
-        m_menuItems.push_back(menuAbout);
-
-        auto menuCredits = std::make_shared<ui::MenuItem>(
-            "Credits"s, Content::get<sf::Font>(content::KEY_FONT_MENU), sf::Color::White,
-            sf::Color::Yellow, alphabet.getCharacterSize(),
-            [this]() { m_nextState = ViewState::Credits; });
-        m_menuItems.push_back(menuCredits);
-
-        auto menuExit = std::make_shared<ui::MenuItem>(
-            "Quit"s, Content::get<sf::Font>(content::KEY_FONT_MENU), sf::Color::White,
-            sf::Color::Yellow, alphabet.getCharacterSize(),
-            [this]() { m_nextState = ViewState::Exit; });
-        m_menuItems.push_back(menuExit);
-
-        //
-        // Go back through the menu items and center everything vertically and horizontally
-        auto totalHeight = m_menuItems.size() * alphabet.getGlobalBounds().height * 1.5f;
-        auto currentY = 0.0f - totalHeight / 2.0f;
-        for (auto&& item : m_menuItems)
+        if (!m_initialized)
         {
-            item->setRegion({ -item->getRegion().width / 2.0f,
-                              currentY,
-                              item->getRegion().width,
-                              alphabet.getGlobalBounds().height * 1.25f }); // TODO: This 1.25f should not be necessary!!
-            currentY += alphabet.getGlobalBounds().height * 1.5f;
+            using namespace std::string_literals;
+
+            //
+            // Creating a text item of the whole alphabet so we can always find the
+            // tallest character in the font and use that for the height to separate menu items.
+            sf::Text alphabet("ABCDEFGHIHKLMNOPQRTSUVWXYZ", *Content::get<sf::Font>(content::KEY_FONT_MENU), Configuration::get<std::uint8_t>(config::FONT_MENU_SIZE));
+            alphabet.scale(Configuration::getGraphics().getScaleUI());
+
+            //
+            // Prepare the menu items
+            auto menuNewGame = std::make_shared<ui::MenuItem>(
+                "New Game"s,
+                Content::get<sf::Font>(content::KEY_FONT_MENU),
+                sf::Color::White, sf::Color::Yellow, alphabet.getCharacterSize(),
+                [this]() { m_nextState = ViewState::LevelSelect; });
+            m_menuItems.push_back(menuNewGame);
+
+            auto menuGraphicsOptions = std::make_shared<ui::MenuItem>(
+                "Settings"s, Content::get<sf::Font>(content::KEY_FONT_MENU),
+                sf::Color::White, sf::Color::Yellow, alphabet.getCharacterSize(),
+                [this]() { m_nextState = ViewState::Settings; });
+            m_menuItems.push_back(menuGraphicsOptions);
+
+            auto menuAbout = std::make_shared<ui::MenuItem>(
+                "About"s, Content::get<sf::Font>(content::KEY_FONT_MENU),
+                sf::Color::White, sf::Color::Yellow, alphabet.getCharacterSize(),
+                [this]() { m_nextState = ViewState::About; });
+            m_menuItems.push_back(menuAbout);
+
+            auto menuCredits = std::make_shared<ui::MenuItem>(
+                "Credits"s, Content::get<sf::Font>(content::KEY_FONT_MENU), sf::Color::White,
+                sf::Color::Yellow, alphabet.getCharacterSize(),
+                [this]() { m_nextState = ViewState::Credits; });
+            m_menuItems.push_back(menuCredits);
+
+            auto menuExit = std::make_shared<ui::MenuItem>(
+                "Quit"s, Content::get<sf::Font>(content::KEY_FONT_MENU), sf::Color::White,
+                sf::Color::Yellow, alphabet.getCharacterSize(),
+                [this]() { m_nextState = ViewState::Exit; });
+            m_menuItems.push_back(menuExit);
+
+            //
+            // Go back through the menu items and center everything vertically and horizontally
+            auto totalHeight = m_menuItems.size() * alphabet.getGlobalBounds().height * 1.5f;
+            auto currentY = 0.0f - totalHeight / 2.0f;
+            for (auto&& item : m_menuItems)
+            {
+                item->setRegion({ -item->getRegion().width / 2.0f,
+                                  currentY,
+                                  item->getRegion().width,
+                                  alphabet.getGlobalBounds().height * 1.25f }); // TODO: This 1.25f should not be necessary!!
+                currentY += alphabet.getGlobalBounds().height * 1.5f;
+            }
+
+            //
+            // Select the first menu choice by default
+            m_activeMenuItem = 0;
+            m_menuItems[m_activeMenuItem]->setActive();
+
+            m_initialized = true;
         }
 
         //
-        // Select the first menu choice by default
-        m_activeMenuItem = 0;
-        m_menuItems[m_activeMenuItem]->setActive();
+        // Get the keyboard inputs registered
+        KeyboardInput::instance().registerKeyReleasedHandler("down", [this]() {
+            m_menuItems[m_activeMenuItem]->setInactive();
+            m_activeMenuItem = (static_cast<std::size_t>(m_activeMenuItem) + 1) % m_menuItems.size();
+            m_menuItems[m_activeMenuItem]->setActive();
+        });
+        KeyboardInput::instance().registerKeyReleasedHandler("up", [this]() {
+            m_menuItems[m_activeMenuItem]->setInactive();
+            m_activeMenuItem--;
+            if (m_activeMenuItem < 0)
+            {
 
-        m_initialized = true;
+                m_activeMenuItem = static_cast<std::int8_t>(m_menuItems.size() - 1);
+            }
+            m_menuItems[m_activeMenuItem]->setActive();
+        });
+
+        for (auto&& menuItem : m_menuItems)
+        {
+            menuItem->start();
+        }
 
         return true;
     }
 
-    void MainMenu::signalKeyPressed([[maybe_unused]] sf::Event::KeyEvent event, [[maybe_unused]] const std::chrono::microseconds elapsedTime, [[maybe_unused]] const std::chrono::system_clock::time_point now)
+    void MainMenu::stop()
     {
-        switch (event.code)
+        KeyboardInput::instance().unregisterKeyReleasedHandler("up");
+        KeyboardInput::instance().unregisterKeyReleasedHandler("down");
+
+        for (auto&& menuItem : m_menuItems)
         {
-            case sf::Keyboard::Down:
-                m_menuItems[m_activeMenuItem]->setInactive();
-                m_activeMenuItem = (m_activeMenuItem + 1) % m_menuItems.size();
-                m_menuItems[m_activeMenuItem]->setActive();
-                break;
-            case sf::Keyboard::Up:
-                m_menuItems[m_activeMenuItem]->setInactive();
-                m_activeMenuItem--;
-                if (m_activeMenuItem < 0)
-                    m_activeMenuItem = static_cast<std::int8_t>(m_menuItems.size() - 1);
-                m_menuItems[m_activeMenuItem]->setActive();
-                break;
-            default:
-                m_menuItems[m_activeMenuItem]->signalKeyPressed(event, elapsedTime);
-                break;
+            menuItem->stop();
         }
     }
 

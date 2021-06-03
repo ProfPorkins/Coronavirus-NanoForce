@@ -57,7 +57,7 @@ namespace ui
       public:
         Selection(float top, const std::string label, const std::vector<std::tuple<std::string, std::uint8_t>> options, std::size_t selectedOption, std::shared_ptr<sf::Font> font, sf::Color color, sf::Color activeColor, unsigned int fontSize, std::function<void(std::uint8_t)> handler);
 
-        virtual void signalKeyPressed(sf::Event::KeyEvent event, const std::chrono::microseconds elapsedTime) override;
+        virtual void onKeyPressed(sf::Keyboard::Key key);
         virtual void signalMouseReleased(sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime) override;
 
         virtual void render(sf::RenderTarget& renderTarget) override;

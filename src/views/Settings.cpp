@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include "UIFramework/KeyboardOption.hpp"
 #include "UIFramework/Selection.hpp"
+#include "services/KeyboardInput.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <algorithm>
@@ -36,73 +37,41 @@ namespace views
     bool Settings::start()
     {
         MenuView::start();
-        // Need to ensure the next state stays the Settings before checking to see if
-        // the view is already initialized.
         m_nextState = ViewState::Settings;
-        if (m_initialized)
-            return true;
 
-        //
-        // Locate the restart message to near the bottom of the view
-        m_restart2.setPosition({ -(m_restart2.getRegion().width / 2.0f),
-                                 (Configuration::getGraphics().getViewCoordinates().height / 2.0f) - m_restart2.getRegion().height * 2.0f });
-        m_restart1.setPosition({ -(m_restart1.getRegion().width / 2.0f),
-                                 m_restart2.getRegion().top - m_restart2.getRegion().height * 2.0f });
-        m_restart1.hide();
-        m_restart2.hide();
+        if (!m_initialized)
+        {
 
-        addFullScreenOption();
-        addResolutionOption();
-        addMusicOption();
-        addKeyboardOptions();
+            //
+            // Locate the restart message to near the bottom of the view
+            m_restart2.setPosition({ -(m_restart2.getRegion().width / 2.0f),
+                                     (Configuration::getGraphics().getViewCoordinates().height / 2.0f) - m_restart2.getRegion().height * 2.0f });
+            m_restart1.setPosition({ -(m_restart1.getRegion().width / 2.0f),
+                                     m_restart2.getRegion().top - m_restart2.getRegion().height * 2.0f });
+            m_restart1.hide();
+            m_restart2.hide();
 
-        m_activeOption = 0;
-        m_options[m_activeOption]->setActive();
+            addFullScreenOption();
+            addResolutionOption();
+            addMusicOption();
+            addKeyboardOptions();
 
-        m_initialized = true;
+            m_activeOption = 0;
+            m_options[m_activeOption]->setActive();
+
+            m_initialized = true;
+        }
+
+        m_handlerId = KeyboardInput::instance().registerKeyReleasedHandler([this](sf::Keyboard::Key key) {
+            onKeyPressed(key);
+        });
 
         return true;
     }
 
-    void Settings::signalKeyPressed([[maybe_unused]] sf::Event::KeyEvent event, [[maybe_unused]] const std::chrono::microseconds elapsedTime, [[maybe_unused]] const std::chrono::system_clock::time_point now)
+    void Settings::stop()
     {
-        if (m_selectKey.isVisible())
-        {
-            m_options[m_activeOption]->signalKeyPressed(event, elapsedTime);
-        }
-        else
-        {
-            switch (event.code)
-            {
-                case sf::Keyboard::Down:
-                    m_options[m_activeOption]->setInactive();
-                    m_activeOption = (static_cast<std::size_t>(m_activeOption) + 1) % m_options.size();
-                    // A little hack, special case for when resolution isn't visible
-                    if (!m_options[m_activeOption]->isVisible())
-                    {
-                        m_activeOption++;
-                    }
-                    m_options[m_activeOption]->setActive();
-                    break;
-                case sf::Keyboard::Up:
-                    m_options[m_activeOption]->setInactive();
-                    m_activeOption--;
-                    if (m_activeOption < 0)
-                        m_activeOption = static_cast<std::int8_t>(m_options.size() - 1); // A little hack, special case for when resolution isn't visible
-                    if (!m_options[m_activeOption]->isVisible())
-                    {
-                        m_activeOption--;
-                    }
-                    m_options[m_activeOption]->setActive();
-                    break;
-                case sf::Keyboard::Escape:
-                    m_nextState = ViewState::MainMenu;
-                    break;
-                default:
-                    m_options[m_activeOption]->signalKeyPressed(event, elapsedTime);
-                    break;
-            }
-        }
+        KeyboardInput::instance().unregisterKeyReleasedHandler(m_handlerId);
     }
 
     void Settings::signalMouseMoved(math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime)
@@ -143,6 +112,50 @@ namespace views
         m_restart1.render(renderTarget);
         m_restart2.render(renderTarget);
         m_selectKey.render(renderTarget);
+    }
+
+    void Settings::onKeyPressed(sf::Keyboard::Key key)
+    {
+        if (m_selectKey.isVisible())
+        {
+            m_options[m_activeOption]->onKeyPressed(key);
+        }
+        else
+        {
+            switch (key)
+            {
+                case sf::Keyboard::Down:
+                    m_options[m_activeOption]->setInactive();
+                    m_activeOption = (static_cast<std::size_t>(m_activeOption) + 1) % m_options.size();
+                    // A little hack, special case for when resolution isn't visible
+                    if (!m_options[m_activeOption]->isVisible())
+                    {
+                        m_activeOption++;
+                    }
+                    m_options[m_activeOption]->setActive();
+                    break;
+                case sf::Keyboard::Up:
+                    m_options[m_activeOption]->setInactive();
+                    m_activeOption--;
+                    if (m_activeOption < 0)
+                    {
+
+                        m_activeOption = static_cast<std::int8_t>(m_options.size() - 1); // A little hack, special case for when resolution isn't visible
+                    }
+                    if (!m_options[m_activeOption]->isVisible())
+                    {
+                        m_activeOption--;
+                    }
+                    m_options[m_activeOption]->setActive();
+                    break;
+                case sf::Keyboard::Escape:
+                    m_nextState = ViewState::MainMenu;
+                    break;
+                default:
+                    m_options[m_activeOption]->onKeyPressed(key);
+                    break;
+            }
+        }
     }
 
     // --------------------------------------------------------------
