@@ -166,7 +166,10 @@ void KeyboardInput::update(const std::chrono::microseconds elapsedTime)
             }
         }
     }
-    m_keysPressed.clear();
+    // Do not do the line of code below.  We *want* to keep the list of pressed
+    // keys around to allow during every update, while the keys are pressed, they
+    // are recognized as pressed.
+    //m_keysPressed.clear();
 
     //
     // Key released handlers
