@@ -45,17 +45,19 @@ namespace views
         virtual bool start() override;
         virtual void stop() override;
 
-        virtual void signalMouseMoved(math::Point2f point, const std::chrono::microseconds elapsedTime) override;
-        virtual void signalMouseReleased(sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime) override;
-
         virtual ViewState update(const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
         virtual void render(sf::RenderTarget& renderTarget, const std::chrono::microseconds elapsedTime) override;
 
       private:
         bool m_initialized{ false };
         ViewState m_nextState{ ViewState::MainMenu };
+        std::uint32_t m_mouseMovedHandlerId{ 0 };
+        std::uint32_t m_mouseReleasedHandlerId{ 0 };
 
         std::vector<std::shared_ptr<ui::MenuItem>> m_menuItems;
         std::int8_t m_activeMenuItem{ 0 };
+
+        void onMouseMoved(math::Point2f point, const std::chrono::microseconds elapsedTime);
+        void onMouseReleased(sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime);
     };
 } // namespace views
