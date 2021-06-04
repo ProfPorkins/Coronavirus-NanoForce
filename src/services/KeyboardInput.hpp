@@ -121,6 +121,7 @@ class KeyboardInput
     std::unordered_map<sf::Keyboard::Key, sf::Event::KeyEvent> m_keysPressed;
     std::unordered_map<sf::Keyboard::Key, sf::Event::KeyEvent> m_keysReleased;
     std::unordered_map<sf::Keyboard::Key, bool> m_keyRepeat;
+
     std::unordered_map<sf::Keyboard::Key, InputInfo> m_handlers;
     std::unordered_map<sf::Keyboard::Key, KeyPressedInfo> m_handlersPressed;
     std::unordered_map<std::uint32_t, AnyKeyPressedInfo> m_handlersAnyPressed;

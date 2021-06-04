@@ -23,6 +23,7 @@ THE SOFTWARE.
 #include "MainMenu.hpp"
 
 #include "services/KeyboardInput.hpp"
+#include "services/MouseInput.hpp"
 
 namespace views
 {
@@ -118,6 +119,15 @@ namespace views
             menuItem->start();
         }
 
+        //
+        // Get the mouse inputs registered
+        m_mouseMovedHandlerId = MouseInput::instance().registerMouseMovedHandler([this](math::Point2f point, const std::chrono::microseconds elapsedTime) {
+            onMouseMoved(point, elapsedTime);
+        });
+        m_mouseReleasedHandlerId = MouseInput::instance().registerMouseReleasedHandler([this](sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime) {
+            onMouseReleased(button, point, elapsedTime);
+        });
+
         return true;
     }
 
@@ -130,30 +140,9 @@ namespace views
         {
             menuItem->stop();
         }
-    }
 
-    void MainMenu::signalMouseMoved(math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime)
-    {
-        for (decltype(m_menuItems.size()) item = 0; item < m_menuItems.size(); item++)
-        {
-            if (m_menuItems[item]->getRegion().contains(point))
-            {
-                if (!m_menuItems[item]->isActive())
-                {
-                    m_menuItems[m_activeMenuItem]->setInactive();
-                    m_activeMenuItem = static_cast<std::int8_t>(item);
-                    m_menuItems[m_activeMenuItem]->setActive();
-                }
-            }
-        }
-    }
-
-    void MainMenu::signalMouseReleased(sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime)
-    {
-        for (auto&& item : m_menuItems)
-        {
-            item->signalMouseReleased(button, point, elapsedTime);
-        }
+        MouseInput::instance().unregisterMouseMovedHandler(m_mouseMovedHandlerId);
+        MouseInput::instance().unregisterMouseReleasedHandler(m_mouseReleasedHandlerId);
     }
 
     ViewState MainMenu::update([[maybe_unused]] const std::chrono::microseconds elapsedTime, [[maybe_unused]] const std::chrono::system_clock::time_point now)
@@ -170,4 +159,29 @@ namespace views
             item->render(renderTarget);
         }
     }
+
+    void MainMenu::onMouseMoved(math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime)
+    {
+        for (decltype(m_menuItems.size()) item = 0; item < m_menuItems.size(); item++)
+        {
+            if (m_menuItems[item]->getRegion().contains(point))
+            {
+                if (!m_menuItems[item]->isActive())
+                {
+                    m_menuItems[m_activeMenuItem]->setInactive();
+                    m_activeMenuItem = static_cast<std::int8_t>(item);
+                    m_menuItems[m_activeMenuItem]->setActive();
+                }
+            }
+        }
+    }
+
+    void MainMenu::onMouseReleased(sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime)
+    {
+        for (auto&& item : m_menuItems)
+        {
+            item->onMouseReleased(button, point, elapsedTime);
+        }
+    }
+
 } // namespace views

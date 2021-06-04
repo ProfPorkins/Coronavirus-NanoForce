@@ -142,12 +142,14 @@ set(CLIENT_SERVICES_HEADERS
     services/Content.hpp
     services/ContentKey.hpp
     services/KeyboardInput.hpp
+    services/MouseInput.hpp
     services/SoundPlayer.hpp
     )
 set(CLIENT_SERVICES_SOURCES
     services/Configuration.cpp
     services/Content.cpp
     services/KeyboardInput.cpp
+    services/MouseInput.cpp
     services/SoundPlayer.cpp
     )
 

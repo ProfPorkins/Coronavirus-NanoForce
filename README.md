@@ -45,7 +45,7 @@ A few answers to questions some might have:
 
 The following are ideas I have about revisions to the implementation I may (or may not) make in the future.
 
-* Refactor the keyboard and mouse input as described at the end of the [Systems](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/Systems.md) documentation.
+* (completed) ~~Refactor the keyboard and mouse input as described at the end of the [Systems](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/Systems.md) documentation.~~
 * Refactor the level management code to be fully data driven as suggested in the introduction to the [Levels](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/Levels.md) documentation.
 * Refactor the code to be closer to an ECS architecture.
 * Once C++20 is well supported the three compilers used to build it (MSVC, g++, llvm), take advantage of the new language capabilities where/if it makes sense.  In particular, I'm thinking of refactoring to use modules to give myself experience with that capability.

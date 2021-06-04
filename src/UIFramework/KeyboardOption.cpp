@@ -101,7 +101,7 @@ namespace ui
         }
     }
 
-    void KeyboardOption::signalMouseReleased([[maybe_unused]] sf::Mouse::Button button, [[maybe_unused]] math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime)
+    void KeyboardOption::onMouseReleased([[maybe_unused]] sf::Mouse::Button button, [[maybe_unused]] math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime)
     {
         m_onStart();
         m_expectingInput = true;

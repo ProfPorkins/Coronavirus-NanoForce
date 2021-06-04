@@ -47,15 +47,14 @@ namespace views
         virtual bool start() override;
         virtual void stop() override;
 
-        virtual void signalMouseMoved(math::Point2f point, const std::chrono::microseconds elapsedTime) override;
-        virtual void signalMouseReleased(sf::Mouse::Button button, math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime) override;
-
         virtual ViewState update(const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) override;
         virtual void render(sf::RenderTarget& renderTarget, const std::chrono::microseconds elapsedTime) override;
 
       private:
         bool m_initialized{ false };
         ViewState m_nextState{ ViewState::Settings };
+        std::uint32_t m_mouseMovedHandlerId{ 0 };
+        std::uint32_t m_mouseReleasedHandlerId{ 0 };
 
         ui::Text m_restart1{ 0.0f, 0.0f, "Restart for changes", Content::get<sf::Font>(content::KEY_FONT_SETTINGS), sf::Color::Yellow, Configuration::get<std::uint8_t>(config::FONT_SETTINGS_MESSAGE_SIZE) };
         ui::Text m_restart2{ 0.0f, 0.0f, "to take effect", Content::get<sf::Font>(content::KEY_FONT_SETTINGS), sf::Color::Yellow, Configuration::get<std::uint8_t>(config::FONT_SETTINGS_MESSAGE_SIZE) };
@@ -70,5 +69,8 @@ namespace views
         void addResolutionOption();
         void addMusicOption();
         void addKeyboardOptions();
+
+        void onMouseMoved(math::Point2f point, const std::chrono::microseconds elapsedTime);
+        void onMouseReleased(sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime);
     };
 } // namespace views

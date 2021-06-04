@@ -166,6 +166,7 @@ void KeyboardInput::update(const std::chrono::microseconds elapsedTime)
             }
         }
     }
+    m_keysPressed.clear();
 
     //
     // Key released handlers

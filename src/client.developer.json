@@ -206,7 +206,7 @@
                     "background": "background-music-2.ogg"
                 },
                 "messages": {
-                    "ready": "look for the bomb weapon",
+                    "ready": "look for the bomb powerup",
                     "failure": "more training needed",
                     "success": "training successful"
                 }
