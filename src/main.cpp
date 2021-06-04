@@ -321,21 +321,18 @@ int main()
                 case sf::Event::MouseMoved:
                 {
                     auto viewCoords = window->mapPixelToCoords({ event.mouseMove.x, event.mouseMove.y }, window->getView());
-                    view->signalMouseMoved({ viewCoords.x, viewCoords.y }, elapsedTime);
                     MouseInput::instance().signalMouseMoved({ viewCoords.x, viewCoords.y });
                 }
                 break;
                 case sf::Event::MouseButtonPressed:
                 {
                     auto viewCoords = window->mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y }, window->getView());
-                    view->signalMousePressed(event.mouseButton.button, { viewCoords.x, viewCoords.y }, elapsedTime);
                     MouseInput::instance().signalMousePressed(event.mouseButton.button, { viewCoords.x, viewCoords.y });
                 }
                 break;
                 case sf::Event::MouseButtonReleased:
                 {
                     auto viewCoords = window->mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y }, window->getView());
-                    view->signalMouseReleased(event.mouseButton.button, { viewCoords.x, viewCoords.y }, elapsedTime);
                     MouseInput::instance().signalMouseReleased(event.mouseButton.button, { viewCoords.x, viewCoords.y });
                 }
                 break;
@@ -348,14 +345,14 @@ int main()
         //
         // Execute the standard game loop steps
 
-        // 1: Process Input
+        // Step 1: Process Input
         KeyboardInput::instance().update(elapsedTime);
         MouseInput::instance().update(elapsedTime);
 
-        // 2: Update
+        // Step 2: Update
         auto nextViewState = view->update(elapsedTime, currentTime);
 
-        // 3: Render
+        // Step 3: Render
         view->render(*window, elapsedTime);
 
         //

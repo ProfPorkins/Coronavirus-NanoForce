@@ -25,6 +25,7 @@ THE SOFTWARE.
 #include "UIFramework/KeyboardOption.hpp"
 #include "UIFramework/Selection.hpp"
 #include "services/KeyboardInput.hpp"
+#include "services/MouseInput.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <algorithm>
@@ -62,8 +63,19 @@ namespace views
             m_initialized = true;
         }
 
+        //
+        // Get the keyboard inputs registered
         m_handlerId = KeyboardInput::instance().registerKeyReleasedHandler([this](sf::Keyboard::Key key) {
             onKeyPressed(key);
+        });
+
+        //
+        // Get the mouse inputs registered
+        m_mouseMovedHandlerId = MouseInput::instance().registerMouseMovedHandler([this](math::Point2f point, const std::chrono::microseconds elapsedTime) {
+            onMouseMoved(point, elapsedTime);
+        });
+        m_mouseReleasedHandlerId = MouseInput::instance().registerMouseReleasedHandler([this](sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime) {
+            onMouseReleased(button, point, elapsedTime);
         });
 
         return true;
@@ -72,27 +84,8 @@ namespace views
     void Settings::stop()
     {
         KeyboardInput::instance().unregisterKeyReleasedHandler(m_handlerId);
-    }
-
-    void Settings::signalMouseMoved(math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime)
-    {
-        for (decltype(m_options.size()) item = 0; item < m_options.size(); item++)
-        {
-            if (m_options[item]->getRegion().contains(point))
-            {
-                if (!m_options[item]->isActive())
-                {
-                    m_options[m_activeOption]->setInactive();
-                    m_activeOption = static_cast<std::int8_t>(item);
-                    m_options[m_activeOption]->setActive();
-                }
-            }
-        }
-    }
-
-    void Settings::signalMouseReleased(sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime)
-    {
-        m_options[m_activeOption]->signalMouseReleased(button, point, elapsedTime);
+        MouseInput::instance().unregisterMouseMovedHandler(m_mouseMovedHandlerId);
+        MouseInput::instance().unregisterMouseReleasedHandler(m_mouseReleasedHandlerId);
     }
 
     ViewState Settings::update([[maybe_unused]] const std::chrono::microseconds elapsedTime, [[maybe_unused]] const std::chrono::system_clock::time_point now)
@@ -387,5 +380,26 @@ namespace views
         m_options.push_back(rotateRight);
         m_options.push_back(firePrimary);
         m_options.push_back(fireSecondary);
+    }
+
+    void Settings::onMouseMoved(math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime)
+    {
+        for (decltype(m_options.size()) item = 0; item < m_options.size(); item++)
+        {
+            if (m_options[item]->getRegion().contains(point))
+            {
+                if (!m_options[item]->isActive())
+                {
+                    m_options[m_activeOption]->setInactive();
+                    m_activeOption = static_cast<std::int8_t>(item);
+                    m_options[m_activeOption]->setActive();
+                }
+            }
+        }
+    }
+
+    void Settings::onMouseReleased(sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime)
+    {
+        m_options[m_activeOption]->onMouseReleased(button, point, elapsedTime);
     }
 } // namespace views

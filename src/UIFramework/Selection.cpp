@@ -65,7 +65,7 @@ namespace ui
         }
     }
 
-    void Selection::signalMouseReleased([[maybe_unused]] sf::Mouse::Button button, math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime)
+    void Selection::onMouseReleased([[maybe_unused]] sf::Mouse::Button button, math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime)
     {
         //
         // If left half, move left, if right half, move right

@@ -45,13 +45,6 @@ namespace views
         virtual bool start() { return true; }
         virtual void stop() {}
 
-        virtual void signalMouseMoved([[maybe_unused]] math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime){};
-        virtual void signalMousePressed([[maybe_unused]] sf::Mouse::Button button, [[maybe_unused]] math::Point2f point, [[maybe_unused]] const std::chrono::microseconds elapsedTime){};
-        virtual void signalMouseReleased([[maybe_unused]] sf::Mouse::Button button, [[maybe_unused]] math::Point2f point, [[maybe_unused]] const std::chrono::microseconds elapsedTime){};
-
-        virtual void signalButtonPressed([[maybe_unused]] sf::Event::JoystickButtonEvent event, [[maybe_unused]] const std::chrono::microseconds elapsedTime, [[maybe_unused]] const std::chrono::system_clock::time_point now) {}
-        virtual void signalButtonReleased([[maybe_unused]] sf::Event::JoystickButtonEvent event, [[maybe_unused]] const std::chrono::microseconds elapsedTime, [[maybe_unused]] const std::chrono::system_clock::time_point now) {}
-
         virtual ViewState update(const std::chrono::microseconds elapsedTime, const std::chrono::system_clock::time_point now) = 0;
         virtual void render(sf::RenderTarget& renderTarget, const std::chrono::microseconds elapsedTime) = 0;
     };

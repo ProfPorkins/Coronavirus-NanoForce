@@ -46,7 +46,7 @@ namespace ui
         KeyboardOption(float centerX, float top, const std::string label, const std::string key, std::shared_ptr<sf::Font> font, sf::Color color, sf::Color activeColor, unsigned int fontSize, std::function<void()> onStart, std::function<void(std::string)> onComplete);
 
         virtual void onKeyPressed(sf::Keyboard::Key key);
-        virtual void signalMouseReleased(sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime) override;
+        virtual void onMouseReleased(sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime) override;
         virtual void render(sf::RenderTarget& renderTarget) override;
 
         virtual void setActive() override;

@@ -50,7 +50,7 @@ namespace ui
         virtual void start() override;
         virtual void stop() override;
 
-        virtual void signalMouseReleased(sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime) override;
+        virtual void onMouseReleased(sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime) override;
 
         virtual void render(sf::RenderTarget& renderTarget) override;
         virtual void setRegion(const math::Rectangle2f& region) override;

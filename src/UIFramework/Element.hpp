@@ -51,8 +51,8 @@ namespace ui
         virtual void stop() {}
 
         virtual void onKeyPressed([[maybe_unused]] sf::Keyboard::Key key){};
-        virtual void signalMouseMoved([[maybe_unused]] math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime){};
-        virtual void signalMouseReleased([[maybe_unused]] sf::Mouse::Button button, [[maybe_unused]] math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime){};
+        virtual void onMouseMoved([[maybe_unused]] math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime){};
+        virtual void onMouseReleased([[maybe_unused]] sf::Mouse::Button button, [[maybe_unused]] math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime){};
 
         virtual void update([[maybe_unused]] const std::chrono::microseconds elapsedTime, [[maybe_unused]] const std::chrono::system_clock::time_point now){};
         virtual void render([[maybe_unused]] sf::RenderTarget& renderTarget){};

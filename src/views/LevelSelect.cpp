@@ -259,7 +259,7 @@ namespace views
     {
         for (auto&& item : m_menuItems)
         {
-            item->signalMouseReleased(button, point, elapsedTime);
+            item->onMouseReleased(button, point, elapsedTime);
         }
     }
 

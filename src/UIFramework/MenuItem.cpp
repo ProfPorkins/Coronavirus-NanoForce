@@ -57,7 +57,7 @@ namespace ui
         KeyboardInput::instance().unregisterKeyReleasedHandler(m_handlerId);
     }
 
-    void MenuItem::signalMouseReleased([[maybe_unused]] sf::Mouse::Button button, math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime)
+    void MenuItem::onMouseReleased([[maybe_unused]] sf::Mouse::Button button, math::Point2f point, [[maybe_unused]] std::chrono::microseconds elapsedTime)
     {
         if (this->getRegion().contains(point))
         {
