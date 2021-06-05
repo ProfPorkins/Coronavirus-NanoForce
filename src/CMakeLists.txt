@@ -615,12 +615,3 @@ if (CLANG_FORMAT)
 else()
     message("Unable to find clang-format")
 endif()
-        ClangFormat
-        COMMAND ${CLANG_FORMAT}
-        -i
-        -style=file
-        ${CODE_FILES_PATHS}
-    )
-else()
-    message("Unable to find clang-format")
-endif()
