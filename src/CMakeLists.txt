@@ -310,9 +310,9 @@ endif()
 target_include_directories(CoronavirusNF PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 #
-# Want the C++ 17 standard for our project
+# Want the C++ 20 standard for our project
 #
-set_property(TARGET CoronavirusNF PROPERTY CXX_STANDARD 17)
+set_property(TARGET CoronavirusNF PROPERTY CXX_STANDARD 20)
 
 #
 # Enable a lot of warnings, forcing better code to be written
