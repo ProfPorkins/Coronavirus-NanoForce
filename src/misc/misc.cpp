@@ -20,11 +20,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "misc.hpp"
-
 #include <iomanip>
 #include <iostream>
 #include <sstream>
+#include <chrono>
 
 namespace misc
 {

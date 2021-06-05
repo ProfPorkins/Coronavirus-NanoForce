@@ -20,6 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+import misc2;
+
 #include "GameModel.hpp"
 
 #include "components/Damage.hpp"

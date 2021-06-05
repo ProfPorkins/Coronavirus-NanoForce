@@ -23,7 +23,6 @@ THE SOFTWARE.
 #pragma once
 
 #include <chrono>
-#include <string>
 
 // --------------------------------------------------------------
 //
@@ -34,7 +33,4 @@ THE SOFTWARE.
 namespace misc
 {
     constexpr float PER_MS_TO_US = static_cast<float>(1.0f / std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::milliseconds(1)).count());
-
-    std::chrono::microseconds msTous(std::chrono::microseconds ms);
-    std::string timeToMMMSSString(std::chrono::milliseconds time);
 } // namespace misc
