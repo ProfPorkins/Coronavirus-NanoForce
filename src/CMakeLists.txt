@@ -292,20 +292,14 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     # For Windows, linking with sfml-main so SFML's main is used, allow subsystem type to
     # be Windows instead of Console, to prevent the display of a console window on startup.
     # Reference: https://en.sfml-dev.org/forums/index.php?topic=6278.0
-    add_executable(CoronavirusNF
- WIN32 ${CLIENT_CODE_FILES})
-    target_link_libraries(CoronavirusNF
- sfml-main sfml-graphics sfml-audio sfml-system sfml-window)
+    add_executable(CoronavirusNF WIN32 ${CLIENT_CODE_FILES})
+    target_link_libraries(CoronavirusNF sfml-main sfml-graphics sfml-audio sfml-system sfml-window)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    add_executable(CoronavirusNF
- ${CLIENT_CODE_FILES})
-    target_link_libraries(CoronavirusNF
- sfml-graphics sfml-audio sfml-system sfml-window)
+    add_executable(CoronavirusNF ${CLIENT_CODE_FILES})
+    target_link_libraries(CoronavirusNF sfml-graphics sfml-audio sfml-system sfml-window)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "CLANG")
-    add_executable(CoronavirusNF
- ${CLIENT_CODE_FILES})
-    target_link_libraries(CoronavirusNF
- sfml-graphics sfml-audio sfml-system sfml-window)
+    add_executable(CoronavirusNF ${CLIENT_CODE_FILES})
+    target_link_libraries(CoronavirusNF sfml-graphics sfml-audio sfml-system sfml-window)
 endif()
 target_include_directories(CoronavirusNF PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -318,16 +312,13 @@ set_property(TARGET CoronavirusNF PROPERTY CXX_STANDARD 17)
 # Enable a lot of warnings, forcing better code to be written
 #
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(CoronavirusNF
- PRIVATE /W4 /permissive-)
+    target_compile_options(CoronavirusNF PRIVATE /W4 /permissive-)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_compile_options(CoronavirusNF
- PRIVATE -O3 -Wall -Wextra -pedantic) # -Wconversion -Wsign-conversion
+    target_compile_options(CoronavirusNF PRIVATE -O3 -Wall -Wextra -pedantic) # -Wconversion -Wsign-conversion
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
     set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -Wl,-R,\$ORIGIN")
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "CLANG")
-    target_compile_options(CoronavirusNF
- PRIVATE -O3 -Wall -Wextra -pedantic)
+    target_compile_options(CoronavirusNF PRIVATE -O3 -Wall -Wextra -pedantic)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
     set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 endif()
