@@ -22,8 +22,9 @@ THE SOFTWARE.
 
 #pragma once
 
+import misc;
+
 #include "entities/Entity.hpp"
-#include "misc/misc.hpp"
 
 #include <chrono>
 #include <cstdint>

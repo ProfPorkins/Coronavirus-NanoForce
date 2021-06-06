@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import misc2;
+import misc;
 
 #include "GameModel.hpp"
 
@@ -38,7 +38,6 @@ import misc2;
 #include "entities/PowerupSpreadFire.hpp"
 #include "levels/PetriDish.hpp"
 #include "misc/math.hpp"
-#include "misc/misc.hpp"
 #include "services/Configuration.hpp"
 #include "services/ConfigurationPath.hpp"
 #include "services/Content.hpp"

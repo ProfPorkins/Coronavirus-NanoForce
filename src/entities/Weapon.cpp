@@ -22,7 +22,8 @@ THE SOFTWARE.
 
 #include "Weapon.hpp"
 
-#include "misc/misc.hpp"
+import misc;
+
 #include "services/Configuration.hpp"
 #include "services/ConfigurationPath.hpp"
 #include "services/Content.hpp"

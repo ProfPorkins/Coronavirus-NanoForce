@@ -22,10 +22,11 @@ THE SOFTWARE.
 
 #include "Level.hpp"
 
+import misc;
+
 #include "entities/PowerupBomb.hpp"
 #include "entities/PowerupRapidFire.hpp"
 #include "entities/PowerupSpreadFire.hpp"
-#include "misc/misc.hpp"
 #include "services/Configuration.hpp"
 #include "services/Content.hpp"
 

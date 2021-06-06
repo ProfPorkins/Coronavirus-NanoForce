@@ -22,6 +22,8 @@ THE SOFTWARE.
 
 #include "Bomb.hpp"
 
+import misc;
+
 #include "components/Damage.hpp"
 #include "components/Lifetime.hpp"
 #include "components/Momentum.hpp"
@@ -30,7 +32,6 @@ THE SOFTWARE.
 #include "components/Size.hpp"
 #include "entities/Bullet.hpp"
 #include "misc/math.hpp"
-#include "misc/misc.hpp"
 #include "services/Configuration.hpp"
 #include "services/ConfigurationPath.hpp"
 #include "services/ContentKey.hpp"

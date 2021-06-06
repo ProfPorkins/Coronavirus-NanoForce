@@ -22,6 +22,8 @@ THE SOFTWARE.
 
 #include "PetriDish.hpp"
 
+import misc;
+
 #include "components/Momentum.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"

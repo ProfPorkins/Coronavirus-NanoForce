@@ -22,11 +22,12 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "entities//Powerup.hpp"
+import misc;
+
+#include "entities/Powerup.hpp"
 #include "entities/Bullet.hpp"
 #include "entities/Entity.hpp"
 #include "entities/Weapon.hpp"
-#include "misc/misc.hpp"
 
 #include <SFML/Audio/Sound.hpp>
 #include <chrono>
@@ -84,8 +85,8 @@ namespace entities
       private:
         bool m_thrusting{ false };
         double m_thrustRate{ 0.0000001 * misc::PER_MS_TO_US }; // per us
-        float m_rotateRate{ 0.0002f };                         // degrees per us
-        float m_maxSpeed{ 0.00002f };                          // per us
+        float m_rotateRate{ 0.0002f };                          // degrees per us
+        float m_maxSpeed{ 0.00002f };                           // per us
         std::shared_ptr<entities::Weapon> m_weaponPrimary;
         std::shared_ptr<entities::Weapon> m_weaponSecondary;
 

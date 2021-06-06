@@ -22,6 +22,8 @@ THE SOFTWARE.
 
 #include "Virus.hpp"
 
+import misc;
+
 #include "components//Age.hpp"
 #include "components/Birth.hpp"
 #include "components/Drag.hpp"

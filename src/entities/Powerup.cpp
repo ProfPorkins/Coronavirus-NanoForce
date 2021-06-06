@@ -22,12 +22,13 @@ THE SOFTWARE.
 
 #include "Powerup.hpp"
 
+import misc;
+
 #include "components/AnimatedSprite.hpp"
 #include "components/Lifetime.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"
 #include "misc/math.hpp"
-#include "misc/misc.hpp"
 #include "services/Configuration.hpp"
 #include "services/ConfigurationPath.hpp"
 #include "services/Content.hpp"
