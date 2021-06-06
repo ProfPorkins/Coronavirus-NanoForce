@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "entities//Powerup.hpp"
+#include "entities/Powerup.hpp"
 #include "entities/Bullet.hpp"
 #include "entities/Entity.hpp"
 #include "entities/Weapon.hpp"
