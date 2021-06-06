@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 import misc;
 
-#include "components//Age.hpp"
+#include "components/Age.hpp"
 #include "components/Birth.hpp"
 #include "components/Drag.hpp"
 #include "components/Health.hpp"
