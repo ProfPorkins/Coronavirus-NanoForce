@@ -227,6 +227,7 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     for (auto&& id : bulletsToRemove)
     {
         m_bullets.erase(id);
+        removeEntity(id);
     }
 
     // Give the level a chance to do whatever it wants to do
@@ -284,6 +285,7 @@ void GameModel::render(sf::RenderTarget& renderTarget, const std::chrono::micros
 void GameModel::emitBullet(std::shared_ptr<entities::Entity>& bullet)
 {
     m_bullets[bullet->getId()] = bullet;
+    addEntity(bullet);
 }
 
 // --------------------------------------------------------------
@@ -294,6 +296,7 @@ void GameModel::emitBullet(std::shared_ptr<entities::Entity>& bullet)
 void GameModel::emitBomb(std::shared_ptr<entities::Entity>& bomb)
 {
     m_bombs[bomb->getId()] = bomb;
+    addEntity(bomb);
 }
 
 // --------------------------------------------------------------
@@ -304,6 +307,7 @@ void GameModel::emitBomb(std::shared_ptr<entities::Entity>& bomb)
 void GameModel::emitPowerup(std::shared_ptr<entities::Powerup>& powerup)
 {
     m_powerups[powerup->getId()] = powerup;
+    addEntity(powerup);
 }
 
 // --------------------------------------------------------------
@@ -408,6 +412,7 @@ void GameModel::resetPlayer()
     if (m_player)
     {
         m_player->cleanup();
+        removeEntity(m_player->getId());
     }
     m_player = nullptr;
 
@@ -439,6 +444,7 @@ void GameModel::startPlayer(math::Point2f position)
     SoundPlayer::play(content::KEY_AUDIO_PLAYER_START);
 
     m_player = entities::Player::create();
+    addEntity(m_player);
 
     // A copy of the pointer is needed, because the controls might still happen during the next update when the player dies
     auto player = m_player;
@@ -476,8 +482,6 @@ void GameModel::startPlayer(math::Point2f position)
         {
             m_timePlayed += std::chrono::duration_cast<std::chrono::milliseconds>(elapsedTime);
         }
-        // TODO: sysMovement
-        //m_sysMovement.update(*m_level, *std::static_pointer_cast<entities::Entity>(m_player), elapsedTime);
 
         // Player is directly updated here, because there isn't (yet) a system associated with thrust
         m_player->update(elapsedTime);
@@ -496,6 +500,7 @@ void GameModel::startPlayer(math::Point2f position)
         if (powerupToRemove.has_value())
         {
             m_powerups.erase(powerupToRemove.value());
+            removeEntity(powerupToRemove.value());
         }
 
         //
