@@ -47,5 +47,8 @@ namespace systems
 
       private:
         levels::Level& m_level;
+
+        void updateEntity(entities::Entity& entity, const std::chrono::microseconds elapsedTime, bool testBorder = true);
+        void testArenaBorder(entities::Entity& entity, const std::chrono::microseconds elapsedTime);
     };
 } // namespace systems

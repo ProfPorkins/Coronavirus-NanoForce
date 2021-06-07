@@ -29,10 +29,17 @@ THE SOFTWARE.
 
 namespace systems
 {
-    void updateEntity(levels::Level& level, entities::Entity& entity, const std::chrono::microseconds elapsedTime, bool testBorder = true);
-    void testArenaBorder(levels::Level& level, entities::Entity& entity, const std::chrono::microseconds elapsedTime);
 
-    void updateEntity(levels::Level& level, entities::Entity& entity, const std::chrono::microseconds elapsedTime, bool testBorder)
+    void Movement::update(std::chrono::microseconds elapsedTime)
+    {
+        for (auto&& [id, entity] : m_entities)
+        {
+            (void)id; // unused
+            updateEntity(*entity, elapsedTime);
+        }
+    }
+
+    void Movement::updateEntity(entities::Entity& entity, const std::chrono::microseconds elapsedTime, bool testBorder)
     {
         auto momentum = entity.getComponent<components::Momentum>();
         auto position = entity.getComponent<components::Position>();
@@ -64,7 +71,7 @@ namespace systems
         // This will/should only ever be false when recursively invoked from 'testArenaBorder' itself.
         if (testBorder)
         {
-            testArenaBorder(level, entity, elapsedTime);
+            testArenaBorder(entity, elapsedTime);
         }
     }
 
@@ -73,25 +80,16 @@ namespace systems
     // Returns true if the entity hit the arena border.
     //
     // --------------------------------------------------------------
-    void testArenaBorder(levels::Level& level, entities::Entity& entity, const std::chrono::microseconds elapsedTime)
+    void Movement::testArenaBorder(entities::Entity& entity, const std::chrono::microseconds elapsedTime)
     {
-        if (level.collidesWithBorder(entity))
+        if (m_level.collidesWithBorder(entity))
         {
             //
             // Need to reflect the entity with the arena border
-            level.bounceOffBorder(entity);
+            m_level.bounceOffBorder(entity);
             //
             // After reflecting, have to move it a little bit, so it doesn't get stuck on the border.
-            updateEntity(level, entity, elapsedTime, false);
-        }
-    }
-
-    void Movement::update(std::chrono::microseconds elapsedTime)
-    {
-        for (auto&& [id, entity] : m_entities)
-        {
-            (void)id; // unused
-            updateEntity(m_level, *entity, elapsedTime);
+            updateEntity(entity, elapsedTime, false);
         }
     }
 
