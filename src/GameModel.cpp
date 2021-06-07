@@ -129,7 +129,7 @@ void GameModel::initialize()
     m_powerups.clear();
     m_viruses.clear();
 
-    m_sysMovement = std::make_unique<systems::Movement>();
+    m_sysMovement = std::make_unique<systems::Movement>(*m_level);
 
     for (auto&& virus : m_level->initializeViruses())
     {
@@ -185,10 +185,7 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     m_sysLifetime.update(elapsedTime, m_bombs);
     m_sysLifetime.update(elapsedTime, m_powerups);
 
-    //m_sysMovement.update(*m_level, elapsedTime, m_bullets);
-    //m_sysMovement.update(*m_level, elapsedTime, m_bombs);
-    //m_sysMovement.update(*m_level, elapsedTime, m_viruses);
-    m_sysMovement->update(*m_level, elapsedTime);
+    m_sysMovement->update(elapsedTime);
 
     // It isn't absolutely essential to the overall game, but the age should be updated
     // before Birth because age is used in the gestation determination in the Birth system.

@@ -26,7 +26,6 @@ THE SOFTWARE.
 #include "components/Momentum.hpp"
 #include "components/Orientation.hpp"
 #include "components/Position.hpp"
-#include "services/Configuration.hpp"
 
 namespace systems
 {
@@ -87,33 +86,12 @@ namespace systems
         }
     }
 
-    //void Movement::update(levels::Level& level, const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& entities)
-    //{
-    //    for (auto&& [id, entity] : entities)
-    //    {
-    //        updateEntity(level, *entity, elapsedTime);
-    //    }
-    //}
-
-    //void Movement::update(levels::Level& level, const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities)
-    //{
-    //    for (auto&& [id, entity] : entities)
-    //    {
-    //        updateEntity(level, *std::static_pointer_cast<entities::Entity>(entity), elapsedTime);
-    //    }
-    //}
-
-    //void Movement::update(levels::Level& level, entities::Entity& entity, const std::chrono::microseconds elapsedTime)
-    //{
-    //    updateEntity(level, entity, elapsedTime);
-    //}
-
-    void Movement::update(levels::Level& level, std::chrono::microseconds elapsedTime)
+    void Movement::update(std::chrono::microseconds elapsedTime)
     {
         for (auto&& [id, entity] : m_entities)
         {
             (void)id; // unused
-            updateEntity(level, *entity, elapsedTime);
+            updateEntity(m_level, *entity, elapsedTime);
         }
     }
 
