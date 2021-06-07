@@ -162,6 +162,7 @@ set(CLIENT_SYSTEMS_HEADERS
     systems/Movement.hpp
     systems/Particle.hpp
     systems/ParticleSystem.hpp
+    systems/System.hpp
     )
 set(CLIENT_SYSTEMS_SOURCES
     systems/Age.cpp
@@ -171,6 +172,7 @@ set(CLIENT_SYSTEMS_SOURCES
     systems/Lifetime.cpp
     systems/Movement.cpp
     systems/ParticleSystem.cpp
+    systems/System.cpp
     )
 
 set(CLIENT_PARTICLE_EFFECTS_HEADERS

@@ -74,7 +74,7 @@ class GameModel
     std::chrono::milliseconds m_timePlayed{ 0 };
     std::uint32_t m_virusesKilled{ 0 };
 
-    systems::Movement m_sysMovement;
+    std::unique_ptr<systems::Movement> m_sysMovement;
     systems::Lifetime m_sysLifetime;
     systems::ParticleSystem m_sysParticle;
     systems::Birth m_sysBirth;
@@ -84,6 +84,7 @@ class GameModel
 
     std::shared_ptr<entities::Player> m_player{ nullptr };
     std::uint8_t m_remainingNanoBots{ 0 };
+    entities::EntityMap m_entities;
     std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>> m_viruses;
     std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>> m_bullets;
     std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>> m_bombs;
@@ -112,6 +113,9 @@ class GameModel
     void onPlayerDeath();
     void resetPlayer();
     void startPlayer(math::Point2f position);
+
+    void addEntity(std::shared_ptr<entities::Entity> entity);
+    void removeEntity(entities::Entity::IdType entityId);
 
     bool contentReady();
     void unregisterInputHandlers();

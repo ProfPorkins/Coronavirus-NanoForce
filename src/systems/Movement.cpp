@@ -87,25 +87,34 @@ namespace systems
         }
     }
 
-    void Movement::update(levels::Level& level, const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& entities)
+    //void Movement::update(levels::Level& level, const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& entities)
+    //{
+    //    for (auto&& [id, entity] : entities)
+    //    {
+    //        updateEntity(level, *entity, elapsedTime);
+    //    }
+    //}
+
+    //void Movement::update(levels::Level& level, const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities)
+    //{
+    //    for (auto&& [id, entity] : entities)
+    //    {
+    //        updateEntity(level, *std::static_pointer_cast<entities::Entity>(entity), elapsedTime);
+    //    }
+    //}
+
+    //void Movement::update(levels::Level& level, entities::Entity& entity, const std::chrono::microseconds elapsedTime)
+    //{
+    //    updateEntity(level, entity, elapsedTime);
+    //}
+
+    void Movement::update(levels::Level& level, std::chrono::microseconds elapsedTime)
     {
-        for (auto&& [id, entity] : entities)
+        for (auto&& [id, entity] : m_entities)
         {
+            (void)id; // unused
             updateEntity(level, *entity, elapsedTime);
         }
-    }
-
-    void Movement::update(levels::Level& level, const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities)
-    {
-        for (auto&& [id, entity] : entities)
-        {
-            updateEntity(level, *std::static_pointer_cast<entities::Entity>(entity), elapsedTime);
-        }
-    }
-
-    void Movement::update(levels::Level& level, entities::Entity& entity, const std::chrono::microseconds elapsedTime)
-    {
-        updateEntity(level, entity, elapsedTime);
     }
 
 } // namespace systems

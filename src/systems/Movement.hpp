@@ -22,6 +22,9 @@ THE SOFTWARE.
 
 #pragma once
 
+#include "System.hpp"
+#include "components/Momentum.hpp"
+#include "components/Position.hpp"
 #include "entities/Entity.hpp"
 #include "entities/Virus.hpp"
 #include "levels/Level.hpp"
@@ -32,11 +35,18 @@ THE SOFTWARE.
 
 namespace systems
 {
-    class Movement
+    class Movement : public System
     {
       public:
-        void update(levels::Level& level, const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& entities);
-        void update(levels::Level& level, const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities);
-        void update(levels::Level& level, entities::Entity& entity, const std::chrono::microseconds elapsedTime);
+        Movement() :
+            System({ ctti::unnamed_type_id<components::Position>(),
+                     ctti::unnamed_type_id<components::Momentum>() })
+        {
+        }
+
+        //void update(levels::Level& level, const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& entities);
+        //void update(levels::Level& level, const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities);
+        //void update(levels::Level& level, entities::Entity& entity, const std::chrono::microseconds elapsedTime);
+        void update(levels::Level& level, std::chrono::microseconds elapsedTime);
     };
 } // namespace systems

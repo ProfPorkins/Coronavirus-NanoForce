@@ -129,9 +129,12 @@ void GameModel::initialize()
     m_powerups.clear();
     m_viruses.clear();
 
+    m_sysMovement = std::make_unique<systems::Movement>();
+
     for (auto&& virus : m_level->initializeViruses())
     {
         m_viruses[virus->getId()] = virus;
+        addEntity(virus);
     }
 
     // -1 because the current bot being played is 1 of the remaining bots
@@ -182,9 +185,10 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     m_sysLifetime.update(elapsedTime, m_bombs);
     m_sysLifetime.update(elapsedTime, m_powerups);
 
-    m_sysMovement.update(*m_level, elapsedTime, m_bullets);
-    m_sysMovement.update(*m_level, elapsedTime, m_bombs);
-    m_sysMovement.update(*m_level, elapsedTime, m_viruses);
+    //m_sysMovement.update(*m_level, elapsedTime, m_bullets);
+    //m_sysMovement.update(*m_level, elapsedTime, m_bombs);
+    //m_sysMovement.update(*m_level, elapsedTime, m_viruses);
+    m_sysMovement->update(*m_level, elapsedTime);
 
     // It isn't absolutely essential to the overall game, but the age should be updated
     // before Birth because age is used in the gestation determination in the Birth system.
@@ -233,6 +237,7 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     for (auto&& virus : m_newViruses)
     {
         m_viruses[virus->getId()] = virus;
+        addEntity(virus);
     }
     m_newViruses.clear();
 
@@ -247,6 +252,7 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     {
         onVirusDeath(id);
         m_viruses.erase(id);
+        removeEntity(id);
     }
 }
 
@@ -470,7 +476,8 @@ void GameModel::startPlayer(math::Point2f position)
         {
             m_timePlayed += std::chrono::duration_cast<std::chrono::milliseconds>(elapsedTime);
         }
-        m_sysMovement.update(*m_level, *std::static_pointer_cast<entities::Entity>(m_player), elapsedTime);
+        // TODO: sysMovement
+        //m_sysMovement.update(*m_level, *std::static_pointer_cast<entities::Entity>(m_player), elapsedTime);
 
         // Player is directly updated here, because there isn't (yet) a system associated with thrust
         m_player->update(elapsedTime);
@@ -510,6 +517,36 @@ void GameModel::startPlayer(math::Point2f position)
     m_sysParticle.addEffect(std::make_unique<systems::PlayerStartEffect>(
         m_player->getComponent<components::Position>()->get(),
         static_cast<std::uint16_t>(300), misc::msTous(std::chrono::milliseconds(750))));
+}
+
+// --------------------------------------------------------------
+//
+// As entities are added to the game model, they are run by the systems
+// to see if they are interested in knowing about them during their
+// updates.
+//
+// --------------------------------------------------------------
+void GameModel::addEntity(std::shared_ptr<entities::Entity> entity)
+{
+    if (entity == nullptr)
+        return;
+
+    m_entities[entity->getId()] = entity;
+    m_sysMovement->addEntity(entity);
+}
+
+// --------------------------------------------------------------
+//
+// All entity lists for the systems must be given a chance to remove
+// the entity.
+//
+// --------------------------------------------------------------
+void GameModel::removeEntity(entities::Entity::IdType entityId)
+{
+    m_entities.erase(entityId);
+    //
+    // Let each of the systems know to remove the entity
+    m_sysMovement->removeEntity(entityId);
 }
 
 // --------------------------------------------------------------
