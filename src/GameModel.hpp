@@ -32,7 +32,6 @@ THE SOFTWARE.
 #include "renderers/GameStatus.hpp"
 #include "renderers/HUD.hpp"
 #include "renderers/ParticleSystem.hpp"
-#include "renderers/Sprite.hpp"
 #include "renderers/Virus.hpp"
 #include "systems/Age.hpp"
 #include "systems/AnimatedSprite.hpp"
@@ -92,8 +91,6 @@ class GameModel
     std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Powerup>> m_powerups;
     std::vector<std::shared_ptr<entities::Virus>> m_newViruses;
 
-    std::unique_ptr<renderers::Sprite> m_rendererPlayer;
-    std::unique_ptr<renderers::Sprite> m_rendererBomb;
     std::unique_ptr<renderers::Virus> m_rendererSarsCov2;
     std::unique_ptr<renderers::Background> m_rendererBackground;
     std::unique_ptr<renderers::ParticleSystem> m_rendererParticleSystem;
@@ -102,7 +99,6 @@ class GameModel
     std::unique_ptr<renderers::GameStatus> m_rendererStatus;
 
     std::function<void(std::chrono::microseconds)> m_updatePlayer;
-    std::function<void(sf::RenderTarget&)> m_renderPlayer;
     std::chrono::microseconds m_playerStartCountdown{ 0 };
 
     void emitBullet(std::shared_ptr<entities::Entity>& bullet);

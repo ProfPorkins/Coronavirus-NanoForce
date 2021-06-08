@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include "components/Orientation.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"
+#include "components/Sprite.hpp"
 #include "entities/WeaponEmpty.hpp"
 #include "entities/WeaponGun.hpp"
 #include "misc/math.hpp"
@@ -75,6 +76,7 @@ namespace entities
         this->addComponent(std::make_unique<components::Size>(math::Dimension2f(spec.size, spec.size)));
         this->addComponent(std::make_unique<components::Momentum>(math::Vector2f(0.0f, 0.0f)));
         this->addComponent(std::make_unique<components::Drag>(spec.dragRate));
+        this->addComponent(std::make_unique<components::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_PLAYER)));
 
         //
         // This is a unique one, due to the way it works, handing it directly here, rather than a

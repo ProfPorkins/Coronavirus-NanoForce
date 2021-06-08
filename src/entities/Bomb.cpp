@@ -28,11 +28,13 @@ THE SOFTWARE.
 #include "components/Orientation.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"
+#include "components/Sprite.hpp"
 #include "entities/Bullet.hpp"
 #include "misc/math.hpp"
 #include "misc/misc.hpp"
 #include "services/Configuration.hpp"
 #include "services/ConfigurationPath.hpp"
+#include "services/Content.hpp"
 #include "services/ContentKey.hpp"
 #include "services/SoundPlayer.hpp"
 
@@ -58,6 +60,7 @@ namespace entities
         this->addComponent(std::make_unique<components::Size>(math::Dimension2f(size, size)));
         this->addComponent(std::make_unique<components::Momentum>(math::Vector2f(0.0f, 0.0f)));
         this->addComponent(std::make_unique<components::Lifetime>(lifetime, [this, emitBullet]() { explode(emitBullet); }));
+        this->addComponent(std::make_unique<components::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_BOMB)));
         this->addComponent(std::make_unique<components::Orientation>(0.0f));
     }
 

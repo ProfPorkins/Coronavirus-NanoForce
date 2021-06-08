@@ -40,6 +40,7 @@ namespace systems
             auto orientation = entity->getComponent<components::Orientation>();
 
             sf::Sprite sprite(*(entity->getComponent<components::Sprite>()->get()));
+            sprite.setOrigin({ sprite.getTexture()->getSize().x / 2.0f, sprite.getTexture()->getSize().y / 2.0f });
             sprite.setPosition(position->get());
             sprite.setRotation(orientation->get());
 

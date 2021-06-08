@@ -111,8 +111,6 @@ void GameModel::initialize()
 
     m_rendererParticleSystem = std::make_unique<renderers::ParticleSystem>();
 
-    m_rendererPlayer = std::make_unique<renderers::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_PLAYER));
-    m_rendererBomb = std::make_unique<renderers::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_BOMB));
     m_rendererPowerup = std::make_unique<renderers::AnimatedSprite>();
 
     m_rendererSarsCov2 = std::make_unique<renderers::Virus>(
@@ -270,10 +268,8 @@ void GameModel::render(sf::RenderTarget& renderTarget, const std::chrono::micros
     renderTarget.clear(sf::Color::Black);
     m_rendererBackground->render(renderTarget);
 
-    m_rendererBomb->render(m_bombs, renderTarget);
     m_rendererPowerup->render(m_powerups, renderTarget);
     m_rendererSarsCov2->render(m_viruses, renderTarget, elapsedTime);
-    m_renderPlayer(renderTarget);
     m_rendererParticleSystem->render(m_sysParticle, renderTarget);
     m_rendererHUD->render(m_remainingNanoBots + 1, m_timePlayed, m_virusesKilled, renderTarget);
     m_rendererStatus->render(renderTarget);
@@ -391,6 +387,7 @@ void GameModel::onPlayerDeath()
     m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER, position->get(), 0.0f, 0.0f, size->getOuterRadius(), 0.01f, orientation, misc::msTous(std::chrono::milliseconds(2000))));
 
     unregisterInputHandlers();
+    removeEntity(m_player->getId());
     if (m_remainingNanoBots > 0)
     {
         m_remainingNanoBots--;
@@ -401,7 +398,6 @@ void GameModel::onPlayerDeath()
         m_rendererStatus->setMessage(m_level->getMessageFailure());
         m_remainingNanoBots--;
         m_updatePlayer = [](std::chrono::microseconds) {};
-        m_renderPlayer = [](sf::RenderTarget&) {};
     }
 }
 
@@ -416,7 +412,6 @@ void GameModel::resetPlayer()
     if (m_player)
     {
         m_player->cleanup();
-        removeEntity(m_player->getId());
     }
     m_player = nullptr;
 
@@ -433,7 +428,6 @@ void GameModel::resetPlayer()
             }
         }
     };
-    m_renderPlayer = [](sf::RenderTarget&) {};
 }
 
 // --------------------------------------------------------------
@@ -517,9 +511,6 @@ void GameModel::startPlayer(math::Point2f position)
                 break;
             }
         }
-    };
-    m_renderPlayer = [this](sf::RenderTarget& renderTarget) {
-        m_rendererPlayer->render(*m_player, renderTarget);
     };
 
     // Particle effect as a visual cue to show where the player starts
