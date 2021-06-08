@@ -60,7 +60,7 @@ void GameModel::selectLevel(levels::LevelName whichLevel)
     m_levelSelect = whichLevel;
 }
 
-GameModel::GameModel() 
+GameModel::GameModel()
 {
     switch (m_levelSelect)
     {
@@ -132,6 +132,7 @@ void GameModel::initialize()
     m_sysAge = std::make_unique<systems::Age>();
     m_sysAnimatedSprite = std::make_unique<systems::AnimatedSprite>();
     m_sysBirth = std::make_unique<systems::Birth>([this](entities::Entity::IdType parentId) { this->onVirusBirth(parentId); });
+    m_sysHealth = std::make_unique<systems::Health>();
 
     for (auto&& virus : m_level->initializeViruses())
     {
@@ -193,7 +194,7 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     // before Birth because age is used in the gestation determination in the Birth system.
     m_sysAge->update(elapsedTime);
     m_sysBirth->update(elapsedTime);
-    m_sysHealth.update(elapsedTime, m_viruses);
+    m_sysHealth->update(elapsedTime);
 
     m_sysAnimatedSprite->update(elapsedTime);
 
@@ -539,6 +540,7 @@ void GameModel::addEntity(std::shared_ptr<entities::Entity> entity)
     m_sysAge->addEntity(entity);
     m_sysAnimatedSprite->addEntity(entity);
     m_sysBirth->addEntity(entity);
+    m_sysHealth->addEntity(entity);
     m_sysMovement->addEntity(entity);
 }
 
@@ -556,6 +558,7 @@ void GameModel::removeEntity(entities::Entity::IdType entityId)
     m_sysAge->removeEntity(entityId);
     m_sysAnimatedSprite->removeEntity(entityId);
     m_sysBirth->removeEntity(entityId);
+    m_sysHealth->removeEntity(entityId);
     m_sysMovement->removeEntity(entityId);
 }
 

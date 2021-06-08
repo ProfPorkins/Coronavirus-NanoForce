@@ -22,11 +22,10 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "entities/Virus.hpp"
+#include "System.hpp"
+#include "components/Health.hpp"
 
 #include <chrono>
-#include <memory>
-#include <unordered_map>
 
 namespace systems
 {
@@ -36,11 +35,14 @@ namespace systems
     // is to add that health as they age.
     //
     // --------------------------------------------------------------
-    class Health
+    class Health : public System
     {
       public:
-        Health() = default;
+        Health() :
+            System({ ctti::unnamed_type_id<components::Health>() })
+        {
+        }
 
-        void update(const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities);
+        virtual void update(const std::chrono::microseconds elapsedTime) override;
     };
 } // namespace systems

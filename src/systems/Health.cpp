@@ -26,9 +26,9 @@ THE SOFTWARE.
 
 namespace systems
 {
-    void Health::update(const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities)
+    void Health::update(const std::chrono::microseconds elapsedTime)
     {
-        for (auto&& [id, entity] : entities)
+        for (auto&& [id, entity] : m_entities)
         {
             auto health = entity->getComponent<components::Health>();
             health->addElapsedIncrementTime(elapsedTime);
