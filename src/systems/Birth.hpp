@@ -22,7 +22,9 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "entities/Virus.hpp"
+#include "System.hpp"
+#include "components/Age.hpp"
+#include "components/Birth.hpp"
 
 #include <chrono>
 #include <functional>
@@ -32,15 +34,17 @@ THE SOFTWARE.
 
 namespace systems
 {
-    class Birth
+    class Birth : public System
     {
       public:
         Birth(std::function<void(entities::Entity::IdType parentId)> onBirth) :
+            System({ ctti::unnamed_type_id<components::Age>(),
+                     ctti::unnamed_type_id<components::Birth>() }),
             m_onBirth(onBirth)
         {
         }
 
-        void update(const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities);
+        virtual void update(const std::chrono::microseconds elapsedTime) override;
 
       private:
         std::function<void(entities::Entity::IdType parentId)> m_onBirth;

@@ -77,7 +77,7 @@ class GameModel
     std::unique_ptr<systems::Movement> m_sysMovement;
     systems::Lifetime m_sysLifetime;
     systems::ParticleSystem m_sysParticle;
-    systems::Birth m_sysBirth;
+    std::unique_ptr<systems::Birth> m_sysBirth;
     systems::Health m_sysHealth;
     std::unique_ptr<systems::AnimatedSprite> m_sysAnimatedSprite;
     std::unique_ptr<systems::Age> m_sysAge;

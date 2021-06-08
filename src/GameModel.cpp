@@ -60,8 +60,7 @@ void GameModel::selectLevel(levels::LevelName whichLevel)
     m_levelSelect = whichLevel;
 }
 
-GameModel::GameModel() :
-    m_sysBirth([this](entities::Entity::IdType parentId) { this->onVirusBirth(parentId); })
+GameModel::GameModel() 
 {
     switch (m_levelSelect)
     {
@@ -130,8 +129,9 @@ void GameModel::initialize()
     m_viruses.clear();
 
     m_sysMovement = std::make_unique<systems::Movement>(*m_level);
-    m_sysAnimatedSprite = std::make_unique<systems::AnimatedSprite>();
     m_sysAge = std::make_unique<systems::Age>();
+    m_sysAnimatedSprite = std::make_unique<systems::AnimatedSprite>();
+    m_sysBirth = std::make_unique<systems::Birth>([this](entities::Entity::IdType parentId) { this->onVirusBirth(parentId); });
 
     for (auto&& virus : m_level->initializeViruses())
     {
@@ -192,7 +192,7 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     // It isn't absolutely essential to the overall game, but the age should be updated
     // before Birth because age is used in the gestation determination in the Birth system.
     m_sysAge->update(elapsedTime);
-    m_sysBirth.update(elapsedTime, m_viruses);
+    m_sysBirth->update(elapsedTime);
     m_sysHealth.update(elapsedTime, m_viruses);
 
     m_sysAnimatedSprite->update(elapsedTime);
@@ -536,9 +536,10 @@ void GameModel::addEntity(std::shared_ptr<entities::Entity> entity)
         return;
 
     m_entities[entity->getId()] = entity;
-    m_sysMovement->addEntity(entity);
     m_sysAge->addEntity(entity);
     m_sysAnimatedSprite->addEntity(entity);
+    m_sysBirth->addEntity(entity);
+    m_sysMovement->addEntity(entity);
 }
 
 // --------------------------------------------------------------
@@ -552,9 +553,10 @@ void GameModel::removeEntity(entities::Entity::IdType entityId)
     m_entities.erase(entityId);
     //
     // Let each of the systems know to remove the entity
-    m_sysMovement->removeEntity(entityId);
     m_sysAge->removeEntity(entityId);
     m_sysAnimatedSprite->removeEntity(entityId);
+    m_sysBirth->removeEntity(entityId);
+    m_sysMovement->removeEntity(entityId);
 }
 
 // --------------------------------------------------------------

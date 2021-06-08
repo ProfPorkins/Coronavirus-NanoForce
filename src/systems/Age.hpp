@@ -25,11 +25,8 @@ THE SOFTWARE.
 #include "System.hpp"
 #include "components/Age.hpp"
 #include "components/Size.hpp"
-#include "entities/Virus.hpp"
 
 #include <chrono>
-#include <memory>
-#include <unordered_map>
 
 namespace systems
 {
