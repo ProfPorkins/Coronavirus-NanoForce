@@ -76,15 +76,14 @@ class GameModel
 
     std::unique_ptr<systems::Movement> m_sysMovement;
     std::unique_ptr<systems::Lifetime> m_sysLifetime;
-    systems::ParticleSystem m_sysParticle;
     std::unique_ptr<systems::Birth> m_sysBirth;
     std::unique_ptr<systems::Health> m_sysHealth;
     std::unique_ptr<systems::AnimatedSprite> m_sysAnimatedSprite;
     std::unique_ptr<systems::Age> m_sysAge;
+    systems::ParticleSystem m_sysParticle;
 
     std::shared_ptr<entities::Player> m_player{ nullptr };
     std::uint8_t m_remainingNanoBots{ 0 };
-    entities::EntityMap m_entities;
     std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>> m_viruses;
     std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>> m_bullets;
     std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>> m_bombs;

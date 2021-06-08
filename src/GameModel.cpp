@@ -538,7 +538,6 @@ void GameModel::addEntity(std::shared_ptr<entities::Entity> entity)
     if (entity == nullptr)
         return;
 
-    m_entities[entity->getId()] = entity;
     m_sysAge->addEntity(entity);
     m_sysAnimatedSprite->addEntity(entity);
     m_sysBirth->addEntity(entity);
@@ -555,7 +554,6 @@ void GameModel::addEntity(std::shared_ptr<entities::Entity> entity)
 // --------------------------------------------------------------
 void GameModel::removeEntity(entities::Entity::IdType entityId)
 {
-    m_entities.erase(entityId);
     //
     // Let each of the systems know to remove the entity
     m_sysAge->removeEntity(entityId);
