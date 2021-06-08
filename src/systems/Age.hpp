@@ -22,6 +22,9 @@ THE SOFTWARE.
 
 #pragma once
 
+#include "System.hpp"
+#include "components/Age.hpp"
+#include "components/Size.hpp"
 #include "entities/Virus.hpp"
 
 #include <chrono>
@@ -30,9 +33,15 @@ THE SOFTWARE.
 
 namespace systems
 {
-    class Age
+    class Age : public System
     {
       public:
-        void update(const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities);
+        Age() :
+            System({ ctti::unnamed_type_id<components::Age>(),
+                     ctti::unnamed_type_id<components::Size>() })
+        {
+        }
+
+        virtual void update(std::chrono::microseconds elapsedTime) override;
     };
 } // namespace systems

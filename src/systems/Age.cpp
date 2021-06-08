@@ -29,9 +29,9 @@ THE SOFTWARE.
 
 namespace systems
 {
-    void Age::update(const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities)
+    void Age::update(const std::chrono::microseconds elapsedTime)
     {
-        for (auto&& [id, entity] : entities)
+        for (auto&& [id, entity] : m_entities)
         {
             auto age = entity->getComponent<components::Age>();
             auto size = entity->getComponent<components::Size>();

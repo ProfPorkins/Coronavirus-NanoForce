@@ -130,6 +130,7 @@ void GameModel::initialize()
     m_viruses.clear();
 
     m_sysMovement = std::make_unique<systems::Movement>(*m_level);
+    m_sysAge = std::make_unique<systems::Age>();
 
     for (auto&& virus : m_level->initializeViruses())
     {
@@ -189,7 +190,7 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
 
     // It isn't absolutely essential to the overall game, but the age should be updated
     // before Birth because age is used in the gestation determination in the Birth system.
-    m_sysAge.update(elapsedTime, m_viruses);
+    m_sysAge->update(elapsedTime);
     m_sysBirth.update(elapsedTime, m_viruses);
     m_sysHealth.update(elapsedTime, m_viruses);
 
@@ -535,6 +536,7 @@ void GameModel::addEntity(std::shared_ptr<entities::Entity> entity)
 
     m_entities[entity->getId()] = entity;
     m_sysMovement->addEntity(entity);
+    m_sysAge->addEntity(entity);
 }
 
 // --------------------------------------------------------------
@@ -549,6 +551,7 @@ void GameModel::removeEntity(entities::Entity::IdType entityId)
     //
     // Let each of the systems know to remove the entity
     m_sysMovement->removeEntity(entityId);
+    m_sysAge->removeEntity(entityId);
 }
 
 // --------------------------------------------------------------

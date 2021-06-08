@@ -80,7 +80,7 @@ class GameModel
     systems::Birth m_sysBirth;
     systems::Health m_sysHealth;
     systems::AnimatedSprite m_sysAnimatedSprite;
-    systems::Age m_sysAge;
+    std::unique_ptr<systems::Age> m_sysAge;
 
     std::shared_ptr<entities::Player> m_player{ nullptr };
     std::uint8_t m_remainingNanoBots{ 0 };
