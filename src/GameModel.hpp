@@ -87,7 +87,6 @@ class GameModel
     std::uint8_t m_remainingNanoBots{ 0 };
     std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>> m_viruses;
     std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>> m_bullets;
-    std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>> m_bombs;
     std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Powerup>> m_powerups;
     std::vector<std::shared_ptr<entities::Virus>> m_newViruses;
 

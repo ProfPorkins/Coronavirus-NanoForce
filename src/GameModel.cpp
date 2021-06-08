@@ -123,7 +123,6 @@ void GameModel::initialize()
     m_sysRendererSprite = std::make_unique<systems::RendererSprite>();
 
     m_bullets.clear();
-    m_bombs.clear();
     m_powerups.clear();
     m_viruses.clear();
 
@@ -183,10 +182,6 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     m_sysParticle.update(elapsedTime);
 
     m_updatePlayer(elapsedTime);
-
-    //m_sysLifetime.update(elapsedTime, m_bullets);
-    //m_sysLifetime.update(elapsedTime, m_bombs);
-    //m_sysLifetime.update(elapsedTime, m_powerups);
 
     m_sysLifetime->update(elapsedTime);
     m_sysMovement->update(elapsedTime);
@@ -295,7 +290,6 @@ void GameModel::emitBullet(std::shared_ptr<entities::Entity>& bullet)
 // --------------------------------------------------------------
 void GameModel::emitBomb(std::shared_ptr<entities::Entity>& bomb)
 {
-    m_bombs[bomb->getId()] = bomb;
     addEntity(bomb);
 }
 
