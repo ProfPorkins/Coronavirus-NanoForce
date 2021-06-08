@@ -37,7 +37,7 @@ namespace systems
     class Birth : public System
     {
       public:
-        Birth(std::function<void(entities::Entity::IdType parentId)> onBirth) :
+        Birth(std::function<void(entities::Entity::IdType)> onBirth) :
             System({ ctti::unnamed_type_id<components::Age>(),
                      ctti::unnamed_type_id<components::Birth>() }),
             m_onBirth(onBirth)
@@ -47,7 +47,7 @@ namespace systems
         virtual void update(const std::chrono::microseconds elapsedTime) override;
 
       private:
-        std::function<void(entities::Entity::IdType parentId)> m_onBirth;
+        std::function<void(entities::Entity::IdType)> m_onBirth;
         std::random_device m_rd;
         std::mt19937 m_generator;
     };

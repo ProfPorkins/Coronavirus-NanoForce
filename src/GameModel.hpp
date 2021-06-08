@@ -75,7 +75,7 @@ class GameModel
     std::uint32_t m_virusesKilled{ 0 };
 
     std::unique_ptr<systems::Movement> m_sysMovement;
-    systems::Lifetime m_sysLifetime;
+    std::unique_ptr<systems::Lifetime> m_sysLifetime;
     systems::ParticleSystem m_sysParticle;
     std::unique_ptr<systems::Birth> m_sysBirth;
     std::unique_ptr<systems::Health> m_sysHealth;

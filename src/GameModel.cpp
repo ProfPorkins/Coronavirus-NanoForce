@@ -133,6 +133,7 @@ void GameModel::initialize()
     m_sysAnimatedSprite = std::make_unique<systems::AnimatedSprite>();
     m_sysBirth = std::make_unique<systems::Birth>([this](entities::Entity::IdType parentId) { this->onVirusBirth(parentId); });
     m_sysHealth = std::make_unique<systems::Health>();
+    m_sysLifetime = std::make_unique<systems::Lifetime>([this](entities::Entity::IdType entityId) { this->removeEntity(entityId); });
 
     for (auto&& virus : m_level->initializeViruses())
     {
@@ -184,10 +185,11 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
 
     m_updatePlayer(elapsedTime);
 
-    m_sysLifetime.update(elapsedTime, m_bullets);
-    m_sysLifetime.update(elapsedTime, m_bombs);
-    m_sysLifetime.update(elapsedTime, m_powerups);
+    //m_sysLifetime.update(elapsedTime, m_bullets);
+    //m_sysLifetime.update(elapsedTime, m_bombs);
+    //m_sysLifetime.update(elapsedTime, m_powerups);
 
+    m_sysLifetime->update(elapsedTime);
     m_sysMovement->update(elapsedTime);
 
     // It isn't absolutely essential to the overall game, but the age should be updated
@@ -541,6 +543,7 @@ void GameModel::addEntity(std::shared_ptr<entities::Entity> entity)
     m_sysAnimatedSprite->addEntity(entity);
     m_sysBirth->addEntity(entity);
     m_sysHealth->addEntity(entity);
+    m_sysLifetime->addEntity(entity);
     m_sysMovement->addEntity(entity);
 }
 
@@ -559,6 +562,7 @@ void GameModel::removeEntity(entities::Entity::IdType entityId)
     m_sysAnimatedSprite->removeEntity(entityId);
     m_sysBirth->removeEntity(entityId);
     m_sysHealth->removeEntity(entityId);
+    m_sysLifetime->removeEntity(entityId);
     m_sysMovement->removeEntity(entityId);
 }
 
