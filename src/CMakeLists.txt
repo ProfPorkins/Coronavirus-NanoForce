@@ -58,6 +58,7 @@ set(CLIENT_COMPONENTS_HEADERS
     components/Orientation.hpp
     components/Position.hpp
     components/Size.hpp
+    components/Sprite.hpp
     )
 set(CLIENT_COMPONENTS_SOURCES
     components/Size.cpp
@@ -162,6 +163,7 @@ set(CLIENT_SYSTEMS_HEADERS
     systems/Movement.hpp
     systems/Particle.hpp
     systems/ParticleSystem.hpp
+    systems/RendererSprite.hpp
     systems/System.hpp
     )
 set(CLIENT_SYSTEMS_SOURCES
@@ -172,6 +174,7 @@ set(CLIENT_SYSTEMS_SOURCES
     systems/Lifetime.cpp
     systems/Movement.cpp
     systems/ParticleSystem.cpp
+    systems/RendererSprite.cpp
     systems/System.cpp
     )
 

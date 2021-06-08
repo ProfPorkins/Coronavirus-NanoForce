@@ -20,31 +20,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "Bullet.hpp"
+#pragma once
 
-#include "components/Damage.hpp"
-#include "components/Lifetime.hpp"
-#include "components/Momentum.hpp"
+#include "System.hpp"
 #include "components/Orientation.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"
 #include "components/Sprite.hpp"
-#include "misc/math.hpp"
-#include "services/Content.hpp"
-#include "services/ContentKey.hpp"
 
-namespace entities
+#include <chrono>
+
+namespace systems
 {
-
-    Bullet::Bullet(std::uint16_t damage, std::chrono::microseconds lifetime, float size)
+    // --------------------------------------------------------------
+    //
+    // This system is used to render entities.
+    //
+    // --------------------------------------------------------------
+    class RendererSprite : public System
     {
-        this->addComponent(std::make_unique<components::Position>(math::Point2f(0.0f, 0.0f)));
-        this->addComponent(std::make_unique<components::Size>(math::Dimension2f(size, size)));
-        this->addComponent(std::make_unique<components::Momentum>(math::Vector2f(0.0f, 0.0f)));
-        this->addComponent(std::make_unique<components::Lifetime>(lifetime));
-        this->addComponent(std::make_unique<components::Damage>(damage));
-        this->addComponent(std::make_unique<components::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_BASIC_GUN_BULLET)));
-        this->addComponent(std::make_unique<components::Orientation>(0.0f));
-    }
+      public:
+        RendererSprite() :
+            System({ ctti::unnamed_type_id<components::Position>(),
+                     ctti::unnamed_type_id<components::Size>(),
+                     ctti::unnamed_type_id<components::Orientation>(),
+                     ctti::unnamed_type_id<components::Sprite>() })
+        {
+        }
 
-} // namespace entities
+        void update(std::chrono::microseconds elapsedTime, sf::RenderTarget& renderTarget);
+    };
+} // namespace systems

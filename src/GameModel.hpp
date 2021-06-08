@@ -41,6 +41,7 @@ THE SOFTWARE.
 #include "systems/Lifetime.hpp"
 #include "systems/Movement.hpp"
 #include "systems/ParticleSystem.hpp"
+#include "systems/RendererSprite.hpp"
 
 #include <SFML/Audio/Sound.hpp>
 #include <SFML/Graphics.hpp>
@@ -81,6 +82,7 @@ class GameModel
     std::unique_ptr<systems::AnimatedSprite> m_sysAnimatedSprite;
     std::unique_ptr<systems::Age> m_sysAge;
     systems::ParticleSystem m_sysParticle;
+    std::unique_ptr<systems::RendererSprite> m_sysRendererSprite;
 
     std::shared_ptr<entities::Player> m_player{ nullptr };
     std::uint8_t m_remainingNanoBots{ 0 };

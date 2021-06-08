@@ -123,6 +123,8 @@ void GameModel::initialize()
     m_rendererHUD = std::make_unique<renderers::HUD>();
     m_rendererStatus = std::make_unique<renderers::GameStatus>();
 
+    m_sysRendererSprite = std::make_unique<systems::RendererSprite>();
+
     m_bullets.clear();
     m_bombs.clear();
     m_powerups.clear();
@@ -269,7 +271,6 @@ void GameModel::render(sf::RenderTarget& renderTarget, const std::chrono::micros
     renderTarget.clear(sf::Color::Black);
     m_rendererBackground->render(renderTarget);
 
-    m_rendererBullet->render(m_bullets, renderTarget);
     m_rendererBomb->render(m_bombs, renderTarget);
     m_rendererPowerup->render(m_powerups, renderTarget);
     m_rendererSarsCov2->render(m_viruses, renderTarget, elapsedTime);
@@ -277,6 +278,8 @@ void GameModel::render(sf::RenderTarget& renderTarget, const std::chrono::micros
     m_rendererParticleSystem->render(m_sysParticle, renderTarget);
     m_rendererHUD->render(m_remainingNanoBots + 1, m_timePlayed, m_virusesKilled, renderTarget);
     m_rendererStatus->render(renderTarget);
+
+    m_sysRendererSprite->update(elapsedTime, renderTarget);
 }
 
 // --------------------------------------------------------------
@@ -544,6 +547,8 @@ void GameModel::addEntity(std::shared_ptr<entities::Entity> entity)
     m_sysHealth->addEntity(entity);
     m_sysLifetime->addEntity(entity);
     m_sysMovement->addEntity(entity);
+
+    m_sysRendererSprite->addEntity(entity);
 }
 
 // --------------------------------------------------------------
@@ -562,6 +567,8 @@ void GameModel::removeEntity(entities::Entity::IdType entityId)
     m_sysHealth->removeEntity(entityId);
     m_sysLifetime->removeEntity(entityId);
     m_sysMovement->removeEntity(entityId);
+
+    m_sysRendererSprite->removeEntity(entityId);
 }
 
 // --------------------------------------------------------------
