@@ -22,28 +22,21 @@ THE SOFTWARE.
 
 #pragma once
 
+#include "System.hpp"
 #include "components/AnimatedSprite.hpp"
-#include "entities/Entity.hpp"
 
 #include <chrono>
-#include <memory>
-#include <unordered_map>
 
 namespace systems
 {
-    class AnimatedSprite
+    class AnimatedSprite : public System
     {
       public:
-        template <typename T>
-        void update(const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<T>>& entities)
+        AnimatedSprite() :
+            System({ ctti::unnamed_type_id<components::AnimatedSprite>() })
         {
-            for (auto&& [id, entity] : entities)
-            {
-                update(*std::static_pointer_cast<entities::Entity>(entity), elapsedTime);
-            }
         }
 
-      private:
-        void update(entities::Entity& entity, const std::chrono::microseconds elapsedTime);
+        virtual void update(std::chrono::microseconds elapsedTime) override;
     };
 } // namespace systems

@@ -130,6 +130,7 @@ void GameModel::initialize()
     m_viruses.clear();
 
     m_sysMovement = std::make_unique<systems::Movement>(*m_level);
+    m_sysAnimatedSprite = std::make_unique<systems::AnimatedSprite>();
     m_sysAge = std::make_unique<systems::Age>();
 
     for (auto&& virus : m_level->initializeViruses())
@@ -194,7 +195,7 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     m_sysBirth.update(elapsedTime, m_viruses);
     m_sysHealth.update(elapsedTime, m_viruses);
 
-    m_sysAnimatedSprite.update(elapsedTime, m_powerups);
+    m_sysAnimatedSprite->update(elapsedTime);
 
     //
     // Let's see if any bullets hit any viruses
@@ -537,6 +538,7 @@ void GameModel::addEntity(std::shared_ptr<entities::Entity> entity)
     m_entities[entity->getId()] = entity;
     m_sysMovement->addEntity(entity);
     m_sysAge->addEntity(entity);
+    m_sysAnimatedSprite->addEntity(entity);
 }
 
 // --------------------------------------------------------------
@@ -552,6 +554,7 @@ void GameModel::removeEntity(entities::Entity::IdType entityId)
     // Let each of the systems know to remove the entity
     m_sysMovement->removeEntity(entityId);
     m_sysAge->removeEntity(entityId);
+    m_sysAnimatedSprite->removeEntity(entityId);
 }
 
 // --------------------------------------------------------------

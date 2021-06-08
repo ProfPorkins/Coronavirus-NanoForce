@@ -79,7 +79,7 @@ class GameModel
     systems::ParticleSystem m_sysParticle;
     systems::Birth m_sysBirth;
     systems::Health m_sysHealth;
-    systems::AnimatedSprite m_sysAnimatedSprite;
+    std::unique_ptr<systems::AnimatedSprite> m_sysAnimatedSprite;
     std::unique_ptr<systems::Age> m_sysAge;
 
     std::shared_ptr<entities::Player> m_player{ nullptr };
