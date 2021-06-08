@@ -93,7 +93,6 @@ class GameModel
     std::vector<std::shared_ptr<entities::Virus>> m_newViruses;
 
     std::unique_ptr<renderers::Sprite> m_rendererPlayer;
-    std::unique_ptr<renderers::Sprite> m_rendererBullet;
     std::unique_ptr<renderers::Sprite> m_rendererBomb;
     std::unique_ptr<renderers::Virus> m_rendererSarsCov2;
     std::unique_ptr<renderers::Background> m_rendererBackground;

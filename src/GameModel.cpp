@@ -112,7 +112,6 @@ void GameModel::initialize()
     m_rendererParticleSystem = std::make_unique<renderers::ParticleSystem>();
 
     m_rendererPlayer = std::make_unique<renderers::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_PLAYER));
-    m_rendererBullet = std::make_unique<renderers::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_BASIC_GUN_BULLET));
     m_rendererBomb = std::make_unique<renderers::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_BOMB));
     m_rendererPowerup = std::make_unique<renderers::AnimatedSprite>();
 
