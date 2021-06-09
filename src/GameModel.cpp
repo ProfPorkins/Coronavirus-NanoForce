@@ -108,14 +108,8 @@ void GameModel::initialize()
         Content::get<sf::Texture>(m_level->getBackgroundImageKey()),
         m_level->getBackgroundSize(),
         math::Point2f(0.0f, 0.0f));
-
     m_rendererHUD = std::make_unique<renderers::HUD>();
     m_rendererStatus = std::make_unique<renderers::GameStatus>();
-
-    m_sysRendererSprite = std::make_unique<systems::RendererSprite>();
-    m_sysRendererAnimatedSprite = std::make_unique<systems::RendererAnimatedSprite>();
-    m_sysRendererSarsCov2 = std::make_unique<systems::RendererVirus>();
-    m_sysRendererParticleSystem = std::make_unique<systems::RendererParticleSystem>();
 
     m_bullets.clear();
     m_powerups.clear();
@@ -127,6 +121,12 @@ void GameModel::initialize()
     m_sysBirth = std::make_unique<systems::Birth>([this](entities::Entity::IdType parentId) { this->onVirusBirth(parentId); });
     m_sysHealth = std::make_unique<systems::Health>();
     m_sysLifetime = std::make_unique<systems::Lifetime>([this](entities::Entity::IdType entityId) { this->removeEntity(entityId); });
+    m_sysParticle = std::make_unique<systems::ParticleSystem>();
+
+    m_sysRendererSprite = std::make_unique<systems::RendererSprite>();
+    m_sysRendererAnimatedSprite = std::make_unique<systems::RendererAnimatedSprite>();
+    m_sysRendererSarsCov2 = std::make_unique<systems::RendererVirus>();
+    m_sysRendererParticleSystem = std::make_unique<systems::RendererParticleSystem>();
 
     for (auto&& virus : m_level->initializeViruses())
     {
@@ -174,10 +174,9 @@ void GameModel::shutdown()
 // --------------------------------------------------------------
 void GameModel::update(const std::chrono::microseconds elapsedTime)
 {
-    m_sysParticle.update(elapsedTime);
-
     m_updatePlayer(elapsedTime);
 
+    m_sysParticle->update(elapsedTime);
     m_sysLifetime->update(elapsedTime);
     m_sysMovement->update(elapsedTime);
 
@@ -263,7 +262,7 @@ void GameModel::render(sf::RenderTarget& renderTarget, const std::chrono::micros
     m_sysRendererAnimatedSprite->update(elapsedTime, renderTarget);
     m_sysRendererSarsCov2->update(elapsedTime, renderTarget);
     m_sysRendererSprite->update(elapsedTime, renderTarget);
-    m_sysRendererParticleSystem->update(m_sysParticle, renderTarget);
+    m_sysRendererParticleSystem->update(*m_sysParticle, renderTarget);
 }
 
 // --------------------------------------------------------------
@@ -312,19 +311,19 @@ void GameModel::onVirusDeath(entities::Entity::IdType entityId)
     auto size = virus->getComponent<components::Size>();
 
     auto howMany = static_cast<std::uint16_t>(virus->getBullets().size() * 5);
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2_PARTICLE, position->get(), 0.0f, howMany, 0.00002f, 1.0f, 0.2f, misc::msTous(std::chrono::milliseconds(1000))));
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2_PARTICLE, position->get(), size->getInnerRadius() / 2.0f, howMany, 0.0000075f, 1.0f, 0.2f, misc::msTous(std::chrono::milliseconds(1000))));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2_PARTICLE, position->get(), 0.0f, howMany, 0.00002f, 1.0f, 0.2f, misc::msTous(std::chrono::milliseconds(1000))));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2_PARTICLE, position->get(), size->getInnerRadius() / 2.0f, howMany, 0.0000075f, 1.0f, 0.2f, misc::msTous(std::chrono::milliseconds(1000))));
     //
     // Time these so they finish just before the center
     auto lifetime = misc::msTous(std::chrono::milliseconds(1500));
     auto speed = -size->getInnerRadius() / lifetime.count();
     // Even I admit this is a pretty long way to get the size, but it is the way to do it
     auto bulletSize = virus->getBullets().at(0)->getComponent<components::Size>()->get().width;
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_BASIC_GUN_BULLET, position->get(), size->getInnerRadius(), static_cast<std::uint16_t>(virus->getBullets().size()), speed, bulletSize, bulletSize / 2.0f, lifetime));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_BASIC_GUN_BULLET, position->get(), size->getInnerRadius(), static_cast<std::uint16_t>(virus->getBullets().size()), speed, bulletSize, bulletSize / 2.0f, lifetime));
 
     //
     // One particle for the virus itself slowly going away
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2, position->get(), 0.0f, static_cast<std::uint16_t>(1), 0.0f, size->getOuterRadius(), 0.01f, lifetime));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2, position->get(), 0.0f, static_cast<std::uint16_t>(1), 0.0f, size->getOuterRadius(), 0.01f, lifetime));
 
     m_virusesKilled++;
     //
@@ -363,16 +362,16 @@ void GameModel::onPlayerDeath()
 
     auto position = m_player->getComponent<components::Position>();
     auto howMany = static_cast<std::uint16_t>(100);
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.00002f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(500))));
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.00001f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(750))));
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.000005f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(1000))));
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.0000025f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(1250))));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.00002f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(500))));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.00001f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(750))));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.000005f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(1000))));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.0000025f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(1250))));
 
     //
     // One particle for the player's ship slowly going away
     auto size = m_player->getComponent<components::Size>();
     auto orientation = m_player->getComponent<components::Orientation>()->get();
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER, position->get(), 0.0f, 0.0f, size->getOuterRadius(), 0.01f, orientation, misc::msTous(std::chrono::milliseconds(2000))));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER, position->get(), 0.0f, 0.0f, size->getOuterRadius(), 0.01f, orientation, misc::msTous(std::chrono::milliseconds(2000))));
 
     unregisterInputHandlers();
     removeEntity(m_player->getId());
@@ -502,7 +501,7 @@ void GameModel::startPlayer(math::Point2f position)
     };
 
     // Particle effect as a visual cue to show where the player starts
-    m_sysParticle.addEffect(std::make_unique<systems::PlayerStartEffect>(
+    m_sysParticle->addEffect(std::make_unique<systems::PlayerStartEffect>(
         m_player->getComponent<components::Position>()->get(),
         static_cast<std::uint16_t>(300), misc::msTous(std::chrono::milliseconds(750))));
 }
