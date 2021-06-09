@@ -38,6 +38,7 @@ namespace entities
       public:
         Virus(std::chrono::microseconds age = std::chrono::microseconds(0));
 
+        // TODO: These need to be turned into components
         void addBullet(std::shared_ptr<entities::Entity> bullet);
         auto& getBullets() { return m_bullets; }
         float getBulletAngleStart() { return m_bulletAngleStart; }

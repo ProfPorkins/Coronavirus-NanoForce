@@ -111,15 +111,12 @@ void GameModel::initialize()
 
     m_rendererParticleSystem = std::make_unique<renderers::ParticleSystem>();
 
-    m_rendererSarsCov2 = std::make_unique<renderers::Virus>(
-        Content::get<sf::Texture>(content::KEY_IMAGE_SARSCOV2),
-        Content::get<sf::Texture>(content::KEY_IMAGE_BASIC_GUN_BULLET));
-
     m_rendererHUD = std::make_unique<renderers::HUD>();
     m_rendererStatus = std::make_unique<renderers::GameStatus>();
 
     m_sysRendererSprite = std::make_unique<systems::RendererSprite>();
     m_sysRendererAnimatedSprite = std::make_unique<systems::RendererAnimatedSprite>();
+    m_sysRendererSarsCov2 = std::make_unique<systems::RendererVirus>();
 
     m_bullets.clear();
     m_powerups.clear();
@@ -262,12 +259,12 @@ void GameModel::render(sf::RenderTarget& renderTarget, const std::chrono::micros
     renderTarget.clear(sf::Color::Black);
     m_rendererBackground->render(renderTarget);
 
-    m_rendererSarsCov2->render(m_viruses, renderTarget, elapsedTime);
     m_rendererParticleSystem->render(m_sysParticle, renderTarget);
     m_rendererHUD->render(m_remainingNanoBots + 1, m_timePlayed, m_virusesKilled, renderTarget);
     m_rendererStatus->render(renderTarget);
 
     m_sysRendererAnimatedSprite->update(elapsedTime, renderTarget);
+    m_sysRendererSarsCov2->update(elapsedTime, renderTarget);
     m_sysRendererSprite->update(elapsedTime, renderTarget);
 }
 
@@ -533,6 +530,7 @@ void GameModel::addEntity(std::shared_ptr<entities::Entity> entity)
 
     m_sysRendererSprite->addEntity(entity);
     m_sysRendererAnimatedSprite->addEntity(entity);
+    m_sysRendererSarsCov2->addEntity(entity);
 }
 
 // --------------------------------------------------------------
@@ -554,6 +552,7 @@ void GameModel::removeEntity(entities::Entity::IdType entityId)
 
     m_sysRendererSprite->removeEntity(entityId);
     m_sysRendererAnimatedSprite->removeEntity(entityId);
+    m_sysRendererSarsCov2->removeEntity(entityId);
 }
 
 // --------------------------------------------------------------

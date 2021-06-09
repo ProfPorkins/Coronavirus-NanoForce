@@ -32,7 +32,7 @@ namespace systems
 {
     // --------------------------------------------------------------
     //
-    // This system is used to render entities.
+    // This system is used to render AnimatedSprites.
     //
     // --------------------------------------------------------------
     class RendererAnimatedSprite : public System

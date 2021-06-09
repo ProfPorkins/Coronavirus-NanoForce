@@ -31,7 +31,6 @@ THE SOFTWARE.
 #include "renderers/GameStatus.hpp"
 #include "renderers/HUD.hpp"
 #include "renderers/ParticleSystem.hpp"
-#include "renderers/Virus.hpp"
 #include "systems/Age.hpp"
 #include "systems/AnimatedSprite.hpp"
 #include "systems/Birth.hpp"
@@ -41,6 +40,7 @@ THE SOFTWARE.
 #include "systems/ParticleSystem.hpp"
 #include "systems/RendererAnimatedSprite.hpp"
 #include "systems/RendererSprite.hpp"
+#include "systems/RendererVirus.hpp"
 
 #include <SFML/Audio/Sound.hpp>
 #include <SFML/Graphics.hpp>
@@ -83,6 +83,7 @@ class GameModel
     systems::ParticleSystem m_sysParticle;
     std::unique_ptr<systems::RendererSprite> m_sysRendererSprite;
     std::unique_ptr<systems::RendererAnimatedSprite> m_sysRendererAnimatedSprite;
+    std::unique_ptr<systems::RendererVirus> m_sysRendererSarsCov2;
 
     std::shared_ptr<entities::Player> m_player{ nullptr };
     std::uint8_t m_remainingNanoBots{ 0 };
@@ -91,7 +92,6 @@ class GameModel
     std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Powerup>> m_powerups;
     std::vector<std::shared_ptr<entities::Virus>> m_newViruses;
 
-    std::unique_ptr<renderers::Virus> m_rendererSarsCov2;
     std::unique_ptr<renderers::Background> m_rendererBackground;
     std::unique_ptr<renderers::ParticleSystem> m_rendererParticleSystem;
     std::unique_ptr<renderers::HUD> m_rendererHUD;
