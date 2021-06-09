@@ -278,16 +278,6 @@ void GameModel::emitBullet(std::shared_ptr<entities::Entity>& bullet)
 
 // --------------------------------------------------------------
 //
-// This is used to allow other code to emit bombs into the game model.
-//
-// --------------------------------------------------------------
-void GameModel::emitBomb(std::shared_ptr<entities::Entity>& bomb)
-{
-    addEntity(bomb);
-}
-
-// --------------------------------------------------------------
-//
 // This is used to allow other code to emit a powerup into the game model.
 //
 // --------------------------------------------------------------
@@ -444,7 +434,7 @@ void GameModel::startPlayer(math::Point2f position)
         [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime) {
             player->getPrimaryWeapon()->fire(
                 [this](std::shared_ptr<entities::Entity>& bullet) { this->emitBullet(bullet); },
-                [this](std::shared_ptr<entities::Entity>& bomb) { this->emitBomb(bomb); });
+                [this](std::shared_ptr<entities::Entity>& bomb) { this->addEntity(bomb); });
         });
 
     //
@@ -454,7 +444,7 @@ void GameModel::startPlayer(math::Point2f position)
         [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime) {
             player->getSecondaryWeapon()->fire(
                 [this](std::shared_ptr<entities::Entity>& bullet) { this->emitBullet(bullet); },
-                [this](std::shared_ptr<entities::Entity>& bomb) { this->emitBomb(bomb); });
+                [this](std::shared_ptr<entities::Entity>& bomb) { this->addEntity(bomb); });
         });
 
     m_player->getComponent<components::Position>()->set(position);
