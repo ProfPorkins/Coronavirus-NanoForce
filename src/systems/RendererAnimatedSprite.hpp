@@ -22,37 +22,28 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "entities/Entity.hpp"
+#include "System.hpp"
+#include "components/AnimatedSprite.hpp"
+#include "components/Position.hpp"
 
-#include <SFML/Graphics.hpp>
 #include <chrono>
-#include <cstdint>
-#include <memory>
 
-namespace renderers
+namespace systems
 {
     // --------------------------------------------------------------
     //
-    // Handles rendering of an entity that has an AnimatedSprite component.
+    // This system is used to render entities.
     //
     // --------------------------------------------------------------
-    class AnimatedSprite
+    class RendererAnimatedSprite : public System
     {
       public:
-        AnimatedSprite() = default;
-
-        void render(entities::Entity& entity, sf::RenderTarget& renderTarget);
-
-        template <typename T>
-        void render(std::unordered_map<entities::Entity::IdType, std::shared_ptr<T>>& entities, sf::RenderTarget& renderTarget);
-    };
-
-    template <typename T>
-    void AnimatedSprite::render(std::unordered_map<entities::Entity::IdType, std::shared_ptr<T>>& entities, sf::RenderTarget& renderTarget)
-    {
-        for (auto&& [id, entity] : entities)
+        RendererAnimatedSprite() :
+            System({ ctti::unnamed_type_id<components::Position>(),
+                     ctti::unnamed_type_id<components::AnimatedSprite>() })
         {
-            render(*entity, renderTarget);
         }
-    }
-} // namespace renderers
+
+        void update(std::chrono::microseconds elapsedTime, sf::RenderTarget& renderTarget);
+    };
+} // namespace systems

@@ -20,23 +20,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "AnimatedSprite.hpp"
+#include "RendererAnimatedSprite.hpp"
 
 #include "components/AnimatedSprite.hpp"
 #include "components/Position.hpp"
-#include "entities/Powerup.hpp"
 
-namespace renderers
+namespace systems
 {
-    void AnimatedSprite::render(entities::Entity& entity, sf::RenderTarget& renderTarget)
+    void RendererAnimatedSprite::update([[maybe_unused]] std::chrono::microseconds elapsedTime, sf::RenderTarget& renderTarget)
     {
-        auto position = entity.getComponent<components::Position>();
-        auto sprite = entity.getComponent<components::AnimatedSprite>();
-        sprite->getSprite()->setPosition(position->get());
+        // Render each of the entities
+        for (auto&& [id, entity] : m_entities)
+        {
+            (void)id; // unused
 
-        // The texutre contains multiple images, we only want to draw one of them.
-        sprite->getSprite()->setTextureRect(sprite->getCurrentSpriteRect());
+            auto position = entity->getComponent<components::Position>();
+            auto sprite = entity->getComponent<components::AnimatedSprite>();
+            sprite->getSprite()->setPosition(position->get());
 
-        renderTarget.draw(*sprite->getSprite());
+            // The texutre contains multiple images, we only want to draw one of them.
+            sprite->getSprite()->setTextureRect(sprite->getCurrentSpriteRect());
+
+            renderTarget.draw(*sprite->getSprite());
+        }
     }
-} // namespace renderers
+} // namespace systems

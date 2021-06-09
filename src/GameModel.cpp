@@ -111,8 +111,6 @@ void GameModel::initialize()
 
     m_rendererParticleSystem = std::make_unique<renderers::ParticleSystem>();
 
-    m_rendererPowerup = std::make_unique<renderers::AnimatedSprite>();
-
     m_rendererSarsCov2 = std::make_unique<renderers::Virus>(
         Content::get<sf::Texture>(content::KEY_IMAGE_SARSCOV2),
         Content::get<sf::Texture>(content::KEY_IMAGE_BASIC_GUN_BULLET));
@@ -121,6 +119,7 @@ void GameModel::initialize()
     m_rendererStatus = std::make_unique<renderers::GameStatus>();
 
     m_sysRendererSprite = std::make_unique<systems::RendererSprite>();
+    m_sysRendererAnimatedSprite = std::make_unique<systems::RendererAnimatedSprite>();
 
     m_bullets.clear();
     m_powerups.clear();
@@ -263,12 +262,12 @@ void GameModel::render(sf::RenderTarget& renderTarget, const std::chrono::micros
     renderTarget.clear(sf::Color::Black);
     m_rendererBackground->render(renderTarget);
 
-    m_rendererPowerup->render(m_powerups, renderTarget);
     m_rendererSarsCov2->render(m_viruses, renderTarget, elapsedTime);
     m_rendererParticleSystem->render(m_sysParticle, renderTarget);
     m_rendererHUD->render(m_remainingNanoBots + 1, m_timePlayed, m_virusesKilled, renderTarget);
     m_rendererStatus->render(renderTarget);
 
+    m_sysRendererAnimatedSprite->update(elapsedTime, renderTarget);
     m_sysRendererSprite->update(elapsedTime, renderTarget);
 }
 
@@ -533,6 +532,7 @@ void GameModel::addEntity(std::shared_ptr<entities::Entity> entity)
     m_sysMovement->addEntity(entity);
 
     m_sysRendererSprite->addEntity(entity);
+    m_sysRendererAnimatedSprite->addEntity(entity);
 }
 
 // --------------------------------------------------------------
@@ -553,6 +553,7 @@ void GameModel::removeEntity(entities::Entity::IdType entityId)
     m_sysMovement->removeEntity(entityId);
 
     m_sysRendererSprite->removeEntity(entityId);
+    m_sysRendererAnimatedSprite->removeEntity(entityId);
 }
 
 // --------------------------------------------------------------

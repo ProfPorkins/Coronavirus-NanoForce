@@ -119,7 +119,6 @@ set(CLIENT_MISC_SOURCES
     )
 
 set(CLIENT_RENDERERS_HEADERS
-    renderers/AnimatedSprite.hpp
     renderers/Background.hpp
     renderers/GameStatus.hpp
     renderers/HUD.hpp
@@ -127,7 +126,6 @@ set(CLIENT_RENDERERS_HEADERS
     renderers/Virus.hpp
     )
 set(CLIENT_RENDERERS_SOURCES
-    renderers/AnimatedSprite.cpp
     renderers/Background.cpp
     renderers/GameStatus.cpp
     renderers/HUD.cpp
@@ -161,6 +159,7 @@ set(CLIENT_SYSTEMS_HEADERS
     systems/Movement.hpp
     systems/Particle.hpp
     systems/ParticleSystem.hpp
+    systems/RendererAnimatedSprite.hpp
     systems/RendererSprite.hpp
     systems/System.hpp
     )
@@ -172,6 +171,7 @@ set(CLIENT_SYSTEMS_SOURCES
     systems/Lifetime.cpp
     systems/Movement.cpp
     systems/ParticleSystem.cpp
+    systems/RendererAnimatedSprite.cpp
     systems/RendererSprite.cpp
     systems/System.cpp
     )
