@@ -50,7 +50,7 @@ namespace entities
         std::string getAudioKey() { return m_audioKey; }
 
       protected:
-        void build(std::string key, math::Point2f position);
+        Powerup(std::string key, math::Point2f position);
 
       private:
         std::string m_audioKey;

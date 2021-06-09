@@ -35,7 +35,7 @@ THE SOFTWARE.
 namespace entities
 {
 
-    void Powerup::build(std::string key, math::Point2f position)
+    Powerup::Powerup(std::string key, math::Point2f position)
     {
         using namespace config;
 

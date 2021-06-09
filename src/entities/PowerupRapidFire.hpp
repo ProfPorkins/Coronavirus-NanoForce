@@ -32,7 +32,10 @@ namespace entities
     class PowerupRapidFire : public Powerup
     {
       public:
-        PowerupRapidFire(math::Point2f position);
+        PowerupRapidFire(math::Point2f position) :
+            Powerup(config::ENTITY_WEAPON_RAPID_FIRE, position)
+        {
+        }
 
         virtual std::shared_ptr<Weapon> get() override { return std::make_shared<WeaponRapidFire>(config::ENTITY_WEAPON_RAPID_FIRE); }
         virtual Type getType() override { return Type::RapidFire; }

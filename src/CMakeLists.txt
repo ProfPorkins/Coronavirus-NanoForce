@@ -88,9 +88,6 @@ set(CLIENT_ENTITIES_SOURCES
     entities/Entity.cpp
     entities/Player.cpp
     entities/Powerup.cpp
-    entities/PowerupBomb.cpp
-    entities/PowerupRapidFire.cpp
-    entities/PowerupSpreadFire.cpp
     entities/Virus.cpp
     entities/Weapon.cpp
     entities/WeaponBomb.cpp
