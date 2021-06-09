@@ -49,6 +49,7 @@ set(CLIENT_COMPONENTS_HEADERS
     components/Age.hpp
     components/AnimatedSprite.hpp
     components/Birth.hpp
+    components/Bomb.hpp
     components/Component.hpp
     components/Damage.hpp
     components/Drag.hpp

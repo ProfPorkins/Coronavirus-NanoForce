@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 #include "Bomb.hpp"
 
+#include "components/Bomb.hpp"
 #include "components/Damage.hpp"
 #include "components/Lifetime.hpp"
 #include "components/Momentum.hpp"
@@ -51,29 +52,31 @@ namespace entities
         static const config_path BOMB_BULLET_SIZE = { DOM_ENTITY, ENTITY_WEAPON_BOMB, DOM_BULLETS, DOM_SIZE };
         static const config_path BOMB_BULLET_LIFETIME = { DOM_ENTITY, ENTITY_WEAPON_BOMB, DOM_BULLETS, DOM_LIFETIME };
 
-        m_bulletCount = Configuration::get<std::uint16_t>(BOMB_BULLET_COUNT);
-        m_bulletDamage = Configuration::get<std::uint16_t>(BOMB_BULLET_DAMAGE);
-        m_bulletSize = Configuration::get<float>(BOMB_BULLET_SIZE);
-        m_bulletLifetime = misc::msTous(Configuration::get<std::chrono::milliseconds>(BOMB_BULLET_LIFETIME));
-
         this->addComponent(std::make_unique<components::Position>(math::Point2f(0.0f, 0.0f)));
         this->addComponent(std::make_unique<components::Size>(math::Dimension2f(size, size)));
         this->addComponent(std::make_unique<components::Momentum>(math::Vector2f(0.0f, 0.0f)));
         this->addComponent(std::make_unique<components::Lifetime>(lifetime, [this, emitBullet]() { explode(emitBullet); }));
         this->addComponent(std::make_unique<components::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_BOMB)));
         this->addComponent(std::make_unique<components::Orientation>(0.0f));
+        this->addComponent(std::make_unique<components::Bomb>(
+            Configuration::get<std::uint16_t>(BOMB_BULLET_COUNT),
+            Configuration::get<std::uint16_t>(BOMB_BULLET_DAMAGE),
+            Configuration::get<float>(BOMB_BULLET_SIZE),
+            misc::msTous(Configuration::get<std::chrono::milliseconds>(BOMB_BULLET_LIFETIME))));
     }
 
     void Bomb::explode(std::function<void(std::shared_ptr<entities::Entity>&)> emit)
     {
         SoundPlayer::play(content::KEY_AUDIO_BOMB_EXPLODE);
 
+        auto bombInfo = this->getComponent<components::Bomb>();
+
         auto angle = 0.0f;
-        auto angleDiff = (2.0f * 3.14159f) / m_bulletCount;
-        for (int i = 1; i <= m_bulletCount; i++)
+        auto angleDiff = (2.0f * 3.14159f) / bombInfo->getBulletCount();
+        for (int i = 1; i <= bombInfo->getBulletCount(); i++)
         {
             angle += angleDiff;
-            auto bullet = std::make_shared<entities::Bullet>(m_bulletDamage, m_bulletLifetime, m_bulletSize);
+            auto bullet = std::make_shared<entities::Bullet>(bombInfo->getBulletDamage(), bombInfo->getBulletLifetime(), bombInfo->getBulletSize());
 
             bullet->getComponent<components::Position>()->set(this->getComponent<components::Position>()->get());
             // Scale the bomb momentum appropriate for its speed

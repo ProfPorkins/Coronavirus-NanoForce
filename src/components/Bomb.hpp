@@ -22,28 +22,32 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "entities/Entity.hpp"
+#include "Component.hpp"
 
-#include <SFML/Audio/Sound.hpp>
 #include <chrono>
-#include <functional>
-#include <memory>
-#include <vector>
 
-namespace entities
+namespace components
 {
-    // --------------------------------------------------------------
-    //
-    // This is a bomb projectile.  When its lifetime is up, it explodes
-    // into a bunch of bullets.
-    //
-    // --------------------------------------------------------------
-    class Bomb : public Entity
+    class Bomb : public Component
     {
       public:
-        Bomb(std::chrono::microseconds lifetime, float size, std::function<void(std::shared_ptr<entities::Entity>&)> emitBullet);
+        Bomb(std::uint16_t bulletCount, std::uint16_t bulletDamage, float bulletSize, std::chrono::microseconds bulletLifetime) :
+            m_bulletCount(bulletCount),
+            m_bulletDamage(bulletDamage),
+            m_bulletSize(bulletSize),
+            m_bulletLifetime(bulletLifetime)
+        {
+        }
+
+        auto getBulletCount() { return m_bulletCount; }
+        auto getBulletDamage() { return m_bulletDamage; }
+        auto getBulletSize() { return m_bulletSize; }
+        auto getBulletLifetime() { return m_bulletLifetime; }
 
       private:
-        void explode(std::function<void(std::shared_ptr<entities::Entity>&)> emit);
+        std::uint16_t m_bulletCount;
+        std::uint16_t m_bulletDamage;
+        float m_bulletSize;
+        std::chrono::microseconds m_bulletLifetime;
     };
-} // namespace entities
+} // namespace components
