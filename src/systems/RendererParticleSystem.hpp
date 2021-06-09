@@ -20,27 +20,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "ParticleSystem.hpp"
+#pragma once
 
-namespace renderers
+#include "System.hpp"
+#include "systems/ParticleSystem.hpp"
+
+#include <SFML/Graphics.hpp>
+
+namespace systems
 {
     // --------------------------------------------------------------
     //
-    // This class is a friend to the renderers::ParticleSystem so that
-    // it has access to private data, without having to expose it
-    // to everyone else.
+    // This system knows how to render the particles in a particle system.
+    // Turns out to be prety simple.
     //
     // --------------------------------------------------------------
-    void ParticleSystem::render(systems::ParticleSystem& ps, sf::RenderTarget& renderTarget)
+    class RendererParticleSystem : public System
     {
-        for (decltype(ps.m_particleCount) p = 0; p < ps.m_particleCount; p++)
-        {
-            auto& particle = ps.m_inUse[p];
-            particle->sprite.setPosition(particle->center);
-            particle->sprite.setRotation(particle->rotation);
-
-            renderTarget.draw(particle->sprite);
-        }
-    }
-
-} // namespace renderers
+      public:
+        void update(systems::ParticleSystem& ps, sf::RenderTarget& renderTarget);
+    };
+} // namespace systems

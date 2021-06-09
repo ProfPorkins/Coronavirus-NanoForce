@@ -33,14 +33,10 @@ THE SOFTWARE.
 #include <deque>
 #include <memory>
 
-// Forward declaration for the 'friend use below'
-namespace renderers
-{
-    class ParticleSystem;
-}
-
 namespace systems
 {
+    // Forward declaration for the 'friend use below'
+    class RendererParticleSystem;
     // --------------------------------------------------------------
     //
     // A particle system is a collection of all active particles and
@@ -59,7 +55,7 @@ namespace systems
         void addEffect(std::unique_ptr<ParticleEffect> effect) { m_effects.push_back(std::move(effect)); }
 
       private:
-        friend renderers::ParticleSystem;
+        friend systems::RendererParticleSystem;
 
         static const auto MAX_PARTICLES = 10'000; // NOTE: Purely arbitrary number for now, no specific reason for it.
         std::deque<std::unique_ptr<Particle>> m_available;

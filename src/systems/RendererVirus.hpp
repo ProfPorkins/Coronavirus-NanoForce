@@ -31,7 +31,7 @@ namespace systems
 {
     // --------------------------------------------------------------
     //
-    // This renderer knows how to render a virus and however many
+    // This system knows how to render a virus and however many
     // bullets have surrounded it.
     //
     // --------------------------------------------------------------

@@ -122,13 +122,11 @@ set(CLIENT_RENDERERS_HEADERS
     renderers/Background.hpp
     renderers/GameStatus.hpp
     renderers/HUD.hpp
-    renderers/ParticleSystem.hpp
     )
 set(CLIENT_RENDERERS_SOURCES
     renderers/Background.cpp
     renderers/GameStatus.cpp
     renderers/HUD.cpp
-    renderers/ParticleSystem.cpp
     )
 
 set(CLIENT_SERVICES_HEADERS
@@ -158,6 +156,7 @@ set(CLIENT_SYSTEMS_HEADERS
     systems/Particle.hpp
     systems/ParticleSystem.hpp
     systems/RendererAnimatedSprite.hpp
+    systems/RendererParticleSystem.hpp
     systems/RendererSprite.hpp
     systems/RendererVirus.hpp
     systems/System.hpp
@@ -171,6 +170,7 @@ set(CLIENT_SYSTEMS_SOURCES
     systems/Movement.cpp
     systems/ParticleSystem.cpp
     systems/RendererAnimatedSprite.cpp
+    systems/RendererParticleSystem.cpp
     systems/RendererSprite.cpp
     systems/RendererVirus.cpp
     systems/System.cpp
