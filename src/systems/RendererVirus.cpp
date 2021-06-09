@@ -45,13 +45,13 @@ namespace systems
     //
     // --------------------------------------------------------------
     RendererVirus::RendererVirus() :
-        System({ ctti::unnamed_type_id<components::Position>(),
-                 ctti::unnamed_type_id<components::Size>(),
-                 ctti::unnamed_type_id<components::Orientation>(),
-                 ctti::unnamed_type_id<components::Momentum>(),
-                 ctti::unnamed_type_id<components::Age>(),
+        System({ ctti::unnamed_type_id<components::Age>(),
                  ctti::unnamed_type_id<components::Birth>(),
-                 ctti::unnamed_type_id<components::Health>() })
+                 ctti::unnamed_type_id<components::Health>(),
+                 ctti::unnamed_type_id<components::Momentum>(),
+                 ctti::unnamed_type_id<components::Orientation>(),
+                 ctti::unnamed_type_id<components::Position>(),
+                 ctti::unnamed_type_id<components::Size>() })
     {
         auto texVirus = Content::get<sf::Texture>(content::KEY_IMAGE_SARSCOV2);
         auto texBullet = Content::get<sf::Texture>(content::KEY_IMAGE_BASIC_GUN_BULLET);
