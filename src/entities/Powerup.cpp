@@ -60,9 +60,8 @@ namespace entities
         this->addComponent(std::make_unique<components::Position>(position));
         this->addComponent(std::make_unique<components::Size>(math::Dimension2f(size, size)));
         this->addComponent(std::make_unique<components::Lifetime>(lifetime));
-        this->addComponent(std::make_unique<components::AnimatedSprite>(texture, spriteCount, spriteTime));
         this->addComponent(std::make_unique<components::Audio>("audio/powerup-" + key));
-
+        this->addComponent(std::make_unique<components::AnimatedSprite>(texture, spriteCount, spriteTime));
         // Have to adjust the width dimension by the number of sprites in the image in
         // order for the rendering size to come out correctly.
         auto sizeCmp = this->getComponent<components::Size>();
