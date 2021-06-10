@@ -26,6 +26,7 @@ THE SOFTWARE.
 #include "misc/math.hpp"
 
 #include <memory>
+#include <random>
 #include <string>
 
 namespace levels
@@ -33,7 +34,7 @@ namespace levels
     class PetriDish : public Level
     {
       public:
-        PetriDish(std::function<void(std::shared_ptr<entities::Powerup>&)> emitPowerup, std::string key, bool training);
+        PetriDish(std::string key, bool training);
 
         virtual std::vector<std::shared_ptr<entities::Virus>> initializeViruses() override;
         virtual std::optional<math::Point2f> findSafeStart(std::chrono::microseconds howLongWaiting, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& viruses) override;
@@ -45,7 +46,9 @@ namespace levels
 
       private:
         bool m_training{ false };
-
+        std::random_device m_rd;
+        std::mt19937 m_generator;
+        std::uniform_real_distribution<float> m_distUniform;
         std::uniform_real_distribution<float> m_distCircle;
     };
 } // namespace levels

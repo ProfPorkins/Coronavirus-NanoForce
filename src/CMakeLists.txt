@@ -155,6 +155,7 @@ set(CLIENT_SYSTEMS_HEADERS
     systems/Movement.hpp
     systems/Particle.hpp
     systems/ParticleSystem.hpp
+    systems/Powerup.hpp
     systems/RendererAnimatedSprite.hpp
     systems/RendererParticleSystem.hpp
     systems/RendererSprite.hpp
@@ -169,6 +170,7 @@ set(CLIENT_SYSTEMS_SOURCES
     systems/Lifetime.cpp
     systems/Movement.cpp
     systems/ParticleSystem.cpp
+    systems/Powerup.cpp
     systems/RendererAnimatedSprite.cpp
     systems/RendererParticleSystem.cpp
     systems/RendererSprite.cpp

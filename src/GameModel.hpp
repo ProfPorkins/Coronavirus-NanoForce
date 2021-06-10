@@ -37,6 +37,7 @@ THE SOFTWARE.
 #include "systems/Lifetime.hpp"
 #include "systems/Movement.hpp"
 #include "systems/ParticleSystem.hpp"
+#include "systems/Powerup.hpp"
 #include "systems/RendererAnimatedSprite.hpp"
 #include "systems/RendererParticleSystem.hpp"
 #include "systems/RendererSprite.hpp"
@@ -80,6 +81,7 @@ class GameModel
     std::unique_ptr<systems::Health> m_sysHealth;
     std::unique_ptr<systems::AnimatedSprite> m_sysAnimatedSprite;
     std::unique_ptr<systems::Age> m_sysAge;
+    std::unique_ptr<systems::Powerup> m_sysPowerup;
     std::unique_ptr<systems::ParticleSystem> m_sysParticle;
     std::unique_ptr<systems::RendererSprite> m_sysRendererSprite;
     std::unique_ptr<systems::RendererAnimatedSprite> m_sysRendererAnimatedSprite;

@@ -27,16 +27,14 @@ THE SOFTWARE.
 #include "entities/PowerupSpreadFire.hpp"
 #include "misc/misc.hpp"
 #include "services/Configuration.hpp"
+#include "services/ConfigurationPath.hpp"
 #include "services/Content.hpp"
 
 namespace levels
 {
 
-    Level::Level(std::function<void(std::shared_ptr<entities::Powerup>&)> emitPowerup, const std::string key) :
-        m_generator(m_rd()),
-        m_distUniform(0.0f, 1.0f),
-        m_emitPowerup(emitPowerup),
-        m_levelKey(key)
+    Level::Level(const std::string key) :
+        m_key(key)
     {
         using namespace std::string_literals;
         using namespace config;
@@ -65,11 +63,6 @@ namespace levels
         m_initialVirusCount = Configuration::get<std::uint8_t>(INITIAL_VIRUS_COUNT);
         m_maxVirusCount = Configuration::get<std::uint8_t>(MAX_VIRUS_COUNT);
         m_nanoBotCount = Configuration::get<std::uint8_t>(NANO_BOT_COUNT);
-
-        m_timeMinPowerup = misc::msTous(Configuration::get<std::chrono::milliseconds>(MIN_POWERUP_TIME));
-        m_timeBombPowerup = misc::msTous(Configuration::get<std::chrono::milliseconds>(BOMB_POWERUP_TIME));
-        m_timeRapidFirePowerup = misc::msTous(Configuration::get<std::chrono::milliseconds>(RAPID_FIRE_POWERUP_TIME));
-        m_timeSpreadFirePowerup = misc::msTous(Configuration::get<std::chrono::milliseconds>(SPREAD_FIRE_POWERUP_TIME));
     }
 
     // --------------------------------------------------------------
@@ -96,16 +89,4 @@ namespace levels
         }
     }
 
-    // --------------------------------------------------------------
-    //
-    // Only thing done here is to determine if a new powerup should
-    // be created.
-    //
-    // --------------------------------------------------------------
-    void Level::update(const std::chrono::microseconds elapsedTime)
-    {
-        updatePowerup<entities::PowerupBomb>(elapsedTime, m_timeBombPowerup, m_nextBombPowerup, m_nextBombPowerupCompute);
-        updatePowerup<entities::PowerupRapidFire>(elapsedTime, m_timeRapidFirePowerup, m_nextRapidFirePowerup, m_nextRapidFirePowerupCompute);
-        updatePowerup<entities::PowerupSpreadFire>(elapsedTime, m_timeSpreadFirePowerup, m_nextSpreadFirePowerup, m_nextSpreadFirePowerupCompute);
-    }
 } // namespace levels

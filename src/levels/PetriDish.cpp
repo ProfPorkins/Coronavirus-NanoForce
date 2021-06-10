@@ -34,9 +34,11 @@ THE SOFTWARE.
 
 namespace levels
 {
-    PetriDish::PetriDish(std::function<void(std::shared_ptr<entities::Powerup>&)> emitPowerup, std::string key, bool training) :
-        Level(emitPowerup, key),
+    PetriDish::PetriDish(std::string key, bool training) :
+        Level(key),
         m_training(training),
+        m_generator(m_rd()),
+        m_distUniform(0.0f, 1.0f),
         m_distCircle(0.0f, 2 * 3.14159f)
     {
         m_backgroundSize = { 100.0f, 100.0f };

@@ -65,28 +65,28 @@ GameModel::GameModel()
     switch (m_levelSelect)
     {
         case levels::LevelName::Training1:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_1, true);
+            m_level = std::make_unique<levels::PetriDish>(config::TRAINING_1, true);
             break;
         case levels::LevelName::Training2:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_2, true);
+            m_level = std::make_unique<levels::PetriDish>(config::TRAINING_2, true);
             break;
         case levels::LevelName::Training3:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_3, true);
+            m_level = std::make_unique<levels::PetriDish>(config::TRAINING_3, true);
             break;
         case levels::LevelName::Training4:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_4, true);
+            m_level = std::make_unique<levels::PetriDish>(config::TRAINING_4, true);
             break;
         case levels::LevelName::Training5:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_5, true);
+            m_level = std::make_unique<levels::PetriDish>(config::TRAINING_5, true);
             break;
         case levels::LevelName::Patient1:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::PATIENT_1, false);
+            m_level = std::make_unique<levels::PetriDish>(config::PATIENT_1, false);
             break;
         case levels::LevelName::Patient2:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::PATIENT_2, false);
+            m_level = std::make_unique<levels::PetriDish>(config::PATIENT_2, false);
             break;
         case levels::LevelName::Patient3:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::PATIENT_3, false);
+            m_level = std::make_unique<levels::PetriDish>(config::PATIENT_3, false);
             break;
     }
 
@@ -121,6 +121,10 @@ void GameModel::initialize()
     m_sysBirth = std::make_unique<systems::Birth>([this](entities::Entity::IdType parentId) { this->onVirusBirth(parentId); });
     m_sysHealth = std::make_unique<systems::Health>();
     m_sysLifetime = std::make_unique<systems::Lifetime>([this](entities::Entity::IdType entityId) { this->removeEntity(entityId); });
+    m_sysPowerup = std::make_unique<systems::Powerup>(
+        *m_level,
+        [this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); },
+        m_level->getKey());
     m_sysParticle = std::make_unique<systems::ParticleSystem>();
 
     m_sysRendererSprite = std::make_unique<systems::RendererSprite>();
@@ -185,7 +189,7 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     m_sysAge->update(elapsedTime);
     m_sysBirth->update(elapsedTime);
     m_sysHealth->update(elapsedTime);
-
+    m_sysPowerup->update(elapsedTime);
     m_sysAnimatedSprite->update(elapsedTime);
 
     //
@@ -219,9 +223,6 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
         m_bullets.erase(id);
         removeEntity(id);
     }
-
-    // Give the level a chance to do whatever it wants to do
-    m_level->update(elapsedTime);
 
     //
     // Add any new viruses in at this time
@@ -518,6 +519,7 @@ void GameModel::addEntity(std::shared_ptr<entities::Entity> entity)
     m_sysRendererSprite->addEntity(entity);
     m_sysRendererAnimatedSprite->addEntity(entity);
     m_sysRendererSarsCov2->addEntity(entity);
+    // NOTE: The Powerup system doesn't act on entities, nothing to do here
     // NOTE: Particle system renderer does not have entities added to it, it is it's own separate thing
 }
 
@@ -541,6 +543,7 @@ void GameModel::removeEntity(entities::Entity::IdType entityId)
     m_sysRendererSprite->removeEntity(entityId);
     m_sysRendererAnimatedSprite->removeEntity(entityId);
     m_sysRendererSarsCov2->removeEntity(entityId);
+    // NOTE: The Powerup system doesn't act on entities, nothing to do here
     // NOTE: Particle system renderer does not have entities added to it, it is it's own separate thing
 }
 
