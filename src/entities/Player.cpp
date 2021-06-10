@@ -30,8 +30,11 @@ THE SOFTWARE.
 #include "components/Powerup.hpp"
 #include "components/Size.hpp"
 #include "components/Sprite.hpp"
+#include "entities/WeaponBomb.hpp"
 #include "entities/WeaponEmpty.hpp"
 #include "entities/WeaponGun.hpp"
+#include "entities/WeaponRapidFire.hpp"
+#include "entities/WeaponSpreadFire.hpp"
 #include "misc/math.hpp"
 #include "services/Configuration.hpp"
 #include "services/ConfigurationPath.hpp"
@@ -128,12 +131,23 @@ namespace entities
         switch (powerup->getComponent<components::Powerup>()->get())
         {
             case components::Powerup::Type::RapidFire:
+            {
+                auto weapon = std::make_shared<WeaponRapidFire>(config::ENTITY_WEAPON_RAPID_FIRE);
+                this->attachPrimaryWeapon(weapon);
+            }
+            break;
             case components::Powerup::Type::SpreadFire:
-                this->attachPrimaryWeapon(powerup->get());
-                break;
+            {
+                auto weapon = std::make_shared<WeaponSpreadFire>(config::ENTITY_WEAPON_SPREAD_FIRE);
+                this->attachPrimaryWeapon(weapon);
+            }
+            break;
             case components::Powerup::Type::Bomb:
-                this->attachSecondaryWeapon(powerup->get());
-                break;
+            {
+                auto weapon = std::make_shared<WeaponBomb>(config::ENTITY_WEAPON_BOMB);
+                this->attachSecondaryWeapon(weapon);
+            }
+            break;
         }
     }
 

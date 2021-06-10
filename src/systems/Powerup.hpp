@@ -95,8 +95,7 @@ namespace systems
             {
                 std::shared_ptr<entities::Powerup> powerup = std::make_shared<T>(m_level.computePowerupPosition());
                 m_emitPowerup(powerup);
-                // Setting to a huge number so we don't generate another one until the time
-                // is set in computeNextBombPowerup.
+                // Setting to a huge number so we don't generate another one until the time is (re)set above
                 timeRemaining = std::chrono::microseconds::max();
             }
         }

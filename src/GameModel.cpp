@@ -196,7 +196,8 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     // Let's see if any bullets hit any viruses
     // TODO: Create a collision system
     std::vector<entities::Entity::IdType> bulletsToRemove;
-    // Using a set for the dead viruses so that duplicates don't happen
+    // Using a set for the dead viruses so that duplicates don't happen, plus want to
+    // wait to remove them until after iterating through everything.
     std::unordered_set<entities::Entity::IdType> deadViruses;
     for (auto&& [bulletId, bullet] : m_bullets)
     {

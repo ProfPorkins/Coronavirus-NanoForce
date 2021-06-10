@@ -23,7 +23,6 @@ THE SOFTWARE.
 #pragma once
 
 #include "Powerup.hpp"
-#include "WeaponRapidFire.hpp"
 #include "components/Powerup.hpp"
 #include "misc/math.hpp"
 #include "services/ConfigurationPath.hpp"
@@ -37,7 +36,5 @@ namespace entities
             Powerup(components::Powerup::Type::RapidFire, config::ENTITY_WEAPON_RAPID_FIRE, position)
         {
         }
-
-        virtual std::shared_ptr<Weapon> get() override { return std::make_shared<WeaponRapidFire>(config::ENTITY_WEAPON_RAPID_FIRE); }
     };
 } // namespace entities

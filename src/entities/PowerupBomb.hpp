@@ -23,7 +23,6 @@ THE SOFTWARE.
 #pragma once
 
 #include "Powerup.hpp"
-#include "WeaponBomb.hpp"
 #include "components/Powerup.hpp"
 #include "misc/math.hpp"
 #include "services/ConfigurationPath.hpp"
@@ -37,7 +36,5 @@ namespace entities
             Powerup(components::Powerup::Type::Bomb, config::ENTITY_WEAPON_BOMB, position)
         {
         }
-
-        virtual std::shared_ptr<Weapon> get() override { return std::make_shared<entities::WeaponBomb>(config::ENTITY_WEAPON_BOMB); }
     };
 } // namespace entities

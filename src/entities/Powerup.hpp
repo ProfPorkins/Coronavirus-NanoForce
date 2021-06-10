@@ -39,10 +39,9 @@ namespace entities
     // --------------------------------------------------------------
     class Powerup : public Entity
     {
-      public:
-        virtual std::shared_ptr<Weapon> get() = 0;
-
       protected:
+        // Declared as protected, because we don't want a class of this type to be created.  I know
+        // it couldn't because of the 'get' method above, but I still feel better about doing this.
         Powerup(components::Powerup::Type type, std::string key, math::Point2f position);
     };
 } // namespace entities
