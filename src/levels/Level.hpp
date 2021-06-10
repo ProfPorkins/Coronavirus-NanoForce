@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 #pragma once
 
+#include "components/Powerup.hpp"
 #include "entities/Powerup.hpp"
 #include "entities/Virus.hpp"
 #include "misc/math.hpp"

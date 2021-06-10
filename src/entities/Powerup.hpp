@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 #pragma once
 
+#include "components/Powerup.hpp"
 #include "entities/Entity.hpp"
 #include "entities/Weapon.hpp"
 #include "misc/math.hpp"
@@ -39,16 +40,9 @@ namespace entities
     class Powerup : public Entity
     {
       public:
-        enum class Type
-        {
-            RapidFire,
-            SpreadFire,
-            Bomb
-        };
         virtual std::shared_ptr<Weapon> get() = 0;
-        virtual Type getType() = 0;
 
       protected:
-        Powerup(std::string key, math::Point2f position);
+        Powerup(components::Powerup::Type type, std::string key, math::Point2f position);
     };
 } // namespace entities

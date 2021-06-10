@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include "Powerup.hpp"
 #include "WeaponSpreadFire.hpp"
+#include "components/Powerup.hpp"
 #include "misc/math.hpp"
 #include "services/ConfigurationPath.hpp"
 
@@ -33,11 +34,10 @@ namespace entities
     {
       public:
         PowerupSpreadFire(math::Point2f position) :
-            Powerup(config::ENTITY_WEAPON_SPREAD_FIRE, position)
+            Powerup(components::Powerup::Type::SpreadFire, config::ENTITY_WEAPON_SPREAD_FIRE, position)
         {
         }
 
         virtual std::shared_ptr<Weapon> get() override { return std::make_shared<WeaponSpreadFire>(config::ENTITY_WEAPON_SPREAD_FIRE); }
-        virtual Type getType() override { return Type::SpreadFire; }
     };
 } // namespace entities

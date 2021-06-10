@@ -59,6 +59,7 @@ set(CLIENT_COMPONENTS_HEADERS
     components/Momentum.hpp
     components/Orientation.hpp
     components/Position.hpp
+    components/Powerup.hpp
     components/Size.hpp
     components/Sprite.hpp
     )

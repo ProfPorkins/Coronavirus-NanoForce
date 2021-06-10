@@ -22,22 +22,28 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "Powerup.hpp"
-#include "WeaponRapidFire.hpp"
-#include "components/Powerup.hpp"
-#include "misc/math.hpp"
-#include "services/ConfigurationPath.hpp"
+#include "Component.hpp"
 
-namespace entities
+namespace components
 {
-    class PowerupRapidFire : public Powerup
+    class Powerup : public Component
     {
       public:
-        PowerupRapidFire(math::Point2f position) :
-            Powerup(components::Powerup::Type::RapidFire, config::ENTITY_WEAPON_RAPID_FIRE, position)
+        enum class Type
+        {
+            RapidFire,
+            SpreadFire,
+            Bomb
+        };
+
+        Powerup(Type type) :
+            m_type(type)
         {
         }
 
-        virtual std::shared_ptr<Weapon> get() override { return std::make_shared<WeaponRapidFire>(config::ENTITY_WEAPON_RAPID_FIRE); }
+        auto get() { return m_type; }
+
+      private:
+        Type m_type;
     };
-} // namespace entities
+} // namespace components

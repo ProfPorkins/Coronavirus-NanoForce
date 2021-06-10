@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include "components/Momentum.hpp"
 #include "components/Orientation.hpp"
 #include "components/Position.hpp"
+#include "components/Powerup.hpp"
 #include "components/Size.hpp"
 #include "components/Sprite.hpp"
 #include "entities/WeaponEmpty.hpp"
@@ -124,13 +125,13 @@ namespace entities
     {
         SoundPlayer::play(powerup->getComponent<components::Audio>()->get());
 
-        switch (powerup->getType())
+        switch (powerup->getComponent<components::Powerup>()->get())
         {
-            case Powerup::Type::RapidFire:
-            case Powerup::Type::SpreadFire:
+            case components::Powerup::Type::RapidFire:
+            case components::Powerup::Type::SpreadFire:
                 this->attachPrimaryWeapon(powerup->get());
                 break;
-            case Powerup::Type::Bomb:
+            case components::Powerup::Type::Bomb:
                 this->attachSecondaryWeapon(powerup->get());
                 break;
         }

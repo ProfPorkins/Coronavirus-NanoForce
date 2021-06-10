@@ -26,6 +26,7 @@ THE SOFTWARE.
 #include "components/AnimatedSprite.hpp"
 #include "components/Lifetime.hpp"
 #include "components/Position.hpp"
+#include "components/Powerup.hpp"
 #include "components/Size.hpp"
 #include "misc/math.hpp"
 #include "misc/misc.hpp"
@@ -36,7 +37,7 @@ THE SOFTWARE.
 namespace entities
 {
 
-    Powerup::Powerup(std::string key, math::Point2f position)
+    Powerup::Powerup(components::Powerup::Type type, std::string key, math::Point2f position)
     {
         using namespace config;
 
@@ -57,6 +58,7 @@ namespace entities
         auto size = Configuration::get<float>(POWERUP_SIZE);
         auto spriteTime = misc::msTous(Configuration::get<std::chrono::milliseconds>(POWERUP_SPRITE_TIME));
 
+        this->addComponent(std::make_unique<components::Powerup>(type));
         this->addComponent(std::make_unique<components::Position>(position));
         this->addComponent(std::make_unique<components::Size>(math::Dimension2f(size, size)));
         this->addComponent(std::make_unique<components::Lifetime>(lifetime));
