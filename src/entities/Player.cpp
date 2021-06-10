@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 #include "Player.hpp"
 
+#include "components//Audio.hpp"
 #include "components/Drag.hpp"
 #include "components/Momentum.hpp"
 #include "components/Orientation.hpp"
@@ -121,7 +122,7 @@ namespace entities
 
     void Player::applyPowerup(std::shared_ptr<entities::Powerup> powerup)
     {
-        SoundPlayer::play(powerup->getAudioKey());
+        SoundPlayer::play(powerup->getComponent<components::Audio>()->get());
 
         switch (powerup->getType())
         {

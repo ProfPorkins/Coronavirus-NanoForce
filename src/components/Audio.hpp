@@ -22,33 +22,23 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "entities/Entity.hpp"
-#include "entities/Weapon.hpp"
-#include "misc/math.hpp"
+#include "Component.hpp"
 
-#include <memory>
 #include <string>
 
-namespace entities
+namespace components
 {
-    // --------------------------------------------------------------
-    //
-    //
-    //
-    // --------------------------------------------------------------
-    class Powerup : public Entity
+    class Audio : public Component
     {
       public:
-        enum class Type
+        Audio(std::string audioKey) :
+            m_audioKey(audioKey)
         {
-            RapidFire,
-            SpreadFire,
-            Bomb
-        };
-        virtual std::shared_ptr<Weapon> get() = 0;
-        virtual Type getType() = 0;
+        }
 
-      protected:
-        Powerup(std::string key, math::Point2f position);
+        auto get() { return m_audioKey; }
+
+      private:
+        std::string m_audioKey;
     };
-} // namespace entities
+} // namespace components

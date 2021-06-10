@@ -48,6 +48,7 @@ set(CLIENT_SOURCE_FILES
 set(CLIENT_COMPONENTS_HEADERS
     components/Age.hpp
     components/AnimatedSprite.hpp
+    components/Audio.hpp
     components/Birth.hpp
     components/Bomb.hpp
     components/Component.hpp
