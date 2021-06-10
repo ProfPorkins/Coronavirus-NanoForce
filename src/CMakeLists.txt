@@ -150,6 +150,7 @@ set(CLIENT_SYSTEMS_HEADERS
     systems/Age.hpp
     systems/AnimatedSprite.hpp
     systems/Birth.hpp
+    systems/Collision.hpp
     systems/Health.hpp
     systems/Lifetime.hpp
     systems/Movement.hpp
@@ -166,6 +167,7 @@ set(CLIENT_SYSTEMS_SOURCES
     systems/Age.cpp
     systems/AnimatedSprite.cpp
     systems/Birth.cpp
+    systems/Collision.cpp
     systems/Health.cpp
     systems/Lifetime.cpp
     systems/Movement.cpp
