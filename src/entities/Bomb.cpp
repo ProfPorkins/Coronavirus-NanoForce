@@ -65,7 +65,7 @@ namespace entities
             misc::msTous(Configuration::get<std::chrono::milliseconds>(BOMB_BULLET_LIFETIME))));
     }
 
-    void Bomb::explode(std::function<void(std::shared_ptr<entities::Entity>&)> emit)
+    void Bomb::explode(std::function<void(std::shared_ptr<entities::Entity>&)> emitBullet)
     {
         SoundPlayer::play(content::KEY_AUDIO_BOMB_EXPLODE);
 
@@ -84,7 +84,7 @@ namespace entities
             bullet->getComponent<components::Momentum>()->set(vector);
 
             auto e = std::static_pointer_cast<entities::Entity>(bullet);
-            emit(e);
+            emitBullet(e);
         }
     }
 

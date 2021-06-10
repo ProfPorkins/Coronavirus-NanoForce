@@ -44,6 +44,6 @@ namespace entities
         Bomb(std::chrono::microseconds lifetime, float size, std::function<void(std::shared_ptr<entities::Entity>&)> emitBullet);
 
       private:
-        void explode(std::function<void(std::shared_ptr<entities::Entity>&)> emit);
+        void explode(std::function<void(std::shared_ptr<entities::Entity>&)> emitBullet);
     };
 } // namespace entities

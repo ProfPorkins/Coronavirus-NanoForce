@@ -526,8 +526,7 @@ void GameModel::addEntity(std::shared_ptr<entities::Entity> entity)
 
 // --------------------------------------------------------------
 //
-// All entity lists for the systems must be given a chance to remove
-// the entity.
+// All systems must be given a chance to remove the entity.
 //
 // --------------------------------------------------------------
 void GameModel::removeEntity(entities::Entity::IdType entityId)
