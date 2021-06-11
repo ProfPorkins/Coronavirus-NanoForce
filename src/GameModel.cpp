@@ -112,7 +112,7 @@ void GameModel::initialize()
     m_rendererHUD = std::make_unique<renderers::HUD>();
     m_rendererStatus = std::make_unique<renderers::GameStatus>();
 
-    m_viruses.clear();
+    m_virusCount = 0;
 
     m_sysMovement = std::make_unique<systems::Movement>(*m_level);
     m_sysAge = std::make_unique<systems::Age>();
@@ -126,7 +126,7 @@ void GameModel::initialize()
         m_level->getKey());
     m_sysCollision = std::make_unique<systems::Collision>(
         [this](entities::Entity::IdType entityId) { this->removeEntity(entityId); },
-        [this](entities::Entity::IdType entityId) { this->onVirusDeath(entityId); },
+        [this](std::shared_ptr<entities::Entity> entity) { this->onVirusDeath(entity); },
         [this]() { this->onPlayerDeath(); });
     m_sysParticle = std::make_unique<systems::ParticleSystem>();
 
@@ -137,7 +137,7 @@ void GameModel::initialize()
 
     for (auto&& virus : m_level->initializeViruses())
     {
-        m_viruses[virus->getId()] = virus;
+        m_virusCount++;
         addEntity(virus);
     }
 
@@ -199,7 +199,7 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     // Add any new viruses in at this time
     for (auto&& virus : m_newViruses)
     {
-        m_viruses[virus->getId()] = virus;
+        m_virusCount++;
         addEntity(virus);
     }
     m_newViruses.clear();
@@ -235,11 +235,10 @@ void GameModel::render(sf::RenderTarget& renderTarget, const std::chrono::micros
 // A virus was killed, start a sound and a death animation.
 //
 // --------------------------------------------------------------
-void GameModel::onVirusDeath(entities::Entity::IdType entityId)
+void GameModel::onVirusDeath(std::shared_ptr<entities::Entity> virus)
 {
     SoundPlayer::play(content::KEY_AUDIO_VIRUS_DEATH);
 
-    auto virus = m_viruses[entityId];
     auto position = virus->getComponent<components::Position>();
     auto size = virus->getComponent<components::Size>();
 
@@ -260,10 +259,10 @@ void GameModel::onVirusDeath(entities::Entity::IdType entityId)
     m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2, position->get(), 0.0f, static_cast<std::uint16_t>(1), 0.0f, size->getOuterRadius(), 0.01f, lifetime));
 
     m_virusesKilled++;
-    m_viruses.erase(entityId);
+    m_virusCount--;
     //
     // If this is the last virus, happy, happy!
-    if (m_viruses.size() == 0)
+    if (m_virusCount == 0)
     {
         m_rendererStatus->setMessage(m_level->getMessageSuccess());
     }
@@ -276,7 +275,7 @@ void GameModel::onVirusDeath(entities::Entity::IdType entityId)
 // --------------------------------------------------------------
 void GameModel::onVirusBirth(std::shared_ptr<entities::Entity> entity)
 {
-    if (m_viruses.size() < m_level->getMaxViruses())
+    if (m_virusCount < m_level->getMaxViruses())
     {
         m_newViruses.push_back(entity);
     }
@@ -340,7 +339,7 @@ void GameModel::resetPlayer()
         m_playerStartCountdown -= elapsedTime;
         if (m_playerStartCountdown <= std::chrono::microseconds(0))
         {
-            if (auto position = m_level->findSafeStart(-m_playerStartCountdown, m_viruses); position.has_value())
+            if (auto position = m_level->findSafeStart(-m_playerStartCountdown, m_sysCollision->getViruses()); position.has_value())
             {
                 m_rendererStatus->setMessage("");
                 startPlayer(position.value());
@@ -395,7 +394,7 @@ void GameModel::startPlayer(math::Point2f position)
 
     m_updatePlayer = [this](std::chrono::microseconds elapsedTime) {
         // This is a little sloppy, but it at least is a way to stop the time played clock in a winning condition
-        if (m_viruses.size() > 0)
+        if (m_virusCount > 0)
         {
             m_timePlayed += std::chrono::duration_cast<std::chrono::milliseconds>(elapsedTime);
         }

@@ -139,7 +139,7 @@ namespace systems
 
         for (auto&& id : deadViruses)
         {
-            m_onVirusDeath(id);
+            m_onVirusDeath(m_viruses[id]);
             m_removeEntity(id);
         }
     }

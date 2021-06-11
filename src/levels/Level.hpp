@@ -56,7 +56,7 @@ namespace levels
         auto getMessageSuccess() { return m_messageSuccess; }
         auto getMessageFailure() { return m_messageFailure; }
 
-        virtual std::optional<math::Point2f> findSafeStart(std::chrono::microseconds howLongWaiting, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& viruses) = 0;
+        virtual std::optional<math::Point2f> findSafeStart(std::chrono::microseconds howLongWaiting, const std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& viruses) = 0;
         virtual bool collidesWithBorder(entities::Entity& entity) = 0;
         virtual void bounceOffBorder(entities::Entity& entity) = 0;
 

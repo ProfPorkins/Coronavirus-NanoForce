@@ -92,7 +92,7 @@ class GameModel
 
     std::shared_ptr<entities::Player> m_player{ nullptr };
     std::uint8_t m_remainingNanoBots{ 0 };
-    std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>> m_viruses;
+    std::uint16_t m_virusCount{ 0 };
     std::vector<std::shared_ptr<entities::Entity>> m_newViruses;
 
     std::unique_ptr<renderers::Background> m_rendererBackground;
@@ -102,7 +102,7 @@ class GameModel
     std::function<void(std::chrono::microseconds)> m_updatePlayer;
     std::chrono::microseconds m_playerStartCountdown{ 0 };
 
-    void onVirusDeath(entities::Entity::IdType entityId);
+    void onVirusDeath(std::shared_ptr<entities::Entity> virus);
     void onVirusBirth(std::shared_ptr<entities::Entity> entity);
     void onPlayerDeath();
     void resetPlayer();
