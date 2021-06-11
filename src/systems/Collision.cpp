@@ -95,36 +95,17 @@ namespace systems
 
     void Collision::update([[maybe_unused]] const std::chrono::microseconds elapsedTime)
     {
-        if (m_player)
-        {
-            // Let's see if the player picked up any powerups
-            std::optional<entities::Entity::IdType> powerupToRemove;
-            for (auto&& [id, powerup] : m_powerups)
-            {
-                if (math::collides(*m_player, *powerup))
-                {
-                    // Apply the powerup to the player
-                    std::static_pointer_cast<entities::Player>(m_player)->applyPowerup(std::static_pointer_cast<entities::Powerup>(powerup));
-                    powerupToRemove = id;
-                }
-            }
-            if (powerupToRemove.has_value())
-            {
-                m_removeEntity(powerupToRemove.value());
-            }
+        checkPlayerCollision();
+        checkBulletCollision();
+    }
 
-            //
-            // Check to see if any viruses hit the player
-            for (auto&& [id, virus] : m_viruses)
-            {
-                if (math::collides(*m_player, *virus))
-                {
-                    m_onPlayerDeath();
-                    break;
-                }
-            }
-        }
-
+    // --------------------------------------------------------------
+    //
+    // Bullets can collide with only viruses
+    //
+    // --------------------------------------------------------------
+    void Collision::checkBulletCollision()
+    {
         //
         // Let's see if any bullets hit any viruses
         std::vector<entities::Entity::IdType> bulletsToRemove;
@@ -160,6 +141,44 @@ namespace systems
         {
             m_onVirusDeath(id);
             m_removeEntity(id);
+        }
+    }
+
+    // --------------------------------------------------------------
+    //
+    // Player can collide with powerups or viruses
+    //
+    // --------------------------------------------------------------
+    void Collision::checkPlayerCollision()
+    {
+        if (m_player)
+        {
+            // Let's see if the player picked up any powerups
+            std::optional<entities::Entity::IdType> powerupToRemove;
+            for (auto&& [id, powerup] : m_powerups)
+            {
+                if (math::collides(*m_player, *powerup))
+                {
+                    // Apply the powerup to the player
+                    std::static_pointer_cast<entities::Player>(m_player)->applyPowerup(std::static_pointer_cast<entities::Powerup>(powerup));
+                    powerupToRemove = id;
+                }
+            }
+            if (powerupToRemove.has_value())
+            {
+                m_removeEntity(powerupToRemove.value());
+            }
+
+            //
+            // Check to see if any viruses hit the player
+            for (auto&& [id, virus] : m_viruses)
+            {
+                if (math::collides(*m_player, *virus))
+                {
+                    m_onPlayerDeath();
+                    break;
+                }
+            }
         }
     }
 

@@ -57,5 +57,8 @@ namespace systems
         entities::EntityMap m_bullets;
         entities::EntityMap m_powerups;
         std::shared_ptr<entities::Entity> m_player;
+
+        void checkBulletCollision();
+        void checkPlayerCollision();
     };
 } // namespace systems
