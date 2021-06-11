@@ -122,7 +122,7 @@ void GameModel::initialize()
     m_sysLifetime = std::make_unique<systems::Lifetime>([this](entities::Entity::IdType entityId) { this->removeEntity(entityId); });
     m_sysPowerup = std::make_unique<systems::Powerup>(
         *m_level,
-        [this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); },
+        [this](std::shared_ptr<entities::Powerup>& powerup) { this->addEntity(powerup); },
         m_level->getKey());
     m_sysCollision = std::make_unique<systems::Collision>(
         [this](entities::Entity::IdType entityId) { this->removeEntity(entityId); },
@@ -232,26 +232,6 @@ void GameModel::render(sf::RenderTarget& renderTarget, const std::chrono::micros
 
 // --------------------------------------------------------------
 //
-// This is used to allow other code to emit bullets into the game model.
-//
-// --------------------------------------------------------------
-void GameModel::emitBullet(std::shared_ptr<entities::Entity>& bullet)
-{
-    addEntity(bullet);
-}
-
-// --------------------------------------------------------------
-//
-// This is used to allow other code to emit a powerup into the game model.
-//
-// --------------------------------------------------------------
-void GameModel::emitPowerup(std::shared_ptr<entities::Powerup>& powerup)
-{
-    addEntity(powerup);
-}
-
-// --------------------------------------------------------------
-//
 // A virus was killed, start a sound and a death animation.
 //
 // --------------------------------------------------------------
@@ -280,9 +260,9 @@ void GameModel::onVirusDeath(entities::Entity::IdType entityId)
     m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2, position->get(), 0.0f, static_cast<std::uint16_t>(1), 0.0f, size->getOuterRadius(), 0.01f, lifetime));
 
     m_virusesKilled++;
+    m_viruses.erase(entityId);
     //
     // If this is the last virus, happy, happy!
-    m_viruses.erase(entityId);
     if (m_viruses.size() == 0)
     {
         m_rendererStatus->setMessage(m_level->getMessageSuccess());
@@ -398,7 +378,7 @@ void GameModel::startPlayer(math::Point2f position)
         Configuration::get<std::string>(config::KEYBOARD_PRIMARY_FIRE), true, std::chrono::microseconds(0),
         [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime) {
             player->getPrimaryWeapon()->fire(
-                [this](std::shared_ptr<entities::Entity>& bullet) { this->emitBullet(bullet); },
+                [this](std::shared_ptr<entities::Entity>& bullet) { this->addEntity(bullet); },
                 [this](std::shared_ptr<entities::Entity>& bomb) { this->addEntity(bomb); });
         });
 
@@ -408,7 +388,7 @@ void GameModel::startPlayer(math::Point2f position)
         Configuration::get<std::string>(config::KEYBOARD_SECONDARY_FIRE), true, std::chrono::microseconds(0),
         [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime) {
             player->getSecondaryWeapon()->fire(
-                [this](std::shared_ptr<entities::Entity>& bullet) { this->emitBullet(bullet); },
+                [this](std::shared_ptr<entities::Entity>& bullet) { this->addEntity(bullet); },
                 [this](std::shared_ptr<entities::Entity>& bomb) { this->addEntity(bomb); });
         });
 

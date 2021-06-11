@@ -102,8 +102,6 @@ class GameModel
     std::function<void(std::chrono::microseconds)> m_updatePlayer;
     std::chrono::microseconds m_playerStartCountdown{ 0 };
 
-    void emitBullet(std::shared_ptr<entities::Entity>& bullet);
-    void emitPowerup(std::shared_ptr<entities::Powerup>& powerup);
     void onVirusDeath(entities::Entity::IdType entityId);
     void onVirusBirth(entities::Entity::IdType parentId);
     void onPlayerDeath();
