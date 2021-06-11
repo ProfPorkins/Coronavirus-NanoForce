@@ -132,6 +132,7 @@ namespace systems
                 }
             }
         }
+
         for (auto&& id : bulletsToRemove)
         {
             m_removeEntity(id);

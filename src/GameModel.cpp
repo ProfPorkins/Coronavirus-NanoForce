@@ -49,8 +49,6 @@ THE SOFTWARE.
 
 #include <chrono>
 #include <cmath>
-#include <optional>
-#include <unordered_set>
 
 // Static member implementation
 levels::LevelName GameModel::m_levelSelect{ levels::LevelName::Training1 };

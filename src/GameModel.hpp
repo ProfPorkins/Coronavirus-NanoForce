@@ -51,7 +51,6 @@ THE SOFTWARE.
 #include <chrono>
 #include <cstdint>
 #include <memory>
-#include <unordered_map>
 #include <vector>
 
 class GameModel
