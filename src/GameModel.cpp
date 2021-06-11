@@ -282,7 +282,8 @@ void GameModel::onVirusDeath(entities::Entity::IdType entityId)
     m_virusesKilled++;
     //
     // If this is the last virus, happy, happy!
-    if (m_viruses.size() == 1)
+    m_viruses.erase(entityId);
+    if (m_viruses.size() == 0)
     {
         m_rendererStatus->setMessage(m_level->getMessageSuccess());
     }
