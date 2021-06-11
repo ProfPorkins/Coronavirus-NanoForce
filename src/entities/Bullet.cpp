@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 #include "Bullet.hpp"
 
+#include "components/Collidable.hpp"
 #include "components/Damage.hpp"
 #include "components/Lifetime.hpp"
 #include "components/Momentum.hpp"
@@ -45,6 +46,7 @@ namespace entities
         this->addComponent(std::make_unique<components::Damage>(damage));
         this->addComponent(std::make_unique<components::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_BASIC_GUN_BULLET)));
         this->addComponent(std::make_unique<components::Orientation>(0.0f));
+        this->addComponent(std::make_unique<components::Collidable>(components::Collidable::Type::Bullet));
     }
 
 } // namespace entities

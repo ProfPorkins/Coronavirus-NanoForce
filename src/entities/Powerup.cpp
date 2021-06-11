@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include "components//Audio.hpp"
 #include "components/AnimatedSprite.hpp"
+#include "components/Collidable.hpp"
 #include "components/Lifetime.hpp"
 #include "components/Position.hpp"
 #include "components/Powerup.hpp"
@@ -69,6 +70,8 @@ namespace entities
         auto sizeCmp = this->getComponent<components::Size>();
         auto sprite = this->getComponent<components::AnimatedSprite>();
         sprite->getSprite()->setScale(math::getViewScale({ sizeCmp->get().width * sprite->getSpriteCount(), sizeCmp->get().height }, sprite->getSprite()->getTexture()));
+
+        this->addComponent(std::make_unique<components::Collidable>(components::Collidable::Type::Powerup));
     }
 
 } // namespace entities

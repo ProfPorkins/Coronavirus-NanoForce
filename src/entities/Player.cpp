@@ -23,6 +23,7 @@ THE SOFTWARE.
 #include "Player.hpp"
 
 #include "components//Audio.hpp"
+#include "components/Collidable.hpp"
 #include "components/Drag.hpp"
 #include "components/Momentum.hpp"
 #include "components/Orientation.hpp"
@@ -82,6 +83,7 @@ namespace entities
         this->addComponent(std::make_unique<components::Momentum>(math::Vector2f(0.0f, 0.0f)));
         this->addComponent(std::make_unique<components::Drag>(spec.dragRate));
         this->addComponent(std::make_unique<components::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_PLAYER)));
+        this->addComponent(std::make_unique<components::Collidable>(components::Collidable::Type::Player));
 
         //
         // This is a unique one, due to the way it works, handing it directly here, rather than a

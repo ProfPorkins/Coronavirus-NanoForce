@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include "components/Age.hpp"
 #include "components/Birth.hpp"
+#include "components/Collidable.hpp"
 #include "components/Drag.hpp"
 #include "components/Health.hpp"
 #include "components/Lifetime.hpp"
@@ -69,6 +70,8 @@ namespace entities
 
         // Add a health component - Note: Health on a virus increases with age
         this->addComponent(std::make_unique<components::Health>(spec.healthStart, spec.healthIncrements, spec.healthIncrementTime));
+
+        this->addComponent(std::make_unique<components::Collidable>(components::Collidable::Type::Virus));
         // Get an initial path computed
         selectPath();
     }
