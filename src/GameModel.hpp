@@ -102,7 +102,7 @@ class GameModel
     std::function<void(std::chrono::microseconds)> m_updatePlayer;
     std::chrono::microseconds m_playerStartCountdown{ 0 };
 
-    void onVirusDeath(std::shared_ptr<entities::Entity> virus);
+    void onVirusDeath(entities::Entity* virus);
     void onVirusBirth(std::shared_ptr<entities::Entity> entity);
     void onPlayerDeath();
     void resetPlayer();

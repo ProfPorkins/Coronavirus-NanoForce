@@ -35,7 +35,7 @@ namespace systems
     class Collision : public System
     {
       public:
-        Collision(std::function<void(entities::Entity::IdType)> removeEntity, std::function<void(std::shared_ptr<entities::Entity> entity)> onVirusDeath, std::function<void()> onPlayerDeath) :
+        Collision(std::function<void(entities::Entity::IdType)> removeEntity, std::function<void(entities::Entity* entity)> onVirusDeath, std::function<void()> onPlayerDeath) :
             System({ ctti::unnamed_type_id<components::Collidable>() }),
             m_removeEntity(removeEntity),
             m_onVirusDeath(onVirusDeath),
@@ -52,7 +52,7 @@ namespace systems
 
       private:
         std::function<void(entities::Entity::IdType)> m_removeEntity;
-        std::function<void(std::shared_ptr<entities::Entity> entity)> m_onVirusDeath;
+        std::function<void(entities::Entity* entity)> m_onVirusDeath;
         std::function<void()> m_onPlayerDeath;
 
         entities::EntityMap m_viruses;

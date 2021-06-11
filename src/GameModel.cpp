@@ -126,7 +126,7 @@ void GameModel::initialize()
         m_level->getKey());
     m_sysCollision = std::make_unique<systems::Collision>(
         [this](entities::Entity::IdType entityId) { this->removeEntity(entityId); },
-        [this](std::shared_ptr<entities::Entity> entity) { this->onVirusDeath(entity); },
+        [this](entities::Entity* entity) { this->onVirusDeath(entity); },
         [this]() { this->onPlayerDeath(); });
     m_sysParticle = std::make_unique<systems::ParticleSystem>();
 
@@ -235,7 +235,7 @@ void GameModel::render(sf::RenderTarget& renderTarget, const std::chrono::micros
 // A virus was killed, start a sound and a death animation.
 //
 // --------------------------------------------------------------
-void GameModel::onVirusDeath(std::shared_ptr<entities::Entity> virus)
+void GameModel::onVirusDeath(entities::Entity* virus)
 {
     SoundPlayer::play(content::KEY_AUDIO_VIRUS_DEATH);
 
