@@ -33,6 +33,7 @@ THE SOFTWARE.
 #include "systems/Age.hpp"
 #include "systems/AnimatedSprite.hpp"
 #include "systems/Birth.hpp"
+#include "systems/Collision.hpp"
 #include "systems/Health.hpp"
 #include "systems/Lifetime.hpp"
 #include "systems/Movement.hpp"
@@ -82,6 +83,7 @@ class GameModel
     std::unique_ptr<systems::AnimatedSprite> m_sysAnimatedSprite;
     std::unique_ptr<systems::Age> m_sysAge;
     std::unique_ptr<systems::Powerup> m_sysPowerup;
+    std::unique_ptr<systems::Collision> m_sysCollision;
     std::unique_ptr<systems::ParticleSystem> m_sysParticle;
     std::unique_ptr<systems::RendererSprite> m_sysRendererSprite;
     std::unique_ptr<systems::RendererAnimatedSprite> m_sysRendererAnimatedSprite;
@@ -91,8 +93,6 @@ class GameModel
     std::shared_ptr<entities::Player> m_player{ nullptr };
     std::uint8_t m_remainingNanoBots{ 0 };
     std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>> m_viruses;
-    std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>> m_bullets;
-    std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Powerup>> m_powerups;
     std::vector<std::shared_ptr<entities::Virus>> m_newViruses;
 
     std::unique_ptr<renderers::Background> m_rendererBackground;

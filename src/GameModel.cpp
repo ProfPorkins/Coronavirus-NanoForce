@@ -111,8 +111,6 @@ void GameModel::initialize()
     m_rendererHUD = std::make_unique<renderers::HUD>();
     m_rendererStatus = std::make_unique<renderers::GameStatus>();
 
-    m_bullets.clear();
-    m_powerups.clear();
     m_viruses.clear();
 
     m_sysMovement = std::make_unique<systems::Movement>(*m_level);
@@ -125,6 +123,10 @@ void GameModel::initialize()
         *m_level,
         [this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); },
         m_level->getKey());
+    m_sysCollision = std::make_unique<systems::Collision>(
+        [this](entities::Entity::IdType entityId) { this->removeEntity(entityId); },
+        [this](entities::Entity::IdType entityId) { this->onVirusDeath(entityId); },
+        [this]() { this->onPlayerDeath(); });
     m_sysParticle = std::make_unique<systems::ParticleSystem>();
 
     m_sysRendererSprite = std::make_unique<systems::RendererSprite>();
@@ -193,39 +195,6 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     m_sysAnimatedSprite->update(elapsedTime);
 
     //
-    // Let's see if any bullets hit any viruses
-    // TODO: Create a collision system
-    std::vector<entities::Entity::IdType> bulletsToRemove;
-    // Using a set for the dead viruses so that duplicates don't happen, plus want to
-    // wait to remove them until after iterating through everything.
-    std::unordered_set<entities::Entity::IdType> deadViruses;
-    for (auto&& [bulletId, bullet] : m_bullets)
-    {
-        for (auto&& [virusId, virus] : m_viruses)
-        {
-            if (math::collides(*std::static_pointer_cast<entities::Entity>(bullet), *std::static_pointer_cast<entities::Entity>(virus)))
-            {
-                bulletsToRemove.push_back(bulletId);
-                virus->addBullet(bullet);
-                auto damage = bullet->getComponent<components::Damage>();
-                auto health = virus->getComponent<components::Health>();
-                health->subtract(damage->get());
-                if (health->get() <= 0)
-                {
-                    deadViruses.insert(virusId);
-                    // Don't check anymore viruses for this bullet
-                    break;
-                }
-            }
-        }
-    }
-    for (auto&& id : bulletsToRemove)
-    {
-        m_bullets.erase(id);
-        removeEntity(id);
-    }
-
-    //
     // Add any new viruses in at this time
     for (auto&& virus : m_newViruses)
     {
@@ -234,19 +203,12 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     }
     m_newViruses.clear();
 
-    //
-    // Remove the dead viruses
     // NOTE: Important to keep this after adding new viruses and at the end of the update loop.
     //       The reason is that new viruses can be born during the update.  The onVirusDeath method
     //       checks to see if there are no more visuses so it can set the game over message.  If not
     //       placed here, there is a chance for that message to be displayed, only to have a new virus
     //       appear because it was born after that message was set
-    for (auto&& id : deadViruses)
-    {
-        onVirusDeath(id);
-        m_viruses.erase(id);
-        removeEntity(id);
-    }
+    m_sysCollision->update(elapsedTime);
 }
 
 // --------------------------------------------------------------
@@ -274,7 +236,6 @@ void GameModel::render(sf::RenderTarget& renderTarget, const std::chrono::micros
 // --------------------------------------------------------------
 void GameModel::emitBullet(std::shared_ptr<entities::Entity>& bullet)
 {
-    m_bullets[bullet->getId()] = bullet;
     addEntity(bullet);
 }
 
@@ -285,7 +246,6 @@ void GameModel::emitBullet(std::shared_ptr<entities::Entity>& bullet)
 // --------------------------------------------------------------
 void GameModel::emitPowerup(std::shared_ptr<entities::Powerup>& powerup)
 {
-    m_powerups[powerup->getId()] = powerup;
     addEntity(powerup);
 }
 
@@ -462,34 +422,6 @@ void GameModel::startPlayer(math::Point2f position)
 
         // Player is directly updated here, because there isn't (yet) a system associated with thrust
         m_player->update(elapsedTime);
-
-        // Let's see if the player picked up any powerups
-        std::optional<entities::Entity::IdType> powerupToRemove;
-        for (auto&& [id, powerup] : m_powerups)
-        {
-            if (math::collides(*m_player, *powerup))
-            {
-                // Apply the powerup to the player
-                m_player->applyPowerup(powerup);
-                powerupToRemove = id;
-            }
-        }
-        if (powerupToRemove.has_value())
-        {
-            m_powerups.erase(powerupToRemove.value());
-            removeEntity(powerupToRemove.value());
-        }
-
-        //
-        // Check to see if any viruses hit the player
-        for (auto&& [id, virus] : m_viruses)
-        {
-            if (math::collides(*m_player, *virus))
-            {
-                onPlayerDeath();
-                break;
-            }
-        }
     };
 
     // Particle effect as a visual cue to show where the player starts
@@ -516,6 +448,7 @@ void GameModel::addEntity(std::shared_ptr<entities::Entity> entity)
     m_sysHealth->addEntity(entity);
     m_sysLifetime->addEntity(entity);
     m_sysMovement->addEntity(entity);
+    m_sysCollision->addEntity(entity);
 
     m_sysRendererSprite->addEntity(entity);
     m_sysRendererAnimatedSprite->addEntity(entity);
@@ -539,6 +472,7 @@ void GameModel::removeEntity(entities::Entity::IdType entityId)
     m_sysHealth->removeEntity(entityId);
     m_sysLifetime->removeEntity(entityId);
     m_sysMovement->removeEntity(entityId);
+    m_sysCollision->removeEntity(entityId);
 
     m_sysRendererSprite->removeEntity(entityId);
     m_sysRendererAnimatedSprite->removeEntity(entityId);

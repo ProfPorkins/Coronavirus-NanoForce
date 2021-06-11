@@ -22,10 +22,145 @@ THE SOFTWARE.
 
 #include "Collision.hpp"
 
+#include "components/Damage.hpp"
+#include "components/Health.hpp"
+#include "entities/Player.hpp"
+#include "entities/Powerup.hpp"
+#include "entities/Virus.hpp"
+#include "misc/math.hpp"
+
+#include <memory>
+#include <optional>
+
 namespace systems
 {
-    void Collision::update(const std::chrono::microseconds elapsedTime)
+    // --------------------------------------------------------------
+    //
+    // This system groups entities by the collidable (which is entity) type
+    //
+    // --------------------------------------------------------------
+    bool Collision::addEntity(std::shared_ptr<entities::Entity> entity)
     {
+        if (System::addEntity(entity))
+        {
+            switch (entity->getComponent<components::Collidable>()->get())
+            {
+                case components::Collidable::Type::Bullet:
+                    m_bullets[entity->getId()] = entity;
+                    break;
+                case components::Collidable::Type::Virus:
+                    m_viruses[entity->getId()] = entity;
+                    break;
+                case components::Collidable::Type::Powerup:
+                    m_powerups[entity->getId()] = entity;
+                    break;
+                case components::Collidable::Type::Player:
+                    m_player = entity;
+                    break;
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    // --------------------------------------------------------------
+    //
+    // Remove from the appropriate type collection.
+    //
+    // --------------------------------------------------------------
+    void Collision::removeEntity(entities::Entity::IdType entityId)
+    {
+        auto entity = m_entities[entityId];
+        if (entity != nullptr)
+        {
+            switch (entity->getComponent<components::Collidable>()->get())
+            {
+                case components::Collidable::Type::Bullet:
+                    m_bullets.erase(entityId);
+                    break;
+                case components::Collidable::Type::Virus:
+                    m_viruses.erase(entityId);
+                    break;
+                case components::Collidable::Type::Powerup:
+                    m_powerups.erase(entityId);
+                    break;
+                case components::Collidable::Type::Player:
+                    m_player = nullptr;
+                    break;
+            }
+        }
+        System::removeEntity(entityId);
+    }
+
+    void Collision::update([[maybe_unused]] const std::chrono::microseconds elapsedTime)
+    {
+        if (m_player)
+        {
+            // Let's see if the player picked up any powerups
+            std::optional<entities::Entity::IdType> powerupToRemove;
+            for (auto&& [id, powerup] : m_powerups)
+            {
+                if (math::collides(*m_player, *powerup))
+                {
+                    // Apply the powerup to the player
+                    std::static_pointer_cast<entities::Player>(m_player)->applyPowerup(std::static_pointer_cast<entities::Powerup>(powerup));
+                    powerupToRemove = id;
+                }
+            }
+            if (powerupToRemove.has_value())
+            {
+                m_removeEntity(powerupToRemove.value());
+            }
+
+            //
+            // Check to see if any viruses hit the player
+            for (auto&& [id, virus] : m_viruses)
+            {
+                if (math::collides(*m_player, *virus))
+                {
+                    m_onPlayerDeath();
+                    break;
+                }
+            }
+        }
+
+        //
+        // Let's see if any bullets hit any viruses
+        std::vector<entities::Entity::IdType> bulletsToRemove;
+        // Using a set for the dead viruses so that duplicates don't happen, plus want to
+        // wait to remove them until after iterating through everything.
+        std::unordered_set<entities::Entity::IdType> deadViruses;
+        for (auto&& [bulletId, bullet] : m_bullets)
+        {
+            for (auto&& [virusId, virus] : m_viruses)
+            {
+                if (math::collides(*std::static_pointer_cast<entities::Entity>(bullet), *std::static_pointer_cast<entities::Entity>(virus)))
+                {
+                    bulletsToRemove.push_back(bulletId);
+                    std::static_pointer_cast<entities::Virus>(virus)->addBullet(bullet);
+                    auto damage = bullet->getComponent<components::Damage>();
+                    auto health = virus->getComponent<components::Health>();
+                    health->subtract(damage->get());
+                    if (health->get() <= 0)
+                    {
+                        deadViruses.insert(virusId);
+                        // Don't check anymore viruses for this bullet
+                        break;
+                    }
+                }
+            }
+        }
+        for (auto&& id : bulletsToRemove)
+        {
+            m_removeEntity(id);
+        }
+
+        for (auto&& id : deadViruses)
+        {
+            m_onVirusDeath(id);
+            m_removeEntity(id);
+        }
     }
 
 } // namespace systems

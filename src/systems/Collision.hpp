@@ -23,19 +23,39 @@ THE SOFTWARE.
 #pragma once
 
 #include "System.hpp"
+#include "components/Collidable.hpp"
+#include "entities/Entity.hpp"
 
 #include <chrono>
+#include <functional>
+#include <memory>
 
 namespace systems
 {
     class Collision : public System
     {
       public:
-        Collision() :
-            System({})
+        Collision(std::function<void(entities::Entity::IdType)> removeEntity, std::function<void(entities::Entity::IdType)> onVirusDeath, std::function<void()> onPlayerDeath) :
+            System({ ctti::unnamed_type_id<components::Collidable>() }),
+            m_removeEntity(removeEntity),
+            m_onVirusDeath(onVirusDeath),
+            m_onPlayerDeath(onPlayerDeath)
         {
         }
 
+        virtual bool addEntity(std::shared_ptr<entities::Entity> entity) override;
+        virtual void removeEntity(entities::Entity::IdType entityId) override;
+
         virtual void update(std::chrono::microseconds elapsedTime) override;
+
+      private:
+        std::function<void(entities::Entity::IdType)> m_removeEntity;
+        std::function<void(entities::Entity::IdType)> m_onVirusDeath;
+        std::function<void()> m_onPlayerDeath;
+
+        entities::EntityMap m_viruses;
+        entities::EntityMap m_bullets;
+        entities::EntityMap m_powerups;
+        std::shared_ptr<entities::Entity> m_player;
     };
 } // namespace systems
