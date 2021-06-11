@@ -22,11 +22,11 @@ THE SOFTWARE.
 
 #include "Collision.hpp"
 
+#include "components/Bullets.hpp"
 #include "components/Damage.hpp"
 #include "components/Health.hpp"
 #include "entities/Player.hpp"
 #include "entities/Powerup.hpp"
-#include "entities/Virus.hpp"
 #include "misc/math.hpp"
 
 #include <memory>
@@ -119,7 +119,7 @@ namespace systems
                 if (math::collides(*std::static_pointer_cast<entities::Entity>(bullet), *std::static_pointer_cast<entities::Entity>(virus)))
                 {
                     bulletsToRemove.push_back(bulletId);
-                    std::static_pointer_cast<entities::Virus>(virus)->addBullet(bullet);
+                    virus->getComponent<components::Bullets>()->add();
                     auto damage = bullet->getComponent<components::Damage>();
                     auto health = virus->getComponent<components::Health>();
                     health->subtract(damage->get());

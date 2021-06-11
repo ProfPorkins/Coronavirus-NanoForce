@@ -22,45 +22,31 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "entities/Entity.hpp"
+#include "Component.hpp"
 #include "misc/misc.hpp"
 
 #include <chrono>
 #include <cstdint>
-#include <memory>
-#include <random>
-#include <vector>
 
-namespace entities
+namespace components
 {
-    class Virus : public Entity
+    class Bullets : public Component
     {
       public:
-        Virus(std::chrono::microseconds age = std::chrono::microseconds(0));
+        Bullets()
+        {
+        }
+
+        auto add() { m_howMany++; }
+        auto howMany() { return m_howMany; }
+        float getBulletAngleStart() { return m_bulletAngleStart; }
+
+        void updateBulletRotation(std::uint16_t direction) { m_bulletRotateRate = (direction == 0) ? m_bulletRotateRate : -m_bulletRotateRate; }
+        void updateBulletAngleStart(std::chrono::microseconds elapsedTime) { m_bulletAngleStart += (m_bulletRotateRate * elapsedTime.count()); }
 
       private:
-        struct Specification
-        {
-            Specification() = default;
-
-            float minSize;
-            float maxSize;
-            std::chrono::microseconds maxAge;
-            std::uint16_t healthStart;
-            std::uint8_t healthIncrements;
-            std::chrono::microseconds healthIncrementTime;
-            std::chrono::microseconds gestationMin;
-            std::chrono::microseconds gestationMean;
-            std::chrono::microseconds gestationStdev;
-            float rotateRate; // degrees per ms
-        };
-
-        std::random_device m_rd;
-        std::mt19937 m_generator;
-        std::uniform_real_distribution<float> m_distAngle;
-        std::uniform_int_distribution<std::uint16_t> m_distBoolean;
-
-        Specification readConfiguration();
-        void selectPath();
+        std::uint16_t m_howMany{ 0 };
+        float m_bulletAngleStart{ 0.0f };
+        float m_bulletRotateRate{ 0.1f * misc::PER_MS_TO_US }; // degrees per us
     };
-} // namespace entities
+} // namespace components

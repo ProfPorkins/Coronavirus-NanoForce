@@ -51,6 +51,7 @@ set(CLIENT_COMPONENTS_HEADERS
     components/Audio.hpp
     components/Birth.hpp
     components/Bomb.hpp
+    components/Bullets.hpp
     components/Collidable.hpp
     components/Component.hpp
     components/Damage.hpp

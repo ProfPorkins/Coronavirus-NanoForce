@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 #include "GameModel.hpp"
 
+#include "components/Bullets.hpp"
 #include "components/Damage.hpp"
 #include "components/Health.hpp"
 #include "components/Lifetime.hpp"
@@ -262,16 +263,17 @@ void GameModel::onVirusDeath(entities::Entity::IdType entityId)
     auto position = virus->getComponent<components::Position>();
     auto size = virus->getComponent<components::Size>();
 
-    auto howMany = static_cast<std::uint16_t>(virus->getBullets().size() * 5);
+    std::uint16_t howMany = virus->getComponent<components::Bullets>()->howMany() * 5;
     m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2_PARTICLE, position->get(), 0.0f, howMany, 0.00002f, 1.0f, 0.2f, misc::msTous(std::chrono::milliseconds(1000))));
     m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2_PARTICLE, position->get(), size->getInnerRadius() / 2.0f, howMany, 0.0000075f, 1.0f, 0.2f, misc::msTous(std::chrono::milliseconds(1000))));
     //
     // Time these so they finish just before the center
     auto lifetime = misc::msTous(std::chrono::milliseconds(1500));
     auto speed = -size->getInnerRadius() / lifetime.count();
-    // Even I admit this is a pretty long way to get the size, but it is the way to do it
-    auto bulletSize = virus->getBullets().at(0)->getComponent<components::Size>()->get().width;
-    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_BASIC_GUN_BULLET, position->get(), size->getInnerRadius(), static_cast<std::uint16_t>(virus->getBullets().size()), speed, bulletSize, bulletSize / 2.0f, lifetime));
+    // All bullets are the same size, and this is just a reference point for creating the particle effect anyway.
+    config::config_path WEAPON_ITEM_SIZE = { config::DOM_ENTITY, config::ENTITY_WEAPON_BASIC_GUN, config::DOM_SIZE };
+    auto bulletSize = Configuration::get<float>(WEAPON_ITEM_SIZE);
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_BASIC_GUN_BULLET, position->get(), size->getInnerRadius(), virus->getComponent<components::Bullets>()->howMany(), speed, bulletSize, bulletSize / 2.0f, lifetime));
 
     //
     // One particle for the virus itself slowly going away

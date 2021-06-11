@@ -45,6 +45,9 @@ namespace systems
       private:
         std::shared_ptr<sf::Sprite> m_sprite;
         std::shared_ptr<sf::Sprite> m_bullet;
+
+        float m_bulletSize{ 0 };
+        float m_bulletRadius{ 0 };
     };
 
 } // namespace systems
