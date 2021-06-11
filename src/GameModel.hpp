@@ -92,8 +92,8 @@ class GameModel
 
     std::shared_ptr<entities::Player> m_player{ nullptr };
     std::uint8_t m_remainingNanoBots{ 0 };
-    std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>> m_viruses;
-    std::vector<std::shared_ptr<entities::Virus>> m_newViruses;
+    std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>> m_viruses;
+    std::vector<std::shared_ptr<entities::Entity>> m_newViruses;
 
     std::unique_ptr<renderers::Background> m_rendererBackground;
     std::unique_ptr<renderers::HUD> m_rendererHUD;
@@ -103,7 +103,7 @@ class GameModel
     std::chrono::microseconds m_playerStartCountdown{ 0 };
 
     void onVirusDeath(entities::Entity::IdType entityId);
-    void onVirusBirth(entities::Entity::IdType parentId);
+    void onVirusBirth(std::shared_ptr<entities::Entity> entity);
     void onPlayerDeath();
     void resetPlayer();
     void startPlayer(math::Point2f position);

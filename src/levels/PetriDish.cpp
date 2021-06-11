@@ -103,11 +103,11 @@ namespace levels
     // start searching elsewhere after some time has passed trying the center.
     //
     // --------------------------------------------------------------
-    std::optional<math::Point2f> PetriDish::findSafeStart(std::chrono::microseconds howLongWaiting, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& viruses)
+    std::optional<math::Point2f> PetriDish::findSafeStart(std::chrono::microseconds howLongWaiting, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& viruses)
     {
         const float shipSize = Configuration::get<float>(config::PLAYER_SIZE);
 
-        auto getMinDistance = [](math::Point2f position, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& viruses) {
+        auto getMinDistance = [](math::Point2f position, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& viruses) {
             auto minDistance = std::numeric_limits<float>::max();
             for (auto&& [id, virus] : viruses)
             {

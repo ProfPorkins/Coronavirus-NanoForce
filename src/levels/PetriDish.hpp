@@ -23,6 +23,7 @@ THE SOFTWARE.
 #pragma once
 
 #include "Level.hpp"
+#include "entities/Entity.hpp"
 #include "misc/math.hpp"
 
 #include <memory>
@@ -37,7 +38,7 @@ namespace levels
         PetriDish(std::string key, bool training);
 
         virtual std::vector<std::shared_ptr<entities::Virus>> initializeViruses() override;
-        virtual std::optional<math::Point2f> findSafeStart(std::chrono::microseconds howLongWaiting, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& viruses) override;
+        virtual std::optional<math::Point2f> findSafeStart(std::chrono::microseconds howLongWaiting, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& viruses) override;
         virtual bool collidesWithBorder(entities::Entity& entity) override;
         virtual void bounceOffBorder(entities::Entity& entity) override;
 

@@ -117,7 +117,7 @@ void GameModel::initialize()
     m_sysMovement = std::make_unique<systems::Movement>(*m_level);
     m_sysAge = std::make_unique<systems::Age>();
     m_sysAnimatedSprite = std::make_unique<systems::AnimatedSprite>();
-    m_sysBirth = std::make_unique<systems::Birth>([this](entities::Entity::IdType parentId) { this->onVirusBirth(parentId); });
+    m_sysBirth = std::make_unique<systems::Birth>([this](std::shared_ptr<entities::Entity> entity) { this->onVirusBirth(entity); });
     m_sysHealth = std::make_unique<systems::Health>();
     m_sysLifetime = std::make_unique<systems::Lifetime>([this](entities::Entity::IdType entityId) { this->removeEntity(entityId); });
     m_sysPowerup = std::make_unique<systems::Powerup>(
@@ -274,14 +274,11 @@ void GameModel::onVirusDeath(entities::Entity::IdType entityId)
 // A new virus was just birthed, need to create the instance here.
 //
 // --------------------------------------------------------------
-void GameModel::onVirusBirth(entities::Entity::IdType parentId)
+void GameModel::onVirusBirth(std::shared_ptr<entities::Entity> entity)
 {
     if (m_viruses.size() < m_level->getMaxViruses())
     {
-        auto parentPosition = m_viruses[parentId]->getComponent<components::Position>();
-        auto virus = std::make_shared<entities::Virus>();
-        virus->getComponent<components::Position>()->set(parentPosition->get());
-        m_newViruses.push_back(virus);
+        m_newViruses.push_back(entity);
     }
 }
 
