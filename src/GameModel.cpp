@@ -117,13 +117,13 @@ void GameModel::initialize()
     m_sysAnimatedSprite = std::make_unique<systems::AnimatedSprite>();
     m_sysBirth = std::make_unique<systems::Birth>([this](std::shared_ptr<entities::Entity> entity) { this->onVirusBirth(entity); });
     m_sysHealth = std::make_unique<systems::Health>();
-    m_sysLifetime = std::make_unique<systems::Lifetime>([this](entities::Entity::IdType entityId) { this->removeEntity(entityId); });
+    m_sysLifetime = std::make_unique<systems::Lifetime>([this](entities::Entity::IdType entityId) { m_removeEntities.push_back(entityId); });
     m_sysPowerup = std::make_unique<systems::Powerup>(
         *m_level,
-        [this](std::shared_ptr<entities::Powerup>& powerup) { this->addEntity(powerup); },
+        [this](std::shared_ptr<entities::Powerup>& powerup) { m_newEntities.push_back(powerup); },
         m_level->getKey());
     m_sysCollision = std::make_unique<systems::Collision>(
-        [this](entities::Entity::IdType entityId) { this->removeEntity(entityId); },
+        [this](entities::Entity::IdType entityId) { m_removeEntities.push_back(entityId); },
         [this](entities::Entity* entity) { this->onVirusDeath(entity); },
         [this]() { this->onPlayerDeath(); });
     m_sysParticle = std::make_unique<systems::ParticleSystem>();
@@ -135,8 +135,7 @@ void GameModel::initialize()
 
     for (auto&& virus : m_level->initializeViruses())
     {
-        m_virusCount++;
-        addEntity(virus);
+        onVirusBirth(virus);
     }
 
     // -1 because the current bot being played is 1 of the remaining bots
@@ -192,22 +191,74 @@ void GameModel::update(const std::chrono::microseconds elapsedTime)
     m_sysHealth->update(elapsedTime);
     m_sysPowerup->update(elapsedTime);
     m_sysAnimatedSprite->update(elapsedTime);
+    m_sysCollision->update(elapsedTime);
+
+    addNewEntities();
+    removeDeadEntities();
 
     //
-    // Add any new viruses in at this time
-    for (auto&& virus : m_newViruses)
+    // Check for end of game condition.  Must be at end of the 'update' to ensure all new/dead viruses
+    // have been accounted for.
+    // Don't love doing this during every update, but the other ways I have done it are more brittle than
+    // requiring it to be at the end of the update;
+    if (m_virusCount == 0)
     {
-        m_virusCount++;
-        addEntity(virus);
+        m_rendererStatus->setMessage(m_level->getMessageSuccess());
     }
-    m_newViruses.clear();
+}
 
-    // NOTE: Important to keep this after adding new viruses and at the end of the update loop.
-    //       The reason is that new viruses can be born during the update.  The onVirusDeath method
-    //       checks to see if there are no more visuses so it can set the game over message.  If not
-    //       placed here, there is a chance for that message to be displayed, only to have a new virus
-    //       appear because it was born after that message was set
-    m_sysCollision->update(elapsedTime);
+// --------------------------------------------------------------
+//
+// Give all (most) systems a chance to see if they are interested
+// in the new entities.
+//
+// --------------------------------------------------------------
+void GameModel::addNewEntities()
+{
+    for (auto&& entity : m_newEntities)
+    {
+        m_sysAge->addEntity(entity);
+        m_sysAnimatedSprite->addEntity(entity);
+        m_sysBirth->addEntity(entity);
+        m_sysHealth->addEntity(entity);
+        m_sysLifetime->addEntity(entity);
+        m_sysMovement->addEntity(entity);
+        m_sysCollision->addEntity(entity);
+
+        m_sysRendererSprite->addEntity(entity);
+        m_sysRendererAnimatedSprite->addEntity(entity);
+        m_sysRendererSarsCov2->addEntity(entity);
+        // NOTE: The Powerup system doesn't act on entities, nothing to do here
+        // NOTE: Particle system renderer does not have entities added to it, it is it's own separate thing
+    }
+    m_newEntities.clear();
+}
+
+// --------------------------------------------------------------
+//
+// Give all (most) systems a chance to remove the entities that
+// are no longer part of the model.
+//
+// --------------------------------------------------------------
+void GameModel::removeDeadEntities()
+{
+    for (auto&& entityId : m_removeEntities)
+    {
+        m_sysAge->removeEntity(entityId);
+        m_sysAnimatedSprite->removeEntity(entityId);
+        m_sysBirth->removeEntity(entityId);
+        m_sysHealth->removeEntity(entityId);
+        m_sysLifetime->removeEntity(entityId);
+        m_sysMovement->removeEntity(entityId);
+        m_sysCollision->removeEntity(entityId);
+
+        m_sysRendererSprite->removeEntity(entityId);
+        m_sysRendererAnimatedSprite->removeEntity(entityId);
+        m_sysRendererSarsCov2->removeEntity(entityId);
+        // NOTE: The Powerup system doesn't act on entities, nothing to do here
+        // NOTE: Particle system renderer does not have entities added to it, it is it's own separate thing
+    }
+    m_removeEntities.clear();
 }
 
 // --------------------------------------------------------------
@@ -258,12 +309,6 @@ void GameModel::onVirusDeath(entities::Entity* virus)
 
     m_virusesKilled++;
     m_virusCount--;
-    //
-    // If this is the last virus, happy, happy!
-    if (m_virusCount == 0)
-    {
-        m_rendererStatus->setMessage(m_level->getMessageSuccess());
-    }
 }
 
 // --------------------------------------------------------------
@@ -275,7 +320,8 @@ void GameModel::onVirusBirth(std::shared_ptr<entities::Entity> entity)
 {
     if (m_virusCount < m_level->getMaxViruses())
     {
-        m_newViruses.push_back(entity);
+        m_newEntities.push_back(entity);
+        m_virusCount++;
     }
 }
 
@@ -303,7 +349,7 @@ void GameModel::onPlayerDeath()
     m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER, position->get(), 0.0f, 0.0f, size->getOuterRadius(), 0.01f, orientation, misc::msTous(std::chrono::milliseconds(2000))));
 
     unregisterInputHandlers();
-    removeEntity(m_player->getId());
+    m_removeEntities.push_back(m_player->getId());
     if (m_remainingNanoBots > 0)
     {
         m_remainingNanoBots--;
@@ -358,7 +404,7 @@ void GameModel::startPlayer(math::Point2f position)
     SoundPlayer::play(content::KEY_AUDIO_PLAYER_START);
 
     m_player = entities::Player::create();
-    addEntity(m_player);
+    m_newEntities.push_back(m_player);
 
     // A copy of the pointer is needed, because the controls might still happen during the next update when the player dies
     auto player = m_player;
@@ -372,8 +418,8 @@ void GameModel::startPlayer(math::Point2f position)
         Configuration::get<std::string>(config::KEYBOARD_PRIMARY_FIRE), true, std::chrono::microseconds(0),
         [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime) {
             player->getPrimaryWeapon()->fire(
-                [this](std::shared_ptr<entities::Entity>& bullet) { this->addEntity(bullet); },
-                [this](std::shared_ptr<entities::Entity>& bomb) { this->addEntity(bomb); });
+                [this](std::shared_ptr<entities::Entity>& bullet) { m_newEntities.push_back(bullet); },
+                [this](std::shared_ptr<entities::Entity>& bomb) { m_newEntities.push_back(bomb); });
         });
 
     //
@@ -382,8 +428,8 @@ void GameModel::startPlayer(math::Point2f position)
         Configuration::get<std::string>(config::KEYBOARD_SECONDARY_FIRE), true, std::chrono::microseconds(0),
         [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime) {
             player->getSecondaryWeapon()->fire(
-                [this](std::shared_ptr<entities::Entity>& bullet) { this->addEntity(bullet); },
-                [this](std::shared_ptr<entities::Entity>& bomb) { this->addEntity(bomb); });
+                [this](std::shared_ptr<entities::Entity>& bullet) { m_newEntities.push_back(bullet); },
+                [this](std::shared_ptr<entities::Entity>& bomb) { m_newEntities.push_back(bomb); });
         });
 
     m_player->getComponent<components::Position>()->set(position);
@@ -405,57 +451,6 @@ void GameModel::startPlayer(math::Point2f position)
     m_sysParticle->addEffect(std::make_unique<systems::PlayerStartEffect>(
         m_player->getComponent<components::Position>()->get(),
         static_cast<std::uint16_t>(300), misc::msTous(std::chrono::milliseconds(750))));
-}
-
-// --------------------------------------------------------------
-//
-// As entities are added to the game model, they are run by the systems
-// to see if they are interested in knowing about them during their
-// updates.
-//
-// --------------------------------------------------------------
-void GameModel::addEntity(std::shared_ptr<entities::Entity> entity)
-{
-    if (entity == nullptr)
-        return;
-
-    m_sysAge->addEntity(entity);
-    m_sysAnimatedSprite->addEntity(entity);
-    m_sysBirth->addEntity(entity);
-    m_sysHealth->addEntity(entity);
-    m_sysLifetime->addEntity(entity);
-    m_sysMovement->addEntity(entity);
-    m_sysCollision->addEntity(entity);
-
-    m_sysRendererSprite->addEntity(entity);
-    m_sysRendererAnimatedSprite->addEntity(entity);
-    m_sysRendererSarsCov2->addEntity(entity);
-    // NOTE: The Powerup system doesn't act on entities, nothing to do here
-    // NOTE: Particle system renderer does not have entities added to it, it is it's own separate thing
-}
-
-// --------------------------------------------------------------
-//
-// All systems must be given a chance to remove the entity.
-//
-// --------------------------------------------------------------
-void GameModel::removeEntity(entities::Entity::IdType entityId)
-{
-    //
-    // Let each of the systems know to remove the entity
-    m_sysAge->removeEntity(entityId);
-    m_sysAnimatedSprite->removeEntity(entityId);
-    m_sysBirth->removeEntity(entityId);
-    m_sysHealth->removeEntity(entityId);
-    m_sysLifetime->removeEntity(entityId);
-    m_sysMovement->removeEntity(entityId);
-    m_sysCollision->removeEntity(entityId);
-
-    m_sysRendererSprite->removeEntity(entityId);
-    m_sysRendererAnimatedSprite->removeEntity(entityId);
-    m_sysRendererSarsCov2->removeEntity(entityId);
-    // NOTE: The Powerup system doesn't act on entities, nothing to do here
-    // NOTE: Particle system renderer does not have entities added to it, it is it's own separate thing
 }
 
 // --------------------------------------------------------------

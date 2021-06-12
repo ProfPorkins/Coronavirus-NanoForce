@@ -92,7 +92,8 @@ class GameModel
     std::shared_ptr<entities::Player> m_player{ nullptr };
     std::uint8_t m_remainingNanoBots{ 0 };
     std::uint16_t m_virusCount{ 0 };
-    std::vector<std::shared_ptr<entities::Entity>> m_newViruses;
+    std::vector<std::shared_ptr<entities::Entity>> m_newEntities;
+    std::vector<entities::Entity::IdType> m_removeEntities;
 
     std::unique_ptr<renderers::Background> m_rendererBackground;
     std::unique_ptr<renderers::HUD> m_rendererHUD;
@@ -106,9 +107,8 @@ class GameModel
     void onPlayerDeath();
     void resetPlayer();
     void startPlayer(math::Point2f position);
-
-    void addEntity(std::shared_ptr<entities::Entity> entity);
-    void removeEntity(entities::Entity::IdType entityId);
+    void addNewEntities();
+    void removeDeadEntities();
 
     bool contentReady();
     void unregisterInputHandlers();
