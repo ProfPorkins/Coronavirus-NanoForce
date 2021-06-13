@@ -31,12 +31,14 @@ THE SOFTWARE.
 #include "components/Powerup.hpp"
 #include "components/Size.hpp"
 #include "components/Sprite.hpp"
+#include "components/ControlParams.hpp"
 #include "entities/WeaponBomb.hpp"
 #include "entities/WeaponEmpty.hpp"
 #include "entities/WeaponGun.hpp"
 #include "entities/WeaponRapidFire.hpp"
 #include "entities/WeaponSpreadFire.hpp"
 #include "misc/math.hpp"
+#include "misc/misc.hpp"
 #include "services/Configuration.hpp"
 #include "services/ConfigurationPath.hpp"
 #include "services/Content.hpp"
@@ -72,15 +74,13 @@ namespace entities
         return player;
     }
 
-    Player::Player(Specification spec) :
-        m_thrustRate(spec.thrustRate),
-        m_rotateRate(spec.rotateRate),
-        m_maxSpeed(spec.maxSpeed)
+    Player::Player(Specification spec)
     {
         this->addComponent(std::make_unique<components::Position>(math::Point2f(0.0f, 0.0f)));
         this->addComponent(std::make_unique<components::Orientation>(0.0f));
         this->addComponent(std::make_unique<components::Size>(math::Dimension2f(spec.size, spec.size)));
         this->addComponent(std::make_unique<components::Momentum>(math::Vector2f(0.0f, 0.0f)));
+        this->addComponent(std::make_unique<components::ControlParams>(spec.thrustRate, spec.rotateRate, spec.maxSpeed));
         this->addComponent(std::make_unique<components::Drag>(spec.dragRate));
         this->addComponent(std::make_unique<components::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_PLAYER)));
         this->addComponent(std::make_unique<components::Collidable>(components::Collidable::Type::Player));
@@ -150,38 +150,6 @@ namespace entities
                 this->attachSecondaryWeapon(weapon);
             }
             break;
-        }
-    }
-
-    void Player::rotateLeft(std::chrono::microseconds elapsedTime)
-    {
-        auto orientation = this->getComponent<components::Orientation>();
-        orientation->set(orientation->get() - elapsedTime.count() * m_rotateRate);
-    }
-
-    void Player::rotateRight(std::chrono::microseconds elapsedTime)
-    {
-        auto orientation = this->getComponent<components::Orientation>();
-        orientation->set(orientation->get() + elapsedTime.count() * m_rotateRate);
-    }
-
-    // --------------------------------------------------------------
-    //
-    // Add momentum in the "orientation" direction.
-    //
-    // --------------------------------------------------------------
-    void Player::accelerate(std::chrono::microseconds elapsedTime)
-    {
-        auto vector = math::vectorFromDegrees(this->getComponent<components::Orientation>()->get());
-        auto momentum = this->getComponent<components::Momentum>();
-        momentum->set({ static_cast<decltype(momentum->get().x)>(momentum->get().x + vector.x * m_thrustRate * elapsedTime.count()),
-                        static_cast<decltype(momentum->get().y)>(momentum->get().y + vector.y * m_thrustRate * elapsedTime.count()) });
-
-        auto magnitude = std::sqrt(momentum->get().x * momentum->get().x + momentum->get().y * momentum->get().y);
-        if (magnitude > m_maxSpeed)
-        {
-            float scale = m_maxSpeed / magnitude;
-            momentum->set({ momentum->get().x * scale, momentum->get().y * scale });
         }
     }
 

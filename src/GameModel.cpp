@@ -30,6 +30,7 @@ THE SOFTWARE.
 #include "components/Orientation.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"
+#include "components/ControlParams.hpp"
 #include "entities/Bomb.hpp"
 #include "entities/Bullet.hpp"
 #include "entities/PowerupBomb.hpp"
@@ -53,6 +54,12 @@ THE SOFTWARE.
 // Static member implementation
 levels::LevelName GameModel::m_levelSelect{ levels::LevelName::Training1 };
 std::atomic_bool GameModel::m_contentError{ false };
+
+//
+// Prototypes for a few free functions used to manipulate an entity (the player)
+void accelerate(entities::Entity* entity, std::chrono::microseconds elapsedTime);
+void rotateLeft(entities::Entity* entity, std::chrono::microseconds elapsedTime);
+void rotateRight(entities::Entity* entity, std::chrono::microseconds elapsedTime);
 
 void GameModel::selectLevel(levels::LevelName whichLevel)
 {
@@ -410,8 +417,8 @@ void GameModel::startPlayer(math::Point2f position)
     auto player = m_player;
     KeyboardInput::instance().registerKeyPressedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { player->startThrust(); });
     KeyboardInput::instance().registerKeyReleasedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { player->endThrust(); });
-    KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_LEFT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { player->rotateLeft(elapsedTime); });
-    KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_RIGHT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { player->rotateRight(elapsedTime); });
+    KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_LEFT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { rotateLeft(player.get(), elapsedTime); });
+    KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_RIGHT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { rotateRight(player.get(), elapsedTime); });
     //
     // Primary weapon fire
     KeyboardInput::instance().registerHandler(
@@ -513,4 +520,39 @@ void GameModel::unregisterInputHandlers()
 
     KeyboardInput::instance().unregisterHandler(Configuration::get<std::string>(config::KEYBOARD_PRIMARY_FIRE));
     KeyboardInput::instance().unregisterHandler(Configuration::get<std::string>(config::KEYBOARD_SECONDARY_FIRE));
+}
+
+// --------------------------------------------------------------
+//
+// Add momentum in the "orientation" direction.
+//
+// --------------------------------------------------------------
+void accelerate(entities::Entity* entity, std::chrono::microseconds elapsedTime)
+{
+    auto params = entity->getComponent<components::ControlParams>();
+    auto vector = math::vectorFromDegrees(entity->getComponent<components::Orientation>()->get());
+    auto momentum = entity->getComponent<components::Momentum>();
+    momentum->set({ static_cast<decltype(momentum->get().x)>(momentum->get().x + vector.x * params->getThrustRate() * elapsedTime.count()),
+                    static_cast<decltype(momentum->get().y)>(momentum->get().y + vector.y * params->getThrustRate() * elapsedTime.count()) });
+
+    auto magnitude = std::sqrt(momentum->get().x * momentum->get().x + momentum->get().y * momentum->get().y);
+    if (magnitude > params->getMaxSpeed())
+    {
+        float scale = params->getMaxSpeed() / magnitude;
+        momentum->set({ momentum->get().x * scale, momentum->get().y * scale });
+    }
+}
+
+void rotateLeft(entities::Entity* entity, std::chrono::microseconds elapsedTime)
+{
+    auto orientation = entity->getComponent<components::Orientation>();
+    auto params = entity->getComponent<components::ControlParams>();
+    orientation->set(orientation->get() - elapsedTime.count() * params->getRotateRate());
+}
+
+void rotateRight(entities::Entity* entity, std::chrono::microseconds elapsedTime)
+{
+    auto orientation = entity->getComponent<components::Orientation>();
+    auto params = entity->getComponent<components::ControlParams>();
+    orientation->set(orientation->get() + elapsedTime.count() * params->getRotateRate());
 }
