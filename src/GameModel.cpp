@@ -23,6 +23,7 @@ THE SOFTWARE.
 #include "GameModel.hpp"
 
 #include "components/Bullets.hpp"
+#include "components/Control.hpp"
 #include "components/Damage.hpp"
 #include "components/Health.hpp"
 #include "components/Lifetime.hpp"
@@ -30,7 +31,6 @@ THE SOFTWARE.
 #include "components/Orientation.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"
-#include "components/ControlParams.hpp"
 #include "entities/Bomb.hpp"
 #include "entities/Bullet.hpp"
 #include "entities/PowerupBomb.hpp"
@@ -57,6 +57,8 @@ std::atomic_bool GameModel::m_contentError{ false };
 
 //
 // Prototypes for a few free functions used to manipulate an entity (the player)
+void startThrust(entities::Entity* entity);
+void endThrust(entities::Entity* entity);
 void accelerate(entities::Entity* entity, std::chrono::microseconds elapsedTime);
 void rotateLeft(entities::Entity* entity, std::chrono::microseconds elapsedTime);
 void rotateRight(entities::Entity* entity, std::chrono::microseconds elapsedTime);
@@ -415,8 +417,8 @@ void GameModel::startPlayer(math::Point2f position)
 
     // A copy of the pointer is needed, because the controls might still happen during the next update when the player dies
     auto player = m_player;
-    KeyboardInput::instance().registerKeyPressedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { player->startThrust(); });
-    KeyboardInput::instance().registerKeyReleasedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { player->endThrust(); });
+    KeyboardInput::instance().registerKeyPressedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { startThrust(player.get()); });
+    KeyboardInput::instance().registerKeyReleasedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { endThrust(player.get()); });
     KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_LEFT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { rotateLeft(player.get(), elapsedTime); });
     KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_RIGHT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { rotateRight(player.get(), elapsedTime); });
     //
@@ -451,7 +453,12 @@ void GameModel::startPlayer(math::Point2f position)
         }
 
         // Player is directly updated here, because there isn't (yet) a system associated with thrust
-        m_player->update(elapsedTime);
+        // Player needs to update because thrust is based on a start/stop from a key being pressed or released.
+        auto params = m_player->getComponent<components::Control>();
+        if (params->isThrusting())
+        {
+            accelerate(m_player.get(), elapsedTime);
+        }
     };
 
     // Particle effect as a visual cue to show where the player starts
@@ -529,7 +536,7 @@ void GameModel::unregisterInputHandlers()
 // --------------------------------------------------------------
 void accelerate(entities::Entity* entity, std::chrono::microseconds elapsedTime)
 {
-    auto params = entity->getComponent<components::ControlParams>();
+    auto params = entity->getComponent<components::Control>();
     auto vector = math::vectorFromDegrees(entity->getComponent<components::Orientation>()->get());
     auto momentum = entity->getComponent<components::Momentum>();
     momentum->set({ static_cast<decltype(momentum->get().x)>(momentum->get().x + vector.x * params->getThrustRate() * elapsedTime.count()),
@@ -546,13 +553,27 @@ void accelerate(entities::Entity* entity, std::chrono::microseconds elapsedTime)
 void rotateLeft(entities::Entity* entity, std::chrono::microseconds elapsedTime)
 {
     auto orientation = entity->getComponent<components::Orientation>();
-    auto params = entity->getComponent<components::ControlParams>();
+    auto params = entity->getComponent<components::Control>();
     orientation->set(orientation->get() - elapsedTime.count() * params->getRotateRate());
 }
 
 void rotateRight(entities::Entity* entity, std::chrono::microseconds elapsedTime)
 {
     auto orientation = entity->getComponent<components::Orientation>();
-    auto params = entity->getComponent<components::ControlParams>();
+    auto params = entity->getComponent<components::Control>();
     orientation->set(orientation->get() + elapsedTime.count() * params->getRotateRate());
+}
+
+void startThrust(entities::Entity* entity)
+{
+    auto params = entity->getComponent<components::Control>();
+    params->setThrusting(true);
+
+    //m_thrust.play();
+}
+void endThrust(entities::Entity* entity)
+{
+    auto params = entity->getComponent<components::Control>();
+    params->setThrusting(false);
+    //m_thrust.stop();
 }

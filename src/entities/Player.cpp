@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include "components//Audio.hpp"
 #include "components/Collidable.hpp"
+#include "components/Control.hpp"
 #include "components/Drag.hpp"
 #include "components/Momentum.hpp"
 #include "components/Orientation.hpp"
@@ -31,7 +32,6 @@ THE SOFTWARE.
 #include "components/Powerup.hpp"
 #include "components/Size.hpp"
 #include "components/Sprite.hpp"
-#include "components/ControlParams.hpp"
 #include "entities/WeaponBomb.hpp"
 #include "entities/WeaponEmpty.hpp"
 #include "entities/WeaponGun.hpp"
@@ -80,7 +80,7 @@ namespace entities
         this->addComponent(std::make_unique<components::Orientation>(0.0f));
         this->addComponent(std::make_unique<components::Size>(math::Dimension2f(spec.size, spec.size)));
         this->addComponent(std::make_unique<components::Momentum>(math::Vector2f(0.0f, 0.0f)));
-        this->addComponent(std::make_unique<components::ControlParams>(spec.thrustRate, spec.rotateRate, spec.maxSpeed));
+        this->addComponent(std::make_unique<components::Control>(spec.thrustRate, spec.rotateRate, spec.maxSpeed));
         this->addComponent(std::make_unique<components::Drag>(spec.dragRate));
         this->addComponent(std::make_unique<components::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_PLAYER)));
         this->addComponent(std::make_unique<components::Collidable>(components::Collidable::Type::Player));
@@ -110,20 +110,6 @@ namespace entities
         // hasn't been released.  This ensures the thrust sounds stops when the player
         // no longer exists.
         m_thrust.stop();
-    }
-
-    // --------------------------------------------------------------
-    //
-    // Player needs to update because thrust is based on a start/stop
-    // from a key being pressed or released.
-    //
-    // --------------------------------------------------------------
-    void Player::update(const std::chrono::microseconds elapsedTime)
-    {
-        if (m_thrusting)
-        {
-            accelerate(elapsedTime);
-        }
     }
 
     void Player::applyPowerup(std::shared_ptr<entities::Powerup> powerup)

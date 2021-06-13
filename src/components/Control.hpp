@@ -26,23 +26,26 @@ THE SOFTWARE.
 
 namespace components
 {
-    class ControlParams : public Component
+    class Control : public Component
     {
       public:
-        ControlParams(double thrustRate, float rotateRate, float maxSpeed):
+        Control(double thrustRate, float rotateRate, float maxSpeed) :
             m_thrustRate(thrustRate),
             m_rotateRate(rotateRate),
             m_maxSpeed(maxSpeed)
         {
         }
 
+        auto isThrusting() { return m_thrusting; }
+        void setThrusting(bool state) { m_thrusting = state; }
         auto getThrustRate() { return m_thrustRate; }
         auto getRotateRate() { return m_rotateRate; }
-        auto getMaxSpeed() { return m_maxSpeed;  }
+        auto getMaxSpeed() { return m_maxSpeed; }
 
       private:
-        const double m_thrustRate{ 0.0 };     // per us
-        const float m_rotateRate{ 0.0f };     // degrees per us
-        const float m_maxSpeed{ 0.0f };       // per us
+        bool m_thrusting{ false };
+        const double m_thrustRate{ 0.0 }; // per us
+        const float m_rotateRate{ 0.0f }; // degrees per us
+        const float m_maxSpeed{ 0.0f };   // per us
     };
 } // namespace components

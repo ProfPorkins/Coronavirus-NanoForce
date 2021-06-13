@@ -60,25 +60,11 @@ namespace entities
 
         void cleanup();
 
-        void update(const std::chrono::microseconds elapsedTime);
-
         auto getPrimaryWeapon() { return m_weaponPrimary; }
         auto getSecondaryWeapon() { return m_weaponSecondary; }
         void applyPowerup(std::shared_ptr<entities::Powerup> powerup);
 
-        void startThrust()
-        {
-            m_thrusting = true;
-            m_thrust.play();
-        }
-        void endThrust()
-        {
-            m_thrusting = false;
-            m_thrust.stop();
-        }
-
       private:
-        bool m_thrusting{ false };
         std::shared_ptr<entities::Weapon> m_weaponPrimary;
         std::shared_ptr<entities::Weapon> m_weaponSecondary;
 
@@ -87,6 +73,5 @@ namespace entities
         void attachPrimaryWeapon(std::shared_ptr<entities::Weapon> weapon);
         void attachSecondaryWeapon(std::shared_ptr<entities::Weapon> weapon);
     };
-
 
 } // namespace entities

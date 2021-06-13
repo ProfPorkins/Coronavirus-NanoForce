@@ -54,7 +54,7 @@ set(CLIENT_COMPONENTS_HEADERS
     components/Bullets.hpp
     components/Collidable.hpp
     components/Component.hpp
-    components/ControlParams.hpp
+    components/Control.hpp
     components/Damage.hpp
     components/Drag.hpp
     components/Health.hpp
