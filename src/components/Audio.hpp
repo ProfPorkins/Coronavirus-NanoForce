@@ -23,7 +23,9 @@ THE SOFTWARE.
 #pragma once
 
 #include "Component.hpp"
+#include "services/Content.hpp"
 
+#include <SFML/Audio/Sound.hpp>
 #include <string>
 
 namespace components
@@ -31,14 +33,24 @@ namespace components
     class Audio : public Component
     {
       public:
-        Audio(std::string audioKey) :
+        Audio(std::string audioKey, bool load = false) :
             m_audioKey(audioKey)
         {
+            //
+            // Some audio (actually only one in this code) isn't fire and forget.  Sometimes
+            // there is a need to start/stop a particular sound.
+            if (load)
+            {
+                m_sound.setBuffer(*Content::get<sf::SoundBuffer>(audioKey));
+            }
         }
 
-        auto get() { return m_audioKey; }
+        auto getKey() { return m_audioKey; }
+        void start() { m_sound.play(); }
+        void stop() { m_sound.stop(); }
 
       private:
         std::string m_audioKey;
+        sf::Sound m_sound;
     };
 } // namespace components

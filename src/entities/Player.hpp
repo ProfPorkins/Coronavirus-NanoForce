@@ -27,7 +27,6 @@ THE SOFTWARE.
 #include "entities/Powerup.hpp"
 #include "entities/Weapon.hpp"
 
-#include <SFML/Audio/Sound.hpp>
 #include <chrono>
 #include <memory>
 
@@ -67,8 +66,6 @@ namespace entities
       private:
         std::shared_ptr<entities::Weapon> m_weaponPrimary;
         std::shared_ptr<entities::Weapon> m_weaponSecondary;
-
-        sf::Sound m_thrust;
 
         void attachPrimaryWeapon(std::shared_ptr<entities::Weapon> weapon);
         void attachSecondaryWeapon(std::shared_ptr<entities::Weapon> weapon);

@@ -84,11 +84,7 @@ namespace entities
         this->addComponent(std::make_unique<components::Drag>(spec.dragRate));
         this->addComponent(std::make_unique<components::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_PLAYER)));
         this->addComponent(std::make_unique<components::Collidable>(components::Collidable::Type::Player));
-
-        //
-        // This is a unique one, due to the way it works, handing it directly here, rather than a
-        // fire-and-forget using the SoundBuffer.
-        m_thrust.setBuffer(*Content::get<sf::SoundBuffer>(content::KEY_AUDIO_THRUST));
+        this->addComponent(std::make_unique<components::Audio>(content::KEY_AUDIO_THRUST, true));
     }
 
     // --------------------------------------------------------------
@@ -109,12 +105,12 @@ namespace entities
         // The thrust sound can still be playing when the player dies because the key
         // hasn't been released.  This ensures the thrust sounds stops when the player
         // no longer exists.
-        m_thrust.stop();
+        this->getComponent<components::Audio>()->stop();
     }
 
     void Player::applyPowerup(std::shared_ptr<entities::Powerup> powerup)
     {
-        SoundPlayer::play(powerup->getComponent<components::Audio>()->get());
+        SoundPlayer::play(powerup->getComponent<components::Audio>()->getKey());
 
         switch (powerup->getComponent<components::Powerup>()->get())
         {

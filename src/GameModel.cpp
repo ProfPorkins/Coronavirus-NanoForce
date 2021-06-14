@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 #include "GameModel.hpp"
 
+#include "components/Audio.hpp"
 #include "components/Bullets.hpp"
 #include "components/Control.hpp"
 #include "components/Damage.hpp"
@@ -566,14 +567,11 @@ void rotateRight(entities::Entity* entity, std::chrono::microseconds elapsedTime
 
 void startThrust(entities::Entity* entity)
 {
-    auto params = entity->getComponent<components::Control>();
-    params->setThrusting(true);
-
-    //m_thrust.play();
+    entity->getComponent<components::Control>()->setThrusting(true);
+    entity->getComponent<components::Audio>()->start();
 }
 void endThrust(entities::Entity* entity)
 {
-    auto params = entity->getComponent<components::Control>();
-    params->setThrusting(false);
-    //m_thrust.stop();
+    entity->getComponent<components::Control>()->setThrusting(false);
+    entity->getComponent<components::Audio>()->stop();
 }
