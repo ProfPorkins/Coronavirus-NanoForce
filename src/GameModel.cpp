@@ -532,12 +532,18 @@ void GameModel::unregisterInputHandlers()
 
 // --------------------------------------------------------------
 //
-// Add momentum in the "orientation" direction.
+// I don't love the following functions being here.  Ideally these should be part of a
+// system and the logic executed as part of that/those system(s).  At least for now
+// that isn't going to happen because my "spare" time to work on this code is fast
+// coming to a close for a while.
 //
 // --------------------------------------------------------------
+
 void accelerate(entities::Entity* entity, std::chrono::microseconds elapsedTime)
 {
     auto params = entity->getComponent<components::Control>();
+    //
+    // Add momentum in the "orientation" direction.
     auto vector = math::vectorFromDegrees(entity->getComponent<components::Orientation>()->get());
     auto momentum = entity->getComponent<components::Momentum>();
     momentum->set({ static_cast<decltype(momentum->get().x)>(momentum->get().x + vector.x * params->getThrustRate() * elapsedTime.count()),
