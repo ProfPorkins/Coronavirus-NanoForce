@@ -455,8 +455,7 @@ void GameModel::startPlayer(math::Point2f position)
 
         // Player is directly updated here, because there isn't (yet) a system associated with thrust
         // Player needs to update because thrust is based on a start/stop from a key being pressed or released.
-        auto params = m_player->getComponent<components::Control>();
-        if (params->isThrusting())
+        if (m_player->getComponent<components::Control>()->isThrusting())
         {
             accelerate(m_player.get(), elapsedTime);
         }

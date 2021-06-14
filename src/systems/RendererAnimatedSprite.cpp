@@ -34,9 +34,8 @@ namespace systems
         {
             (void)id; // unused
 
-            auto position = entity->getComponent<components::Position>();
             auto sprite = entity->getComponent<components::AnimatedSprite>();
-            sprite->getSprite()->setPosition(position->get());
+            sprite->getSprite()->setPosition(entity->getComponent<components::Position>()->get());
 
             // The texutre contains multiple images, we only want to draw one of them.
             sprite->getSprite()->setTextureRect(sprite->getCurrentSpriteRect());
