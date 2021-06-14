@@ -22,37 +22,30 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "entities/Entity.hpp"
+#include "Component.hpp"
 
-#include <SFML/Graphics.hpp>
-#include <chrono>
-#include <cstdint>
-#include <memory>
-
-namespace renderers
+namespace components
 {
-    // --------------------------------------------------------------
-    //
-    // Handles rendering of an entity that has an AnimatedSprite component.
-    //
-    // --------------------------------------------------------------
-    class AnimatedSprite
+    class Control : public Component
     {
       public:
-        AnimatedSprite() = default;
-
-        void render(entities::Entity& entity, sf::RenderTarget& renderTarget);
-
-        template <typename T>
-        void render(std::unordered_map<entities::Entity::IdType, std::shared_ptr<T>>& entities, sf::RenderTarget& renderTarget);
-    };
-
-    template <typename T>
-    void AnimatedSprite::render(std::unordered_map<entities::Entity::IdType, std::shared_ptr<T>>& entities, sf::RenderTarget& renderTarget)
-    {
-        for (auto&& [id, entity] : entities)
+        Control(double thrustRate, float rotateRate, float maxSpeed) :
+            m_thrustRate(thrustRate),
+            m_rotateRate(rotateRate),
+            m_maxSpeed(maxSpeed)
         {
-            render(*entity, renderTarget);
         }
-    }
-} // namespace renderers
+
+        auto isThrusting() { return m_thrusting; }
+        void setThrusting(bool state) { m_thrusting = state; }
+        auto getThrustRate() { return m_thrustRate; }
+        auto getRotateRate() { return m_rotateRate; }
+        auto getMaxSpeed() { return m_maxSpeed; }
+
+      private:
+        bool m_thrusting{ false };
+        const double m_thrustRate{ 0.0 }; // per us
+        const float m_rotateRate{ 0.0f }; // degrees per us
+        const float m_maxSpeed{ 0.0f };   // per us
+    };
+} // namespace components

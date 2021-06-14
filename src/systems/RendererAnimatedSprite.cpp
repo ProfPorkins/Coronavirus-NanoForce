@@ -20,23 +20,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#pragma once
+#include "RendererAnimatedSprite.hpp"
 
-#include "System.hpp"
 #include "components/AnimatedSprite.hpp"
-
-#include <chrono>
+#include "components/Position.hpp"
 
 namespace systems
 {
-    class AnimatedSprite : public System
+    void RendererAnimatedSprite::update([[maybe_unused]] std::chrono::microseconds elapsedTime, sf::RenderTarget& renderTarget)
     {
-      public:
-        AnimatedSprite() :
-            System({ ctti::unnamed_type_id<components::AnimatedSprite>() })
+        // Render each of the entities
+        for (auto&& [id, entity] : m_entities)
         {
-        }
+            (void)id; // unused
 
-        virtual void update(std::chrono::microseconds elapsedTime) override;
-    };
+            auto sprite = entity->getComponent<components::AnimatedSprite>();
+            sprite->getSprite()->setPosition(entity->getComponent<components::Position>()->get());
+
+            // The texutre contains multiple images, we only want to draw one of them.
+            sprite->getSprite()->setTextureRect(sprite->getCurrentSpriteRect());
+
+            renderTarget.draw(*sprite->getSprite());
+        }
+    }
 } // namespace systems

@@ -61,7 +61,7 @@ namespace views
         ui::Text m_selectKey{ 0.0f, 0.0f, "Press a key to select the input", Content::get<sf::Font>(content::KEY_FONT_SETTINGS), sf::Color::Yellow, Configuration::get<std::uint8_t>(config::FONT_SETTINGS_MESSAGE_SIZE) };
 
         std::vector<std::shared_ptr<ui::Element>> m_options; // both ui::Selection and ui::KeyboardOption
-        std::int8_t m_activeOption;
+        std::int8_t m_activeOption{ 0 };
         std::uint32_t m_handlerId{ 0 };
 
         void onKeyPressed(sf::Keyboard::Key key);

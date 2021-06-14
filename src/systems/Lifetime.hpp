@@ -22,19 +22,24 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "entities/Entity.hpp"
-#include "entities/Powerup.hpp"
+#include "System.hpp"
+#include "components/Lifetime.hpp"
 
 #include <chrono>
-#include <memory>
-#include <unordered_map>
 
 namespace systems
 {
-    class Lifetime
+    class Lifetime : public System
     {
       public:
-        void update(const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& entities);
-        void update(const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Powerup>>& entities);
+        Lifetime(std::function<void(entities::Entity::IdType)> onDeath) :
+            System({ ctti::unnamed_type_id<components::Lifetime>() }),
+            m_onDeath(onDeath)
+        {
+        }
+        virtual void update(const std::chrono::microseconds elapsedTime) override;
+
+      private:
+        std::function<void(entities::Entity::IdType)> m_onDeath;
     };
 } // namespace systems

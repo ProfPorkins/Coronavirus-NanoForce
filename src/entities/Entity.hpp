@@ -80,12 +80,15 @@ namespace entities
         template <typename T>
         T* getComponent();
 
+        auto& getComponents() { return m_components; }
+
       private:
         IdType m_id;
         std::unordered_map<ctti::unnamed_type_id_t, std::unique_ptr<components::Component>> m_components;
     };
 
     // Convenience type alias for use throughout the framework
+    using EntityMap = std::unordered_map<Entity::IdType, std::shared_ptr<Entity>>;
     using EntityVector = std::vector<std::shared_ptr<Entity>>;
 
     // --------------------------------------------------------------

@@ -26,14 +26,20 @@ THE SOFTWARE.
 #include "components/Momentum.hpp"
 #include "components/Orientation.hpp"
 #include "components/Position.hpp"
-#include "services/Configuration.hpp"
 
 namespace systems
 {
-    void updateEntity(levels::Level& level, entities::Entity& entity, const std::chrono::microseconds elapsedTime, bool testBorder = true);
-    void testArenaBorder(levels::Level& level, entities::Entity& entity, const std::chrono::microseconds elapsedTime);
 
-    void updateEntity(levels::Level& level, entities::Entity& entity, const std::chrono::microseconds elapsedTime, bool testBorder)
+    void Movement::update(std::chrono::microseconds elapsedTime)
+    {
+        for (auto&& [id, entity] : m_entities)
+        {
+            (void)id; // unused
+            updateEntity(*entity, elapsedTime);
+        }
+    }
+
+    void Movement::updateEntity(entities::Entity& entity, const std::chrono::microseconds elapsedTime, bool testBorder)
     {
         auto momentum = entity.getComponent<components::Momentum>();
         auto position = entity.getComponent<components::Position>();
@@ -65,7 +71,7 @@ namespace systems
         // This will/should only ever be false when recursively invoked from 'testArenaBorder' itself.
         if (testBorder)
         {
-            testArenaBorder(level, entity, elapsedTime);
+            testArenaBorder(entity, elapsedTime);
         }
     }
 
@@ -74,38 +80,17 @@ namespace systems
     // Returns true if the entity hit the arena border.
     //
     // --------------------------------------------------------------
-    void testArenaBorder(levels::Level& level, entities::Entity& entity, const std::chrono::microseconds elapsedTime)
+    void Movement::testArenaBorder(entities::Entity& entity, const std::chrono::microseconds elapsedTime)
     {
-        if (level.collidesWithBorder(entity))
+        if (m_level.collidesWithBorder(entity))
         {
             //
             // Need to reflect the entity with the arena border
-            level.bounceOffBorder(entity);
+            m_level.bounceOffBorder(entity);
             //
             // After reflecting, have to move it a little bit, so it doesn't get stuck on the border.
-            updateEntity(level, entity, elapsedTime, false);
+            updateEntity(entity, elapsedTime, false);
         }
-    }
-
-    void Movement::update(levels::Level& level, const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& entities)
-    {
-        for (auto&& [id, entity] : entities)
-        {
-            updateEntity(level, *entity, elapsedTime);
-        }
-    }
-
-    void Movement::update(levels::Level& level, const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities)
-    {
-        for (auto&& [id, entity] : entities)
-        {
-            updateEntity(level, *std::static_pointer_cast<entities::Entity>(entity), elapsedTime);
-        }
-    }
-
-    void Movement::update(levels::Level& level, entities::Entity& entity, const std::chrono::microseconds elapsedTime)
-    {
-        updateEntity(level, entity, elapsedTime);
     }
 
 } // namespace systems

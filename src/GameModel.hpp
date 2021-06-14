@@ -27,20 +27,22 @@ THE SOFTWARE.
 #include "entities/Virus.hpp"
 #include "levels/Level.hpp"
 #include "levels/LevelName.hpp"
-#include "renderers/AnimatedSprite.hpp"
 #include "renderers/Background.hpp"
 #include "renderers/GameStatus.hpp"
 #include "renderers/HUD.hpp"
-#include "renderers/ParticleSystem.hpp"
-#include "renderers/Sprite.hpp"
-#include "renderers/Virus.hpp"
 #include "systems/Age.hpp"
 #include "systems/AnimatedSprite.hpp"
 #include "systems/Birth.hpp"
+#include "systems/Collision.hpp"
 #include "systems/Health.hpp"
 #include "systems/Lifetime.hpp"
 #include "systems/Movement.hpp"
 #include "systems/ParticleSystem.hpp"
+#include "systems/Powerup.hpp"
+#include "systems/RendererAnimatedSprite.hpp"
+#include "systems/RendererParticleSystem.hpp"
+#include "systems/RendererSprite.hpp"
+#include "systems/RendererVirus.hpp"
 
 #include <SFML/Audio/Sound.hpp>
 #include <SFML/Graphics.hpp>
@@ -49,7 +51,6 @@ THE SOFTWARE.
 #include <chrono>
 #include <cstdint>
 #include <memory>
-#include <unordered_map>
 #include <vector>
 
 class GameModel
@@ -74,44 +75,40 @@ class GameModel
     std::chrono::milliseconds m_timePlayed{ 0 };
     std::uint32_t m_virusesKilled{ 0 };
 
-    systems::Movement m_sysMovement;
-    systems::Lifetime m_sysLifetime;
-    systems::ParticleSystem m_sysParticle;
-    systems::Birth m_sysBirth;
-    systems::Health m_sysHealth;
-    systems::AnimatedSprite m_sysAnimatedSprite;
-    systems::Age m_sysAge;
+    std::unique_ptr<systems::Movement> m_sysMovement;
+    std::unique_ptr<systems::Lifetime> m_sysLifetime;
+    std::unique_ptr<systems::Birth> m_sysBirth;
+    std::unique_ptr<systems::Health> m_sysHealth;
+    std::unique_ptr<systems::AnimatedSprite> m_sysAnimatedSprite;
+    std::unique_ptr<systems::Age> m_sysAge;
+    std::unique_ptr<systems::Powerup> m_sysPowerup;
+    std::unique_ptr<systems::Collision> m_sysCollision;
+    std::unique_ptr<systems::ParticleSystem> m_sysParticle;
+    std::unique_ptr<systems::RendererSprite> m_sysRendererSprite;
+    std::unique_ptr<systems::RendererAnimatedSprite> m_sysRendererAnimatedSprite;
+    std::unique_ptr<systems::RendererVirus> m_sysRendererSarsCov2;
+    std::unique_ptr<systems::RendererParticleSystem> m_sysRendererParticleSystem;
 
     std::shared_ptr<entities::Player> m_player{ nullptr };
     std::uint8_t m_remainingNanoBots{ 0 };
-    std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>> m_viruses;
-    std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>> m_bullets;
-    std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>> m_bombs;
-    std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Powerup>> m_powerups;
-    std::vector<std::shared_ptr<entities::Virus>> m_newViruses;
+    std::uint16_t m_virusCount{ 0 };
+    std::vector<std::shared_ptr<entities::Entity>> m_newEntities;
+    std::vector<entities::Entity::IdType> m_removeEntities;
 
-    std::unique_ptr<renderers::Sprite> m_rendererPlayer;
-    std::unique_ptr<renderers::Sprite> m_rendererBullet;
-    std::unique_ptr<renderers::Sprite> m_rendererBomb;
-    std::unique_ptr<renderers::Virus> m_rendererSarsCov2;
     std::unique_ptr<renderers::Background> m_rendererBackground;
-    std::unique_ptr<renderers::ParticleSystem> m_rendererParticleSystem;
-    std::unique_ptr<renderers::AnimatedSprite> m_rendererPowerup;
     std::unique_ptr<renderers::HUD> m_rendererHUD;
     std::unique_ptr<renderers::GameStatus> m_rendererStatus;
 
     std::function<void(std::chrono::microseconds)> m_updatePlayer;
-    std::function<void(sf::RenderTarget&)> m_renderPlayer;
     std::chrono::microseconds m_playerStartCountdown{ 0 };
 
-    void emitBullet(std::shared_ptr<entities::Entity>& bullet);
-    void emitBomb(std::shared_ptr<entities::Entity>& bomb);
-    void emitPowerup(std::shared_ptr<entities::Powerup>& powerup);
-    void onVirusDeath(entities::Entity::IdType entityId);
-    void onVirusBirth(entities::Entity::IdType parentId);
+    void onVirusDeath(entities::Entity* virus);
+    void onVirusBirth(std::shared_ptr<entities::Entity> entity);
     void onPlayerDeath();
     void resetPlayer();
     void startPlayer(math::Point2f position);
+    void addNewEntities();
+    void removeDeadEntities();
 
     bool contentReady();
     void unregisterInputHandlers();

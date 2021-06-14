@@ -24,14 +24,16 @@ THE SOFTWARE.
 
 #include "components/Age.hpp"
 #include "components/Birth.hpp"
+#include "components/Position.hpp"
+#include "entities/Virus.hpp"
 
 #include <algorithm>
 
 namespace systems
 {
-    void Birth::update(const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities)
+    void Birth::update(const std::chrono::microseconds elapsedTime)
     {
-        for (auto&& [id, entity] : entities)
+        for (auto&& [id, entity] : m_entities)
         {
             auto age = entity->getComponent<components::Age>();
             auto birth = entity->getComponent<components::Birth>();
@@ -43,7 +45,10 @@ namespace systems
             if (birth->isGestating() && birth->getCurrentGestation() <= std::chrono::microseconds(0))
             {
                 // Congratulations, a bouncing baby virus!
-                m_onBirth(entity->getId());
+                auto parentPosition = entity->getComponent<components::Position>();
+                auto baby = std::make_shared<entities::Virus>();
+                baby->getComponent<components::Position>()->set(parentPosition->get());
+                m_onBirth(baby);
 
                 birth->resetGestation();
             }

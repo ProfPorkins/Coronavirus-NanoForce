@@ -34,9 +34,11 @@ THE SOFTWARE.
 
 namespace levels
 {
-    PetriDish::PetriDish(std::function<void(std::shared_ptr<entities::Powerup>&)> emitPowerup, std::string key, bool training) :
-        Level(emitPowerup, key),
+    PetriDish::PetriDish(std::string key, bool training) :
+        Level(key),
         m_training(training),
+        m_generator(m_rd()),
+        m_distUniform(0.0f, 1.0f),
         m_distCircle(0.0f, 2 * 3.14159f)
     {
         m_backgroundSize = { 100.0f, 100.0f };
@@ -101,11 +103,11 @@ namespace levels
     // start searching elsewhere after some time has passed trying the center.
     //
     // --------------------------------------------------------------
-    std::optional<math::Point2f> PetriDish::findSafeStart(std::chrono::microseconds howLongWaiting, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& viruses)
+    std::optional<math::Point2f> PetriDish::findSafeStart(std::chrono::microseconds howLongWaiting, const std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& viruses)
     {
         const float shipSize = Configuration::get<float>(config::PLAYER_SIZE);
 
-        auto getMinDistance = [](math::Point2f position, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& viruses) {
+        auto getMinDistance = [](math::Point2f position, const std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& viruses) {
             auto minDistance = std::numeric_limits<float>::max();
             for (auto&& [id, virus] : viruses)
             {

@@ -22,21 +22,31 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "System.hpp"
-#include "components/AnimatedSprite.hpp"
+#include "Component.hpp"
+#include "misc/misc.hpp"
 
 #include <chrono>
+#include <cstdint>
 
-namespace systems
+namespace components
 {
-    class AnimatedSprite : public System
+    class Bullets : public Component
     {
       public:
-        AnimatedSprite() :
-            System({ ctti::unnamed_type_id<components::AnimatedSprite>() })
+        Bullets()
         {
         }
 
-        virtual void update(std::chrono::microseconds elapsedTime) override;
+        auto add() { m_howMany++; }
+        auto howMany() { return m_howMany; }
+        float getBulletAngleStart() { return m_bulletAngleStart; }
+
+        void updateBulletRotation(std::uint16_t direction) { m_bulletRotateRate = (direction == 0) ? m_bulletRotateRate : -m_bulletRotateRate; }
+        void updateBulletAngleStart(std::chrono::microseconds elapsedTime) { m_bulletAngleStart += (m_bulletRotateRate * elapsedTime.count()); }
+
+      private:
+        std::uint16_t m_howMany{ 0 };
+        float m_bulletAngleStart{ 0.0f };
+        float m_bulletRotateRate{ 0.1f * misc::PER_MS_TO_US }; // degrees per us
     };
-} // namespace systems
+} // namespace components

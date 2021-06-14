@@ -22,21 +22,28 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "System.hpp"
-#include "components/AnimatedSprite.hpp"
+#include "Component.hpp"
 
-#include <chrono>
-
-namespace systems
+namespace components
 {
-    class AnimatedSprite : public System
+    class Powerup : public Component
     {
       public:
-        AnimatedSprite() :
-            System({ ctti::unnamed_type_id<components::AnimatedSprite>() })
+        enum class Type
+        {
+            RapidFire,
+            SpreadFire,
+            Bomb
+        };
+
+        Powerup(Type type) :
+            m_type(type)
         {
         }
 
-        virtual void update(std::chrono::microseconds elapsedTime) override;
+        auto get() { return m_type; }
+
+      private:
+        Type m_type;
     };
-} // namespace systems
+} // namespace components

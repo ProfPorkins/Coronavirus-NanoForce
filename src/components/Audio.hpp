@@ -22,31 +22,35 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "entities/Entity.hpp"
-#include "entities/Virus.hpp"
+#include "Component.hpp"
+#include "services/Content.hpp"
 
-#include <SFML/Graphics.hpp>
-#include <memory>
+#include <SFML/Audio/Sound.hpp>
+#include <string>
 
-namespace renderers
+namespace components
 {
-    // --------------------------------------------------------------
-    //
-    // This renderer knows how to render a virus and however many
-    // bullets have surrounded it.
-    //
-    // --------------------------------------------------------------
-    class Virus
+    class Audio : public Component
     {
       public:
-        Virus(std::shared_ptr<sf::Texture> texVirus, std::shared_ptr<sf::Texture> texBullet);
+        Audio(std::string audioKey, bool load = false) :
+            m_audioKey(audioKey)
+        {
+            //
+            // Some audio (actually only one in this code) isn't fire and forget.  Sometimes
+            // there is a need to start/stop a particular sound.
+            if (load)
+            {
+                m_sound.setBuffer(*Content::get<sf::SoundBuffer>(audioKey));
+            }
+        }
 
-        void render(entities::Virus& entity, sf::RenderTarget& renderTarget, const std::chrono::microseconds elapsedTime);
-        void render(std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities, sf::RenderTarget& renderTarget, const std::chrono::microseconds elapsedTime);
+        auto getKey() { return m_audioKey; }
+        void start() { m_sound.play(); }
+        void stop() { m_sound.stop(); }
 
       private:
-        std::shared_ptr<sf::Sprite> m_sprite;
-        std::shared_ptr<sf::Sprite> m_bullet;
+        std::string m_audioKey;
+        sf::Sound m_sound;
     };
-
-} // namespace renderers
+} // namespace components

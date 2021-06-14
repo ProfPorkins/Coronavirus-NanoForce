@@ -23,7 +23,7 @@ THE SOFTWARE.
 #pragma once
 
 #include "Powerup.hpp"
-#include "WeaponSpreadFire.hpp"
+#include "components/Powerup.hpp"
 #include "misc/math.hpp"
 #include "services/ConfigurationPath.hpp"
 
@@ -32,9 +32,9 @@ namespace entities
     class PowerupSpreadFire : public Powerup
     {
       public:
-        PowerupSpreadFire(math::Point2f position);
-
-        virtual std::shared_ptr<Weapon> get() override { return std::make_shared<WeaponSpreadFire>(config::ENTITY_WEAPON_SPREAD_FIRE); }
-        virtual Type getType() override { return Type::SpreadFire; }
+        PowerupSpreadFire(math::Point2f position) :
+            Powerup(components::Powerup::Type::SpreadFire, config::ENTITY_WEAPON_SPREAD_FIRE, position)
+        {
+        }
     };
 } // namespace entities

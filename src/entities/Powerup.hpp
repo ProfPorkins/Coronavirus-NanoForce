@@ -22,6 +22,7 @@ THE SOFTWARE.
 
 #pragma once
 
+#include "components/Powerup.hpp"
 #include "entities/Entity.hpp"
 #include "entities/Weapon.hpp"
 #include "misc/math.hpp"
@@ -38,21 +39,9 @@ namespace entities
     // --------------------------------------------------------------
     class Powerup : public Entity
     {
-      public:
-        enum class Type
-        {
-            RapidFire,
-            SpreadFire,
-            Bomb
-        };
-        virtual std::shared_ptr<Weapon> get() = 0;
-        virtual Type getType() = 0;
-        std::string getAudioKey() { return m_audioKey; }
-
       protected:
-        void build(std::string key, math::Point2f position);
-
-      private:
-        std::string m_audioKey;
+        // Declared as protected, because we don't want a class of this type to be created.  I know
+        // it couldn't because of the 'get' method above, but I still feel better about doing this.
+        Powerup(components::Powerup::Type type, std::string key, math::Point2f position);
     };
 } // namespace entities

@@ -38,12 +38,6 @@ namespace entities
       public:
         Virus(std::chrono::microseconds age = std::chrono::microseconds(0));
 
-        void addBullet(std::shared_ptr<entities::Entity> bullet);
-        auto& getBullets() { return m_bullets; }
-        float getBulletAngleStart() { return m_bulletAngleStart; }
-
-        void updateBulletAngleStart(std::chrono::microseconds elapsedTime) { m_bulletAngleStart += (m_bulletRotateRate * elapsedTime.count()); }
-
       private:
         struct Specification
         {
@@ -60,10 +54,6 @@ namespace entities
             std::chrono::microseconds gestationStdev;
             float rotateRate; // degrees per ms
         };
-
-        float m_bulletAngleStart{ 0.0f };
-        float m_bulletRotateRate{ 0.1f * misc::PER_MS_TO_US }; // degrees per us
-        std::vector<std::shared_ptr<entities::Entity>> m_bullets;
 
         std::random_device m_rd;
         std::mt19937 m_generator;

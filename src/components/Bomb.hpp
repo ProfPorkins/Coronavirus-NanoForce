@@ -20,16 +20,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "PowerupRapidFire.hpp"
+#pragma once
 
-#include "services/Configuration.hpp"
+#include "Component.hpp"
 
-namespace entities
+#include <chrono>
+
+namespace components
 {
-
-    PowerupRapidFire::PowerupRapidFire(math::Point2f position)
+    class Bomb : public Component
     {
-        build(config::ENTITY_WEAPON_RAPID_FIRE, position);
-    }
+      public:
+        Bomb(std::uint16_t bulletCount, std::uint16_t bulletDamage, float bulletSize, std::chrono::microseconds bulletLifetime) :
+            m_bulletCount(bulletCount),
+            m_bulletDamage(bulletDamage),
+            m_bulletSize(bulletSize),
+            m_bulletLifetime(bulletLifetime)
+        {
+        }
 
-} // namespace entities
+        auto getBulletCount() { return m_bulletCount; }
+        auto getBulletDamage() { return m_bulletDamage; }
+        auto getBulletSize() { return m_bulletSize; }
+        auto getBulletLifetime() { return m_bulletLifetime; }
+
+      private:
+        std::uint16_t m_bulletCount;
+        std::uint16_t m_bulletDamage;
+        float m_bulletSize;
+        std::chrono::microseconds m_bulletLifetime;
+    };
+} // namespace components

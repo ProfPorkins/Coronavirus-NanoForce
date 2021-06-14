@@ -22,24 +22,28 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "systems/ParticleSystem.hpp"
+#include "System.hpp"
+#include "components/AnimatedSprite.hpp"
+#include "components/Position.hpp"
 
-#include <SFML/Graphics.hpp>
-#include <memory>
+#include <chrono>
 
-namespace renderers
+namespace systems
 {
     // --------------------------------------------------------------
     //
-    // This knows how to render the particles in a particle system.
-    // Turns out to be prety simple.
+    // This system is used to render AnimatedSprites.
     //
     // --------------------------------------------------------------
-    class ParticleSystem
+    class RendererAnimatedSprite : public System
     {
       public:
-        void render(systems::ParticleSystem& ps, sf::RenderTarget& renderTarget);
+        RendererAnimatedSprite() :
+            System({ ctti::unnamed_type_id<components::Position>(),
+                     ctti::unnamed_type_id<components::AnimatedSprite>() })
+        {
+        }
 
-      private:
+        void update(std::chrono::microseconds elapsedTime, sf::RenderTarget& renderTarget);
     };
-} // namespace renderers
+} // namespace systems

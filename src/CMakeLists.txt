@@ -48,8 +48,13 @@ set(CLIENT_SOURCE_FILES
 set(CLIENT_COMPONENTS_HEADERS
     components/Age.hpp
     components/AnimatedSprite.hpp
+    components/Audio.hpp
     components/Birth.hpp
+    components/Bomb.hpp
+    components/Bullets.hpp
+    components/Collidable.hpp
     components/Component.hpp
+    components/Control.hpp
     components/Damage.hpp
     components/Drag.hpp
     components/Health.hpp
@@ -57,7 +62,9 @@ set(CLIENT_COMPONENTS_HEADERS
     components/Momentum.hpp
     components/Orientation.hpp
     components/Position.hpp
+    components/Powerup.hpp
     components/Size.hpp
+    components/Sprite.hpp
     )
 set(CLIENT_COMPONENTS_SOURCES
     components/Size.cpp
@@ -86,9 +93,6 @@ set(CLIENT_ENTITIES_SOURCES
     entities/Entity.cpp
     entities/Player.cpp
     entities/Powerup.cpp
-    entities/PowerupBomb.cpp
-    entities/PowerupRapidFire.cpp
-    entities/PowerupSpreadFire.cpp
     entities/Virus.cpp
     entities/Weapon.cpp
     entities/WeaponBomb.cpp
@@ -118,22 +122,14 @@ set(CLIENT_MISC_SOURCES
     )
 
 set(CLIENT_RENDERERS_HEADERS
-    renderers/AnimatedSprite.hpp
     renderers/Background.hpp
     renderers/GameStatus.hpp
     renderers/HUD.hpp
-    renderers/ParticleSystem.hpp
-    renderers/Sprite.hpp
-    renderers/Virus.hpp
     )
 set(CLIENT_RENDERERS_SOURCES
-    renderers/AnimatedSprite.cpp
     renderers/Background.cpp
     renderers/GameStatus.cpp
     renderers/HUD.cpp
-    renderers/ParticleSystem.cpp
-    renderers/Sprite.cpp
-    renderers/Virus.cpp
     )
 
 set(CLIENT_SERVICES_HEADERS
@@ -157,20 +153,34 @@ set(CLIENT_SYSTEMS_HEADERS
     systems/Age.hpp
     systems/AnimatedSprite.hpp
     systems/Birth.hpp
+    systems/Collision.hpp
     systems/Health.hpp
     systems/Lifetime.hpp
     systems/Movement.hpp
     systems/Particle.hpp
     systems/ParticleSystem.hpp
+    systems/Powerup.hpp
+    systems/RendererAnimatedSprite.hpp
+    systems/RendererParticleSystem.hpp
+    systems/RendererSprite.hpp
+    systems/RendererVirus.hpp
+    systems/System.hpp
     )
 set(CLIENT_SYSTEMS_SOURCES
     systems/Age.cpp
     systems/AnimatedSprite.cpp
     systems/Birth.cpp
+    systems/Collision.cpp
     systems/Health.cpp
     systems/Lifetime.cpp
     systems/Movement.cpp
     systems/ParticleSystem.cpp
+    systems/Powerup.cpp
+    systems/RendererAnimatedSprite.cpp
+    systems/RendererParticleSystem.cpp
+    systems/RendererSprite.cpp
+    systems/RendererVirus.cpp
+    systems/System.cpp
     )
 
 set(CLIENT_PARTICLE_EFFECTS_HEADERS

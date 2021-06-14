@@ -20,16 +20,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "PowerupBomb.hpp"
+#pragma once
 
-#include "services/Configuration.hpp"
+#include "System.hpp"
 
-namespace entities
+#include <SFML/Graphics.hpp>
+#include <memory>
+
+namespace systems
 {
-
-    PowerupBomb::PowerupBomb(math::Point2f position)
+    // --------------------------------------------------------------
+    //
+    // This system knows how to render a virus and however many
+    // bullets have surrounded it.
+    //
+    // --------------------------------------------------------------
+    class RendererVirus : public System
     {
-        build(config::ENTITY_WEAPON_BOMB, position);
-    }
+      public:
+        RendererVirus();
 
-} // namespace entities
+        void update(std::chrono::microseconds elapsedTime, sf::RenderTarget& renderTarget);
+
+      private:
+        std::shared_ptr<sf::Sprite> m_sprite;
+        std::shared_ptr<sf::Sprite> m_bullet;
+
+        float m_bulletSize{ 0 };
+        float m_bulletRadius{ 0 };
+    };
+
+} // namespace systems

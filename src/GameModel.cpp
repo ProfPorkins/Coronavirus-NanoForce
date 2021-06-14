@@ -22,6 +22,9 @@ THE SOFTWARE.
 
 #include "GameModel.hpp"
 
+#include "components/Audio.hpp"
+#include "components/Bullets.hpp"
+#include "components/Control.hpp"
 #include "components/Damage.hpp"
 #include "components/Health.hpp"
 #include "components/Lifetime.hpp"
@@ -48,46 +51,51 @@ THE SOFTWARE.
 
 #include <chrono>
 #include <cmath>
-#include <optional>
-#include <unordered_set>
 
 // Static member implementation
 levels::LevelName GameModel::m_levelSelect{ levels::LevelName::Training1 };
 std::atomic_bool GameModel::m_contentError{ false };
+
+//
+// Prototypes for a few free functions used to manipulate an entity (the player)
+void startThrust(entities::Entity* entity);
+void endThrust(entities::Entity* entity);
+void accelerate(entities::Entity* entity, std::chrono::microseconds elapsedTime);
+void rotateLeft(entities::Entity* entity, std::chrono::microseconds elapsedTime);
+void rotateRight(entities::Entity* entity, std::chrono::microseconds elapsedTime);
 
 void GameModel::selectLevel(levels::LevelName whichLevel)
 {
     m_levelSelect = whichLevel;
 }
 
-GameModel::GameModel() :
-    m_sysBirth([this](entities::Entity::IdType parentId) { this->onVirusBirth(parentId); })
+GameModel::GameModel()
 {
     switch (m_levelSelect)
     {
         case levels::LevelName::Training1:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_1, true);
+            m_level = std::make_unique<levels::PetriDish>(config::TRAINING_1, true);
             break;
         case levels::LevelName::Training2:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_2, true);
+            m_level = std::make_unique<levels::PetriDish>(config::TRAINING_2, true);
             break;
         case levels::LevelName::Training3:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_3, true);
+            m_level = std::make_unique<levels::PetriDish>(config::TRAINING_3, true);
             break;
         case levels::LevelName::Training4:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_4, true);
+            m_level = std::make_unique<levels::PetriDish>(config::TRAINING_4, true);
             break;
         case levels::LevelName::Training5:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::TRAINING_5, true);
+            m_level = std::make_unique<levels::PetriDish>(config::TRAINING_5, true);
             break;
         case levels::LevelName::Patient1:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::PATIENT_1, false);
+            m_level = std::make_unique<levels::PetriDish>(config::PATIENT_1, false);
             break;
         case levels::LevelName::Patient2:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::PATIENT_2, false);
+            m_level = std::make_unique<levels::PetriDish>(config::PATIENT_2, false);
             break;
         case levels::LevelName::Patient3:
-            m_level = std::make_unique<levels::PetriDish>([this](std::shared_ptr<entities::Powerup>& powerup) { this->emitPowerup(powerup); }, config::PATIENT_3, false);
+            m_level = std::make_unique<levels::PetriDish>(config::PATIENT_3, false);
             break;
     }
 
@@ -109,29 +117,35 @@ void GameModel::initialize()
         Content::get<sf::Texture>(m_level->getBackgroundImageKey()),
         m_level->getBackgroundSize(),
         math::Point2f(0.0f, 0.0f));
-
-    m_rendererParticleSystem = std::make_unique<renderers::ParticleSystem>();
-
-    m_rendererPlayer = std::make_unique<renderers::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_PLAYER));
-    m_rendererBullet = std::make_unique<renderers::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_BASIC_GUN_BULLET));
-    m_rendererBomb = std::make_unique<renderers::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_BOMB));
-    m_rendererPowerup = std::make_unique<renderers::AnimatedSprite>();
-
-    m_rendererSarsCov2 = std::make_unique<renderers::Virus>(
-        Content::get<sf::Texture>(content::KEY_IMAGE_SARSCOV2),
-        Content::get<sf::Texture>(content::KEY_IMAGE_BASIC_GUN_BULLET));
-
     m_rendererHUD = std::make_unique<renderers::HUD>();
     m_rendererStatus = std::make_unique<renderers::GameStatus>();
 
-    m_bullets.clear();
-    m_bombs.clear();
-    m_powerups.clear();
-    m_viruses.clear();
+    m_virusCount = 0;
+
+    m_sysMovement = std::make_unique<systems::Movement>(*m_level);
+    m_sysAge = std::make_unique<systems::Age>();
+    m_sysAnimatedSprite = std::make_unique<systems::AnimatedSprite>();
+    m_sysBirth = std::make_unique<systems::Birth>([this](std::shared_ptr<entities::Entity> entity) { this->onVirusBirth(entity); });
+    m_sysHealth = std::make_unique<systems::Health>();
+    m_sysLifetime = std::make_unique<systems::Lifetime>([this](entities::Entity::IdType entityId) { m_removeEntities.push_back(entityId); });
+    m_sysPowerup = std::make_unique<systems::Powerup>(
+        *m_level,
+        [this](std::shared_ptr<entities::Powerup>& powerup) { m_newEntities.push_back(powerup); },
+        m_level->getKey());
+    m_sysCollision = std::make_unique<systems::Collision>(
+        [this](entities::Entity::IdType entityId) { m_removeEntities.push_back(entityId); },
+        [this](entities::Entity* entity) { this->onVirusDeath(entity); },
+        [this]() { this->onPlayerDeath(); });
+    m_sysParticle = std::make_unique<systems::ParticleSystem>();
+
+    m_sysRendererSprite = std::make_unique<systems::RendererSprite>();
+    m_sysRendererAnimatedSprite = std::make_unique<systems::RendererAnimatedSprite>();
+    m_sysRendererSarsCov2 = std::make_unique<systems::RendererVirus>();
+    m_sysRendererParticleSystem = std::make_unique<systems::RendererParticleSystem>();
 
     for (auto&& virus : m_level->initializeViruses())
     {
-        m_viruses[virus->getId()] = virus;
+        onVirusBirth(virus);
     }
 
     // -1 because the current bot being played is 1 of the remaining bots
@@ -174,80 +188,87 @@ void GameModel::shutdown()
 // --------------------------------------------------------------
 void GameModel::update(const std::chrono::microseconds elapsedTime)
 {
-    m_sysParticle.update(elapsedTime);
-
     m_updatePlayer(elapsedTime);
 
-    m_sysLifetime.update(elapsedTime, m_bullets);
-    m_sysLifetime.update(elapsedTime, m_bombs);
-    m_sysLifetime.update(elapsedTime, m_powerups);
-
-    m_sysMovement.update(*m_level, elapsedTime, m_bullets);
-    m_sysMovement.update(*m_level, elapsedTime, m_bombs);
-    m_sysMovement.update(*m_level, elapsedTime, m_viruses);
+    m_sysParticle->update(elapsedTime);
+    m_sysLifetime->update(elapsedTime);
+    m_sysMovement->update(elapsedTime);
 
     // It isn't absolutely essential to the overall game, but the age should be updated
     // before Birth because age is used in the gestation determination in the Birth system.
-    m_sysAge.update(elapsedTime, m_viruses);
-    m_sysBirth.update(elapsedTime, m_viruses);
-    m_sysHealth.update(elapsedTime, m_viruses);
+    m_sysAge->update(elapsedTime);
+    m_sysBirth->update(elapsedTime);
+    m_sysHealth->update(elapsedTime);
+    m_sysPowerup->update(elapsedTime);
+    m_sysAnimatedSprite->update(elapsedTime);
+    m_sysCollision->update(elapsedTime);
 
-    m_sysAnimatedSprite.update(elapsedTime, m_powerups);
-
-    //
-    // Let's see if any bullets hit any viruses
-    // TODO: Create a collision system
-    std::vector<entities::Entity::IdType> bulletsToRemove;
-    // Using a set for the dead viruses so that duplicates don't happen
-    std::unordered_set<entities::Entity::IdType> deadViruses;
-    for (auto&& [bulletId, bullet] : m_bullets)
-    {
-        for (auto&& [virusId, virus] : m_viruses)
-        {
-            if (math::collides(*std::static_pointer_cast<entities::Entity>(bullet), *std::static_pointer_cast<entities::Entity>(virus)))
-            {
-                bulletsToRemove.push_back(bulletId);
-                virus->addBullet(bullet);
-                auto damage = bullet->getComponent<components::Damage>();
-                auto health = virus->getComponent<components::Health>();
-                health->subtract(damage->get());
-                if (health->get() <= 0)
-                {
-                    deadViruses.insert(virusId);
-                    // Don't check anymore viruses for this bullet
-                    break;
-                }
-            }
-        }
-    }
-    for (auto&& id : bulletsToRemove)
-    {
-        m_bullets.erase(id);
-    }
-
-    // Give the level a chance to do whatever it wants to do
-    m_level->update(elapsedTime);
+    addNewEntities();
+    removeDeadEntities();
 
     //
-    // Add any new viruses in at this time
-    for (auto&& virus : m_newViruses)
+    // Check for end of game condition.  Must be at end of the 'update' to ensure all new/dead viruses
+    // have been accounted for.
+    // Don't love doing this during every update, but the other ways I have done it are more brittle than
+    // requiring it to be at the end of the update;
+    if (m_virusCount == 0)
     {
-        m_viruses[virus->getId()] = virus;
+        m_rendererStatus->setMessage(m_level->getMessageSuccess());
     }
-    m_newViruses.clear();
+}
 
-    //
-    // Remove the dead viruses
-    // NOTE: Important to keep this after adding new viruses and at the end of the update loop.
-    //       The reason is that new viruses can be born during the update.  The onVirusDeath method
-    //       checks to see if there are no more visuses so it can set the game over message.  If not
-    //       placed here, there is a chance for that message to be displayed, only to have a new virus
-    //       appear because it was born after that message was set
-    for (auto&& id : deadViruses)
+// --------------------------------------------------------------
+//
+// Give all (most) systems a chance to see if they are interested
+// in the new entities.
+//
+// --------------------------------------------------------------
+void GameModel::addNewEntities()
+{
+    for (auto&& entity : m_newEntities)
     {
-        onVirusDeath(id);
-        m_viruses.erase(id);
+        m_sysAge->addEntity(entity);
+        m_sysAnimatedSprite->addEntity(entity);
+        m_sysBirth->addEntity(entity);
+        m_sysHealth->addEntity(entity);
+        m_sysLifetime->addEntity(entity);
+        m_sysMovement->addEntity(entity);
+        m_sysCollision->addEntity(entity);
+
+        m_sysRendererSprite->addEntity(entity);
+        m_sysRendererAnimatedSprite->addEntity(entity);
+        m_sysRendererSarsCov2->addEntity(entity);
+        // NOTE: The Powerup system doesn't act on entities, nothing to do here
+        // NOTE: Particle system renderer does not have entities added to it, it is it's own separate thing
     }
+    m_newEntities.clear();
+}
+
+// --------------------------------------------------------------
+//
+// Give all (most) systems a chance to remove the entities that
+// are no longer part of the model.
+//
+// --------------------------------------------------------------
+void GameModel::removeDeadEntities()
+{
+    for (auto&& entityId : m_removeEntities)
+    {
+        m_sysAge->removeEntity(entityId);
+        m_sysAnimatedSprite->removeEntity(entityId);
+        m_sysBirth->removeEntity(entityId);
+        m_sysHealth->removeEntity(entityId);
+        m_sysLifetime->removeEntity(entityId);
+        m_sysMovement->removeEntity(entityId);
+        m_sysCollision->removeEntity(entityId);
+
+        m_sysRendererSprite->removeEntity(entityId);
+        m_sysRendererAnimatedSprite->removeEntity(entityId);
+        m_sysRendererSarsCov2->removeEntity(entityId);
+        // NOTE: The Powerup system doesn't act on entities, nothing to do here
+        // NOTE: Particle system renderer does not have entities added to it, it is it's own separate thing
+    }
+    m_removeEntities.clear();
 }
 
 // --------------------------------------------------------------
@@ -259,45 +280,13 @@ void GameModel::render(sf::RenderTarget& renderTarget, const std::chrono::micros
 {
     renderTarget.clear(sf::Color::Black);
     m_rendererBackground->render(renderTarget);
-
-    m_rendererBullet->render(m_bullets, renderTarget);
-    m_rendererBomb->render(m_bombs, renderTarget);
-    m_rendererPowerup->render(m_powerups, renderTarget);
-    m_rendererSarsCov2->render(m_viruses, renderTarget, elapsedTime);
-    m_renderPlayer(renderTarget);
-    m_rendererParticleSystem->render(m_sysParticle, renderTarget);
     m_rendererHUD->render(m_remainingNanoBots + 1, m_timePlayed, m_virusesKilled, renderTarget);
     m_rendererStatus->render(renderTarget);
-}
 
-// --------------------------------------------------------------
-//
-// This is used to allow other code to emit bullets into the game model.
-//
-// --------------------------------------------------------------
-void GameModel::emitBullet(std::shared_ptr<entities::Entity>& bullet)
-{
-    m_bullets[bullet->getId()] = bullet;
-}
-
-// --------------------------------------------------------------
-//
-// This is used to allow other code to emit bombs into the game model.
-//
-// --------------------------------------------------------------
-void GameModel::emitBomb(std::shared_ptr<entities::Entity>& bomb)
-{
-    m_bombs[bomb->getId()] = bomb;
-}
-
-// --------------------------------------------------------------
-//
-// This is used to allow other code to emit a powerup into the game model.
-//
-// --------------------------------------------------------------
-void GameModel::emitPowerup(std::shared_ptr<entities::Powerup>& powerup)
-{
-    m_powerups[powerup->getId()] = powerup;
+    m_sysRendererAnimatedSprite->update(elapsedTime, renderTarget);
+    m_sysRendererSarsCov2->update(elapsedTime, renderTarget);
+    m_sysRendererSprite->update(elapsedTime, renderTarget);
+    m_sysRendererParticleSystem->update(*m_sysParticle, renderTarget);
 }
 
 // --------------------------------------------------------------
@@ -305,36 +294,31 @@ void GameModel::emitPowerup(std::shared_ptr<entities::Powerup>& powerup)
 // A virus was killed, start a sound and a death animation.
 //
 // --------------------------------------------------------------
-void GameModel::onVirusDeath(entities::Entity::IdType entityId)
+void GameModel::onVirusDeath(entities::Entity* virus)
 {
     SoundPlayer::play(content::KEY_AUDIO_VIRUS_DEATH);
 
-    auto virus = m_viruses[entityId];
     auto position = virus->getComponent<components::Position>();
     auto size = virus->getComponent<components::Size>();
 
-    auto howMany = static_cast<std::uint16_t>(virus->getBullets().size() * 5);
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2_PARTICLE, position->get(), 0.0f, howMany, 0.00002f, 1.0f, 0.2f, misc::msTous(std::chrono::milliseconds(1000))));
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2_PARTICLE, position->get(), size->getInnerRadius() / 2.0f, howMany, 0.0000075f, 1.0f, 0.2f, misc::msTous(std::chrono::milliseconds(1000))));
+    std::uint16_t howMany = virus->getComponent<components::Bullets>()->howMany() * 5;
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2_PARTICLE, position->get(), 0.0f, howMany, 0.00002f, 1.0f, 0.2f, misc::msTous(std::chrono::milliseconds(1000))));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2_PARTICLE, position->get(), size->getInnerRadius() / 2.0f, howMany, 0.0000075f, 1.0f, 0.2f, misc::msTous(std::chrono::milliseconds(1000))));
     //
     // Time these so they finish just before the center
     auto lifetime = misc::msTous(std::chrono::milliseconds(1500));
     auto speed = -size->getInnerRadius() / lifetime.count();
-    // Even I admit this is a pretty long way to get the size, but it is the way to do it
-    auto bulletSize = virus->getBullets().at(0)->getComponent<components::Size>()->get().width;
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_BASIC_GUN_BULLET, position->get(), size->getInnerRadius(), static_cast<std::uint16_t>(virus->getBullets().size()), speed, bulletSize, bulletSize / 2.0f, lifetime));
+    // All bullets are the same size, and this is just a reference point for creating the particle effect anyway.
+    config::config_path WEAPON_ITEM_SIZE = { config::DOM_ENTITY, config::ENTITY_WEAPON_BASIC_GUN, config::DOM_SIZE };
+    auto bulletSize = Configuration::get<float>(WEAPON_ITEM_SIZE);
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_BASIC_GUN_BULLET, position->get(), size->getInnerRadius(), virus->getComponent<components::Bullets>()->howMany(), speed, bulletSize, bulletSize / 2.0f, lifetime));
 
     //
     // One particle for the virus itself slowly going away
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2, position->get(), 0.0f, static_cast<std::uint16_t>(1), 0.0f, size->getOuterRadius(), 0.01f, lifetime));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_SARSCOV2, position->get(), 0.0f, static_cast<std::uint16_t>(1), 0.0f, size->getOuterRadius(), 0.01f, lifetime));
 
     m_virusesKilled++;
-    //
-    // If this is the last virus, happy, happy!
-    if (m_viruses.size() == 1)
-    {
-        m_rendererStatus->setMessage(m_level->getMessageSuccess());
-    }
+    m_virusCount--;
 }
 
 // --------------------------------------------------------------
@@ -342,14 +326,12 @@ void GameModel::onVirusDeath(entities::Entity::IdType entityId)
 // A new virus was just birthed, need to create the instance here.
 //
 // --------------------------------------------------------------
-void GameModel::onVirusBirth(entities::Entity::IdType parentId)
+void GameModel::onVirusBirth(std::shared_ptr<entities::Entity> entity)
 {
-    if (m_viruses.size() < m_level->getMaxViruses())
+    if (m_virusCount < m_level->getMaxViruses())
     {
-        auto parentPosition = m_viruses[parentId]->getComponent<components::Position>();
-        auto virus = std::make_shared<entities::Virus>();
-        virus->getComponent<components::Position>()->set(parentPosition->get());
-        m_newViruses.push_back(virus);
+        m_newEntities.push_back(entity);
+        m_virusCount++;
     }
 }
 
@@ -365,18 +347,19 @@ void GameModel::onPlayerDeath()
 
     auto position = m_player->getComponent<components::Position>();
     auto howMany = static_cast<std::uint16_t>(100);
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.00002f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(500))));
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.00001f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(750))));
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.000005f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(1000))));
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.0000025f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(1250))));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.00002f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(500))));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.00001f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(750))));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.000005f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(1000))));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER_PARTICLE, position->get(), 0.0f, howMany, 0.0000025f, 1.0f, 0.05f, misc::msTous(std::chrono::milliseconds(1250))));
 
     //
     // One particle for the player's ship slowly going away
     auto size = m_player->getComponent<components::Size>();
     auto orientation = m_player->getComponent<components::Orientation>()->get();
-    m_sysParticle.addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER, position->get(), 0.0f, 0.0f, size->getOuterRadius(), 0.01f, orientation, misc::msTous(std::chrono::milliseconds(2000))));
+    m_sysParticle->addEffect(std::make_unique<systems::CircleExpansionEffect>(content::KEY_IMAGE_PLAYER, position->get(), 0.0f, 0.0f, size->getOuterRadius(), 0.01f, orientation, misc::msTous(std::chrono::milliseconds(2000))));
 
     unregisterInputHandlers();
+    m_removeEntities.push_back(m_player->getId());
     if (m_remainingNanoBots > 0)
     {
         m_remainingNanoBots--;
@@ -387,7 +370,6 @@ void GameModel::onPlayerDeath()
         m_rendererStatus->setMessage(m_level->getMessageFailure());
         m_remainingNanoBots--;
         m_updatePlayer = [](std::chrono::microseconds) {};
-        m_renderPlayer = [](sf::RenderTarget&) {};
     }
 }
 
@@ -411,14 +393,13 @@ void GameModel::resetPlayer()
         m_playerStartCountdown -= elapsedTime;
         if (m_playerStartCountdown <= std::chrono::microseconds(0))
         {
-            if (auto position = m_level->findSafeStart(-m_playerStartCountdown, m_viruses); position.has_value())
+            if (auto position = m_level->findSafeStart(-m_playerStartCountdown, m_sysCollision->getViruses()); position.has_value())
             {
                 m_rendererStatus->setMessage("");
                 startPlayer(position.value());
             }
         }
     };
-    m_renderPlayer = [](sf::RenderTarget&) {};
 }
 
 // --------------------------------------------------------------
@@ -433,21 +414,22 @@ void GameModel::startPlayer(math::Point2f position)
     SoundPlayer::play(content::KEY_AUDIO_PLAYER_START);
 
     m_player = entities::Player::create();
+    m_newEntities.push_back(m_player);
 
     // A copy of the pointer is needed, because the controls might still happen during the next update when the player dies
     auto player = m_player;
-    KeyboardInput::instance().registerKeyPressedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { player->startThrust(); });
-    KeyboardInput::instance().registerKeyReleasedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { player->endThrust(); });
-    KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_LEFT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { player->rotateLeft(elapsedTime); });
-    KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_RIGHT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { player->rotateRight(elapsedTime); });
+    KeyboardInput::instance().registerKeyPressedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { startThrust(player.get()); });
+    KeyboardInput::instance().registerKeyReleasedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { endThrust(player.get()); });
+    KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_LEFT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { rotateLeft(player.get(), elapsedTime); });
+    KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_RIGHT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { rotateRight(player.get(), elapsedTime); });
     //
     // Primary weapon fire
     KeyboardInput::instance().registerHandler(
         Configuration::get<std::string>(config::KEYBOARD_PRIMARY_FIRE), true, std::chrono::microseconds(0),
         [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime) {
             player->getPrimaryWeapon()->fire(
-                [this](std::shared_ptr<entities::Entity>& bullet) { this->emitBullet(bullet); },
-                [this](std::shared_ptr<entities::Entity>& bomb) { this->emitBomb(bomb); });
+                [this](std::shared_ptr<entities::Entity>& bullet) { m_newEntities.push_back(bullet); },
+                [this](std::shared_ptr<entities::Entity>& bomb) { m_newEntities.push_back(bomb); });
         });
 
     //
@@ -456,8 +438,8 @@ void GameModel::startPlayer(math::Point2f position)
         Configuration::get<std::string>(config::KEYBOARD_SECONDARY_FIRE), true, std::chrono::microseconds(0),
         [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime) {
             player->getSecondaryWeapon()->fire(
-                [this](std::shared_ptr<entities::Entity>& bullet) { this->emitBullet(bullet); },
-                [this](std::shared_ptr<entities::Entity>& bomb) { this->emitBomb(bomb); });
+                [this](std::shared_ptr<entities::Entity>& bullet) { m_newEntities.push_back(bullet); },
+                [this](std::shared_ptr<entities::Entity>& bomb) { m_newEntities.push_back(bomb); });
         });
 
     m_player->getComponent<components::Position>()->set(position);
@@ -466,48 +448,21 @@ void GameModel::startPlayer(math::Point2f position)
 
     m_updatePlayer = [this](std::chrono::microseconds elapsedTime) {
         // This is a little sloppy, but it at least is a way to stop the time played clock in a winning condition
-        if (m_viruses.size() > 0)
+        if (m_virusCount > 0)
         {
             m_timePlayed += std::chrono::duration_cast<std::chrono::milliseconds>(elapsedTime);
         }
-        m_sysMovement.update(*m_level, *std::static_pointer_cast<entities::Entity>(m_player), elapsedTime);
 
         // Player is directly updated here, because there isn't (yet) a system associated with thrust
-        m_player->update(elapsedTime);
-
-        // Let's see if the player picked up any powerups
-        std::optional<entities::Entity::IdType> powerupToRemove;
-        for (auto&& [id, powerup] : m_powerups)
+        // Player needs to update because thrust is based on a start/stop from a key being pressed or released.
+        if (m_player->getComponent<components::Control>()->isThrusting())
         {
-            if (math::collides(*m_player, *powerup))
-            {
-                // Apply the powerup to the player
-                m_player->applyPowerup(powerup);
-                powerupToRemove = id;
-            }
+            accelerate(m_player.get(), elapsedTime);
         }
-        if (powerupToRemove.has_value())
-        {
-            m_powerups.erase(powerupToRemove.value());
-        }
-
-        //
-        // Check to see if any viruses hit the player
-        for (auto&& [id, virus] : m_viruses)
-        {
-            if (math::collides(*m_player, *virus))
-            {
-                onPlayerDeath();
-                break;
-            }
-        }
-    };
-    m_renderPlayer = [this](sf::RenderTarget& renderTarget) {
-        m_rendererPlayer->render(*m_player, renderTarget);
     };
 
     // Particle effect as a visual cue to show where the player starts
-    m_sysParticle.addEffect(std::make_unique<systems::PlayerStartEffect>(
+    m_sysParticle->addEffect(std::make_unique<systems::PlayerStartEffect>(
         m_player->getComponent<components::Position>()->get(),
         static_cast<std::uint16_t>(300), misc::msTous(std::chrono::milliseconds(750))));
 }
@@ -572,4 +527,56 @@ void GameModel::unregisterInputHandlers()
 
     KeyboardInput::instance().unregisterHandler(Configuration::get<std::string>(config::KEYBOARD_PRIMARY_FIRE));
     KeyboardInput::instance().unregisterHandler(Configuration::get<std::string>(config::KEYBOARD_SECONDARY_FIRE));
+}
+
+// --------------------------------------------------------------
+//
+// I don't love the following functions being here.  Ideally these should be part of a
+// system and the logic executed as part of that/those system(s).  At least for now
+// that isn't going to happen because my "spare" time to work on this code is fast
+// coming to a close for a while.
+//
+// --------------------------------------------------------------
+
+void accelerate(entities::Entity* entity, std::chrono::microseconds elapsedTime)
+{
+    auto params = entity->getComponent<components::Control>();
+    //
+    // Add momentum in the "orientation" direction.
+    auto vector = math::vectorFromDegrees(entity->getComponent<components::Orientation>()->get());
+    auto momentum = entity->getComponent<components::Momentum>();
+    momentum->set({ static_cast<decltype(momentum->get().x)>(momentum->get().x + vector.x * params->getThrustRate() * elapsedTime.count()),
+                    static_cast<decltype(momentum->get().y)>(momentum->get().y + vector.y * params->getThrustRate() * elapsedTime.count()) });
+
+    auto magnitude = std::sqrt(momentum->get().x * momentum->get().x + momentum->get().y * momentum->get().y);
+    if (magnitude > params->getMaxSpeed())
+    {
+        float scale = params->getMaxSpeed() / magnitude;
+        momentum->set({ momentum->get().x * scale, momentum->get().y * scale });
+    }
+}
+
+void rotateLeft(entities::Entity* entity, std::chrono::microseconds elapsedTime)
+{
+    auto orientation = entity->getComponent<components::Orientation>();
+    auto params = entity->getComponent<components::Control>();
+    orientation->set(orientation->get() - elapsedTime.count() * params->getRotateRate());
+}
+
+void rotateRight(entities::Entity* entity, std::chrono::microseconds elapsedTime)
+{
+    auto orientation = entity->getComponent<components::Orientation>();
+    auto params = entity->getComponent<components::Control>();
+    orientation->set(orientation->get() + elapsedTime.count() * params->getRotateRate());
+}
+
+void startThrust(entities::Entity* entity)
+{
+    entity->getComponent<components::Control>()->setThrusting(true);
+    entity->getComponent<components::Audio>()->start();
+}
+void endThrust(entities::Entity* entity)
+{
+    entity->getComponent<components::Control>()->setThrusting(false);
+    entity->getComponent<components::Audio>()->stop();
 }

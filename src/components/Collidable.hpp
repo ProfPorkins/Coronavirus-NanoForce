@@ -20,16 +20,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "PowerupSpreadFire.hpp"
+#pragma once
 
-#include "services/Configuration.hpp"
+#include "Component.hpp"
 
-namespace entities
+namespace components
 {
-
-    PowerupSpreadFire::PowerupSpreadFire(math::Point2f position)
+    class Collidable : public Component
     {
-        build(config::ENTITY_WEAPON_SPREAD_FIRE, position);
-    }
+      public:
+        enum class Type
+        {
+            Bullet,
+            Virus,
+            Player,
+            Powerup
+        };
 
-} // namespace entities
+        Collidable(Type type) :
+            m_type(type)
+        {
+        }
+
+        auto get() { return m_type; }
+
+      private:
+        Type m_type;
+    };
+} // namespace components

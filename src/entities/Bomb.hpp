@@ -43,12 +43,7 @@ namespace entities
       public:
         Bomb(std::chrono::microseconds lifetime, float size, std::function<void(std::shared_ptr<entities::Entity>&)> emitBullet);
 
-        void explode(std::function<void(std::shared_ptr<entities::Entity>&)> emit);
-
       private:
-        std::uint16_t m_bulletCount;
-        std::uint16_t m_bulletDamage;
-        float m_bulletSize;
-        std::chrono::microseconds m_bulletLifetime;
+        void explode(std::function<void(std::shared_ptr<entities::Entity>&)> emitBullet);
     };
 } // namespace entities

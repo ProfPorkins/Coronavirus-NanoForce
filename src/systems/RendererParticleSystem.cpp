@@ -20,23 +20,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "AnimatedSprite.hpp"
+#include "RendererParticleSystem.hpp"
 
-#include "components/AnimatedSprite.hpp"
-#include "components/Position.hpp"
-#include "entities/Powerup.hpp"
-
-namespace renderers
+namespace systems
 {
-    void AnimatedSprite::render(entities::Entity& entity, sf::RenderTarget& renderTarget)
+    // --------------------------------------------------------------
+    //
+    // This class is a friend to the renderers::ParticleSystem so that
+    // it has access to private data, without having to expose it
+    // to everyone else.
+    //
+    // --------------------------------------------------------------
+    void RendererParticleSystem::update(systems::ParticleSystem& ps, sf::RenderTarget& renderTarget)
     {
-        auto position = entity.getComponent<components::Position>();
-        auto sprite = entity.getComponent<components::AnimatedSprite>();
-        sprite->getSprite()->setPosition(position->get());
+        for (decltype(ps.m_particleCount) p = 0; p < ps.m_particleCount; p++)
+        {
+            auto& particle = ps.m_inUse[p];
+            particle->sprite.setPosition(particle->center);
+            particle->sprite.setRotation(particle->rotation);
 
-        // The texutre contains multiple images, we only want to draw one of them.
-        sprite->getSprite()->setTextureRect(sprite->getCurrentSpriteRect());
-
-        renderTarget.draw(*sprite->getSprite());
+            renderTarget.draw(particle->sprite);
+        }
     }
-} // namespace renderers
+
+} // namespace systems

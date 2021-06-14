@@ -22,40 +22,32 @@ THE SOFTWARE.
 
 #pragma once
 
-#include "entities/Entity.hpp"
+#include "System.hpp"
+#include "components/Orientation.hpp"
+#include "components/Position.hpp"
+#include "components/Size.hpp"
+#include "components/Sprite.hpp"
 
-#include <SFML/Graphics.hpp>
-#include <memory>
+#include <chrono>
 
-namespace renderers
+namespace systems
 {
     // --------------------------------------------------------------
     //
-    // Some things are general enough this Sprite renderer is enough
-    // to render them.
+    // This system is used to render Sprites.
     //
     // --------------------------------------------------------------
-    class Sprite
+    class RendererSprite : public System
     {
       public:
-        Sprite(std::shared_ptr<sf::Texture> texture);
-
-        void render(entities::Entity& entity, sf::RenderTarget& renderTarget);
-
-        template <typename T>
-        void render(std::unordered_map<entities::Entity::IdType, std::shared_ptr<T>>& entities, sf::RenderTarget& renderTarget);
-
-      private:
-        std::shared_ptr<sf::Sprite> m_sprite;
-    };
-
-    template <typename T>
-    void Sprite::render(std::unordered_map<entities::Entity::IdType, std::shared_ptr<T>>& entities, sf::RenderTarget& renderTarget)
-    {
-        for (auto&& [id, entity] : entities)
+        RendererSprite() :
+            System({ ctti::unnamed_type_id<components::Position>(),
+                     ctti::unnamed_type_id<components::Size>(),
+                     ctti::unnamed_type_id<components::Orientation>(),
+                     ctti::unnamed_type_id<components::Sprite>() })
         {
-            render(*entity, renderTarget);
         }
-    }
 
-} // namespace renderers
+        void update(std::chrono::microseconds elapsedTime, sf::RenderTarget& renderTarget);
+    };
+} // namespace systems

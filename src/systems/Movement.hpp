@@ -22,21 +22,33 @@ THE SOFTWARE.
 
 #pragma once
 
+#include "System.hpp"
+#include "components/Momentum.hpp"
+#include "components/Position.hpp"
 #include "entities/Entity.hpp"
-#include "entities/Virus.hpp"
 #include "levels/Level.hpp"
 
 #include <chrono>
 #include <memory>
-#include <unordered_map>
 
 namespace systems
 {
-    class Movement
+    class Movement : public System
     {
       public:
-        void update(levels::Level& level, const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& entities);
-        void update(levels::Level& level, const std::chrono::microseconds elapsedTime, std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Virus>>& entities);
-        void update(levels::Level& level, entities::Entity& entity, const std::chrono::microseconds elapsedTime);
+        Movement(levels::Level& level) :
+            System({ ctti::unnamed_type_id<components::Position>(),
+                     ctti::unnamed_type_id<components::Momentum>() }),
+            m_level(level)
+        {
+        }
+
+        virtual void update(std::chrono::microseconds elapsedTime) override;
+
+      private:
+        levels::Level& m_level;
+
+        void updateEntity(entities::Entity& entity, const std::chrono::microseconds elapsedTime, bool testBorder = true);
+        void testArenaBorder(entities::Entity& entity, const std::chrono::microseconds elapsedTime);
     };
 } // namespace systems

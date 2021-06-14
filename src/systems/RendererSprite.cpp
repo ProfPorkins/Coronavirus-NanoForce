@@ -20,39 +20,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include "Sprite.hpp"
+#include "RendererSprite.hpp"
 
-#include "components/Orientation.hpp"
 #include "components/Position.hpp"
 #include "components/Size.hpp"
-#include "misc/math.hpp"
-#include "services/Configuration.hpp"
+#include "components/Sprite.hpp"
 
-namespace renderers
+namespace systems
 {
-    Sprite::Sprite(std::shared_ptr<sf::Texture> texture)
+    void RendererSprite::update([[maybe_unused]] std::chrono::microseconds elapsedTime, sf::RenderTarget& renderTarget)
     {
-        m_sprite = std::make_shared<sf::Sprite>();
-        m_sprite->setTexture(*texture);
-        // Point about which drawing, rotation, etc takes place, the center of the texture
-        m_sprite->setOrigin({ texture->getSize().x / 2.0f, texture->getSize().y / 2.0f });
-    }
-
-    void Sprite::render(entities::Entity& entity, sf::RenderTarget& renderTarget)
-    {
-        auto position = entity.getComponent<components::Position>();
-        auto size = entity.getComponent<components::Size>();
-        auto orientation = entity.getComponent<components::Orientation>();
-
-        m_sprite->setPosition(position->get());
-        // Not all entities (like the bullet) have/need an orientation.
-        if (orientation != nullptr)
+        // Render each of the entities
+        for (auto&& [id, entity] : m_entities)
         {
-            m_sprite->setRotation(orientation->get());
+            (void)id; // unused
+
+            auto position = entity->getComponent<components::Position>();
+            auto size = entity->getComponent<components::Size>();
+            auto orientation = entity->getComponent<components::Orientation>();
+
+            sf::Sprite sprite(*(entity->getComponent<components::Sprite>()->get()));
+            sprite.setOrigin({ sprite.getTexture()->getSize().x / 2.0f, sprite.getTexture()->getSize().y / 2.0f });
+            sprite.setPosition(position->get());
+            sprite.setRotation(orientation->get());
+
+            sprite.setScale(math::getViewScale(size->get(), sprite.getTexture()));
+
+            renderTarget.draw(sprite);
         }
-
-        m_sprite->setScale(math::getViewScale(size->get(), m_sprite->getTexture()));
-
-        renderTarget.draw(*m_sprite);
     }
-} // namespace renderers
+} // namespace systems

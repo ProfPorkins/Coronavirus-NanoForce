@@ -26,9 +26,7 @@ THE SOFTWARE.
 #include "entities/Entity.hpp"
 #include "entities/Powerup.hpp"
 #include "entities/Weapon.hpp"
-#include "misc/misc.hpp"
 
-#include <SFML/Audio/Sound.hpp>
 #include <chrono>
 #include <memory>
 
@@ -61,38 +59,16 @@ namespace entities
 
         void cleanup();
 
-        void update(const std::chrono::microseconds elapsedTime);
-
         auto getPrimaryWeapon() { return m_weaponPrimary; }
         auto getSecondaryWeapon() { return m_weaponSecondary; }
         void applyPowerup(std::shared_ptr<entities::Powerup> powerup);
 
-        void rotateLeft(std::chrono::microseconds elapsedTime);
-        void rotateRight(std::chrono::microseconds elapsedTime);
-
-        void startThrust()
-        {
-            m_thrusting = true;
-            m_thrust.play();
-        }
-        void endThrust()
-        {
-            m_thrusting = false;
-            m_thrust.stop();
-        }
-
       private:
-        bool m_thrusting{ false };
-        double m_thrustRate{ 0.0000001 * misc::PER_MS_TO_US }; // per us
-        float m_rotateRate{ 0.0002f };                         // degrees per us
-        float m_maxSpeed{ 0.00002f };                          // per us
         std::shared_ptr<entities::Weapon> m_weaponPrimary;
         std::shared_ptr<entities::Weapon> m_weaponSecondary;
 
-        sf::Sound m_thrust;
-
-        void accelerate(std::chrono::microseconds elapsedTime);
         void attachPrimaryWeapon(std::shared_ptr<entities::Weapon> weapon);
         void attachSecondaryWeapon(std::shared_ptr<entities::Weapon> weapon);
     };
+
 } // namespace entities

@@ -22,9 +22,12 @@ THE SOFTWARE.
 
 #include "Powerup.hpp"
 
+#include "components//Audio.hpp"
 #include "components/AnimatedSprite.hpp"
+#include "components/Collidable.hpp"
 #include "components/Lifetime.hpp"
 #include "components/Position.hpp"
+#include "components/Powerup.hpp"
 #include "components/Size.hpp"
 #include "misc/math.hpp"
 #include "misc/misc.hpp"
@@ -35,7 +38,7 @@ THE SOFTWARE.
 namespace entities
 {
 
-    void Powerup::build(std::string key, math::Point2f position)
+    Powerup::Powerup(components::Powerup::Type type, std::string key, math::Point2f position)
     {
         using namespace config;
 
@@ -50,23 +53,25 @@ namespace entities
         // Powerups know how to read themselves from the configuration
         std::string imageKey = "image/powerup-" + key;
         auto texture = Content::get<sf::Texture>(imageKey);
-        m_audioKey = "audio/powerup-" + key;
 
         auto spriteCount = Configuration::get<std::uint8_t>(POWERUP_SPRITE_COUNT);
         auto lifetime = misc::msTous(Configuration::get<std::chrono::milliseconds>(POWERUP_LIFETIME));
         auto size = Configuration::get<float>(POWERUP_SIZE);
         auto spriteTime = misc::msTous(Configuration::get<std::chrono::milliseconds>(POWERUP_SPRITE_TIME));
 
+        this->addComponent(std::make_unique<components::Powerup>(type));
         this->addComponent(std::make_unique<components::Position>(position));
         this->addComponent(std::make_unique<components::Size>(math::Dimension2f(size, size)));
         this->addComponent(std::make_unique<components::Lifetime>(lifetime));
+        this->addComponent(std::make_unique<components::Audio>("audio/powerup-" + key));
         this->addComponent(std::make_unique<components::AnimatedSprite>(texture, spriteCount, spriteTime));
-
         // Have to adjust the width dimension by the number of sprites in the image in
         // order for the rendering size to come out correctly.
         auto sizeCmp = this->getComponent<components::Size>();
         auto sprite = this->getComponent<components::AnimatedSprite>();
         sprite->getSprite()->setScale(math::getViewScale({ sizeCmp->get().width * sprite->getSpriteCount(), sizeCmp->get().height }, sprite->getSprite()->getTexture()));
+
+        this->addComponent(std::make_unique<components::Collidable>(components::Collidable::Type::Powerup));
     }
 
 } // namespace entities

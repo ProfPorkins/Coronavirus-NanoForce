@@ -22,26 +22,25 @@ THE SOFTWARE.
 
 #include "AnimatedSprite.hpp"
 
+#include <chrono>
+#include <memory>
+
 namespace systems
 {
-    // --------------------------------------------------------------
-    //
-    // The reason for doing this method is that g++ won't compile
-    // the entity->getCompoennt<> when the body of the code is
-    // in the templated method.
-    //
-    // --------------------------------------------------------------
-    void AnimatedSprite::update(entities::Entity& entity, const std::chrono::microseconds elapsedTime)
+    void AnimatedSprite::update(const std::chrono::microseconds elapsedTime)
     {
-        auto sprite = entity.getComponent<components::AnimatedSprite>();
-        sprite->updateElapsedTime(elapsedTime);
-
-        // While loop because it could be that more than one frame occurs since the
-        // last update.  That would be bad, but it could be the case.
-        while (sprite->getElapsedTime() >= sprite->getSpriteTime())
+        for (auto&& [id, entity] : m_entities)
         {
-            sprite->incrementSprite();
-            sprite->updateElapsedTime(-sprite->getSpriteTime());
+            auto sprite = entity->getComponent<components::AnimatedSprite>();
+            sprite->updateElapsedTime(elapsedTime);
+
+            // While loop because it could be that more than one frame occurs since the
+            // last update.  That would be bad, but it could be the case.
+            while (sprite->getElapsedTime() >= sprite->getSpriteTime())
+            {
+                sprite->incrementSprite();
+                sprite->updateElapsedTime(-sprite->getSpriteTime());
+            }
         }
     }
 } // namespace systems

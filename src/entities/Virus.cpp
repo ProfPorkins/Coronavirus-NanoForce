@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 #include "components/Age.hpp"
 #include "components/Birth.hpp"
+#include "components/Bullets.hpp"
+#include "components/Collidable.hpp"
 #include "components/Drag.hpp"
 #include "components/Health.hpp"
 #include "components/Lifetime.hpp"
@@ -69,18 +71,11 @@ namespace entities
 
         // Add a health component - Note: Health on a virus increases with age
         this->addComponent(std::make_unique<components::Health>(spec.healthStart, spec.healthIncrements, spec.healthIncrementTime));
+        this->addComponent(std::make_unique<components::Bullets>());
+
+        this->addComponent(std::make_unique<components::Collidable>(components::Collidable::Type::Virus));
         // Get an initial path computed
         selectPath();
-    }
-
-    // --------------------------------------------------------------
-    //
-    // The number of bullets necessary to kill a virus depends on its size
-    //
-    // --------------------------------------------------------------
-    void Virus::addBullet(std::shared_ptr<entities::Entity> bullet)
-    {
-        m_bullets.push_back(bullet);
     }
 
     // --------------------------------------------------------------
@@ -128,7 +123,7 @@ namespace entities
         auto rotateRate = (direction == 0) ? -momentumCmp->getRotateRate() : momentumCmp->getRotateRate();
         momentumCmp->setRotateRate(rotateRate);
         // Bullets rotate the opposite direction
-        m_bulletRotateRate = (direction == 0) ? m_bulletRotateRate : -m_bulletRotateRate;
+        this->getComponent<components::Bullets>()->updateBulletRotation(direction);
     }
 
 } // namespace entities

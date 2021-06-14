@@ -22,14 +22,23 @@ THE SOFTWARE.
 
 #include "Player.hpp"
 
+#include "components//Audio.hpp"
+#include "components/Collidable.hpp"
+#include "components/Control.hpp"
 #include "components/Drag.hpp"
 #include "components/Momentum.hpp"
 #include "components/Orientation.hpp"
 #include "components/Position.hpp"
+#include "components/Powerup.hpp"
 #include "components/Size.hpp"
+#include "components/Sprite.hpp"
+#include "entities/WeaponBomb.hpp"
 #include "entities/WeaponEmpty.hpp"
 #include "entities/WeaponGun.hpp"
+#include "entities/WeaponRapidFire.hpp"
+#include "entities/WeaponSpreadFire.hpp"
 #include "misc/math.hpp"
+#include "misc/misc.hpp"
 #include "services/Configuration.hpp"
 #include "services/ConfigurationPath.hpp"
 #include "services/Content.hpp"
@@ -65,21 +74,17 @@ namespace entities
         return player;
     }
 
-    Player::Player(Specification spec) :
-        m_thrustRate(spec.thrustRate),
-        m_rotateRate(spec.rotateRate),
-        m_maxSpeed(spec.maxSpeed)
+    Player::Player(Specification spec)
     {
         this->addComponent(std::make_unique<components::Position>(math::Point2f(0.0f, 0.0f)));
         this->addComponent(std::make_unique<components::Orientation>(0.0f));
         this->addComponent(std::make_unique<components::Size>(math::Dimension2f(spec.size, spec.size)));
         this->addComponent(std::make_unique<components::Momentum>(math::Vector2f(0.0f, 0.0f)));
+        this->addComponent(std::make_unique<components::Control>(spec.thrustRate, spec.rotateRate, spec.maxSpeed));
         this->addComponent(std::make_unique<components::Drag>(spec.dragRate));
-
-        //
-        // This is a unique one, due to the way it works, handing it directly here, rather than a
-        // fire-and-forget using the SoundBuffer.
-        m_thrust.setBuffer(*Content::get<sf::SoundBuffer>(content::KEY_AUDIO_THRUST));
+        this->addComponent(std::make_unique<components::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_PLAYER)));
+        this->addComponent(std::make_unique<components::Collidable>(components::Collidable::Type::Player));
+        this->addComponent(std::make_unique<components::Audio>(content::KEY_AUDIO_THRUST, true));
     }
 
     // --------------------------------------------------------------
@@ -100,68 +105,33 @@ namespace entities
         // The thrust sound can still be playing when the player dies because the key
         // hasn't been released.  This ensures the thrust sounds stops when the player
         // no longer exists.
-        m_thrust.stop();
-    }
-
-    // --------------------------------------------------------------
-    //
-    // Player needs to update because thrust is based on a start/stop
-    // from a key being pressed or released.
-    //
-    // --------------------------------------------------------------
-    void Player::update(const std::chrono::microseconds elapsedTime)
-    {
-        if (m_thrusting)
-        {
-            accelerate(elapsedTime);
-        }
+        this->getComponent<components::Audio>()->stop();
     }
 
     void Player::applyPowerup(std::shared_ptr<entities::Powerup> powerup)
     {
-        SoundPlayer::play(powerup->getAudioKey());
+        SoundPlayer::play(powerup->getComponent<components::Audio>()->getKey());
 
-        switch (powerup->getType())
+        switch (powerup->getComponent<components::Powerup>()->get())
         {
-            case Powerup::Type::RapidFire:
-            case Powerup::Type::SpreadFire:
-                this->attachPrimaryWeapon(powerup->get());
-                break;
-            case Powerup::Type::Bomb:
-                this->attachSecondaryWeapon(powerup->get());
-                break;
-        }
-    }
-
-    void Player::rotateLeft(std::chrono::microseconds elapsedTime)
-    {
-        auto orientation = this->getComponent<components::Orientation>();
-        orientation->set(orientation->get() - elapsedTime.count() * m_rotateRate);
-    }
-
-    void Player::rotateRight(std::chrono::microseconds elapsedTime)
-    {
-        auto orientation = this->getComponent<components::Orientation>();
-        orientation->set(orientation->get() + elapsedTime.count() * m_rotateRate);
-    }
-
-    // --------------------------------------------------------------
-    //
-    // Add momentum in the "orientation" direction.
-    //
-    // --------------------------------------------------------------
-    void Player::accelerate(std::chrono::microseconds elapsedTime)
-    {
-        auto vector = math::vectorFromDegrees(this->getComponent<components::Orientation>()->get());
-        auto momentum = this->getComponent<components::Momentum>();
-        momentum->set({ static_cast<decltype(momentum->get().x)>(momentum->get().x + vector.x * m_thrustRate * elapsedTime.count()),
-                        static_cast<decltype(momentum->get().y)>(momentum->get().y + vector.y * m_thrustRate * elapsedTime.count()) });
-
-        auto magnitude = std::sqrt(momentum->get().x * momentum->get().x + momentum->get().y * momentum->get().y);
-        if (magnitude > m_maxSpeed)
-        {
-            float scale = m_maxSpeed / magnitude;
-            momentum->set({ momentum->get().x * scale, momentum->get().y * scale });
+            case components::Powerup::Type::RapidFire:
+            {
+                auto weapon = std::make_shared<WeaponRapidFire>(config::ENTITY_WEAPON_RAPID_FIRE);
+                this->attachPrimaryWeapon(weapon);
+            }
+            break;
+            case components::Powerup::Type::SpreadFire:
+            {
+                auto weapon = std::make_shared<WeaponSpreadFire>(config::ENTITY_WEAPON_SPREAD_FIRE);
+                this->attachPrimaryWeapon(weapon);
+            }
+            break;
+            case components::Powerup::Type::Bomb:
+            {
+                auto weapon = std::make_shared<WeaponBomb>(config::ENTITY_WEAPON_BOMB);
+                this->attachSecondaryWeapon(weapon);
+            }
+            break;
         }
     }
 
