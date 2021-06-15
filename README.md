@@ -2,7 +2,8 @@
 
 This repository contains the source code for the [_Coronavirus - Nano Force_](https://store.steampowered.com/app/1341980/Coronavirus__Nano_Force/) game.  The source doesn't include the Steam specifics like the leader boards, achievements, and Steam overlay, but it is otherwise the complete source code.  In fact, while working on the documentation, I've made revisions to the code, that aren't in the release available on Steam.  None of the changes affect the game play, they are improvements to the implementation.  The reason for making it publicly available is to provide an example of a simple, but complete game.
 
-As of 5/23/2021 the core documentation/writeup is complete.  There are other parts of the code and design that can be discussed (e.g., Particle System) and will likely be done as I have time and interest.
+* 5/23/2021 : The core documentation/writeup is complete.  There are other parts of the code and design that can be discussed (e.g., Particle System) and will likely be done as I have time and interest.
+* 6/15/2021 : The keyboard and mouse refactors are complete, along with as much of the ECS refactoring that I have time to do for now.  I will update the documentation to reflect the changes as a result of these code refactors.  Unlikely I'll do more work on code.  A future game effort I intend to work on will be a full ECS design from the start, because I happen to like that model, along with incorporating the other items I have listed as possibilities for this code; C++ 20, localization, better data driven design.  The code for that effort will eventually be made public, but it could be a long time, as in years, before that game will be in any form to show.  I'll try to spin out core portions of the code for public availability as I make progress.
 
 ## Game Design
 
@@ -47,7 +48,8 @@ The following are ideas I have about revisions to the implementation I may (or m
 
 * (completed) ~~Refactor the keyboard and mouse input as described at the end of the [Systems](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/Systems.md) documentation.~~
 * Refactor the level management code to be fully data driven as suggested in the introduction to the [Levels](https://github.com/ProfPorkins/Coronavirus-NanoForce/blob/trunk/docs/Levels.md) documentation.
-* Refactor the code to be closer to an ECS architecture.
+* (completed) ~~Refactor the code to be closer to an ECS architecture.~~
+  * This is done as much as I'm going to do.  Don't have the time to do more work on it.  The biggest remaining item is refactoring the `Player` entity, and doing that is a bigger effort than is obvious by looking at it.  I have to move on to other projects and real life.
 * Once C++20 is well supported the three compilers used to build it (MSVC, g++, llvm), take advantage of the new language capabilities where/if it makes sense.  In particular, I'm thinking of refactoring to use modules to give myself experience with that capability.
 * Add support for localization.  It would be an interesting exercise to revise the code to handle multiple languages.
 * [Gyruss](https://en.wikipedia.org/wiki/Gyruss) was a favorite game of mine back in the day.  Have considered a new version of the game design that follows that style of gameplay.
