@@ -55,7 +55,8 @@ namespace entities
         this->addComponent(std::make_unique<components::Position>(math::Point2f(0.0f, 0.0f)));
         this->addComponent(std::make_unique<components::Size>(math::Dimension2f(size, size)));
         this->addComponent(std::make_unique<components::Momentum>(math::Vector2f(0.0f, 0.0f)));
-        this->addComponent(std::make_unique<components::Lifetime>(lifetime, [this, emitBullet]() { explode(emitBullet); }));
+        this->addComponent(std::make_unique<components::Lifetime>(lifetime, [this, emitBullet]()
+                                                                  { explode(emitBullet); }));
         this->addComponent(std::make_unique<components::Sprite>(Content::get<sf::Texture>(content::KEY_IMAGE_BOMB)));
         this->addComponent(std::make_unique<components::Orientation>(0.0f));
         this->addComponent(std::make_unique<components::Bomb>(

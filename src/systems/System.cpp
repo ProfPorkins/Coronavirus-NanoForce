@@ -42,7 +42,8 @@ namespace systems
     {
         auto iCareIfAll = std::all_of(
             m_interests.begin(), m_interests.end(),
-            [&entity](auto interest) {
+            [&entity](auto interest)
+            {
                 return entity->getComponents().find(interest) != entity->getComponents().end();
             });
 

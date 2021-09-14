@@ -60,7 +60,8 @@ namespace views
                 Configuration::get<std::string>(config::TRAINING_LEVEL1_NAME),
                 Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
                 sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-                [this]() {
+                [this]()
+                {
                     GameModel::selectLevel(levels::LevelName::Training1);
                     m_nextState = ViewState::GamePlay;
                 });
@@ -72,7 +73,8 @@ namespace views
                 Configuration::get<std::string>(config::TRAINING_LEVEL2_NAME),
                 Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
                 sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-                [this]() {
+                [this]()
+                {
                     GameModel::selectLevel(levels::LevelName::Training2);
                     m_nextState = ViewState::GamePlay;
                 });
@@ -84,7 +86,8 @@ namespace views
                 Configuration::get<std::string>(config::TRAINING_LEVEL3_NAME),
                 Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
                 sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-                [this]() {
+                [this]()
+                {
                     GameModel::selectLevel(levels::LevelName::Training3);
                     m_nextState = ViewState::GamePlay;
                 });
@@ -96,9 +99,11 @@ namespace views
                 Configuration::get<std::string>(config::TRAINING_LEVEL4_NAME),
                 Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
                 sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-                [this]() { 
-                GameModel::selectLevel(levels::LevelName::Training4);
-                m_nextState = ViewState::GamePlay; });
+                [this]()
+                {
+                    GameModel::selectLevel(levels::LevelName::Training4);
+                    m_nextState = ViewState::GamePlay;
+                });
             m_menuItems.push_back(trainLevel4);
             top += alphabetItem.getGlobalBounds().height * 1.5f;
 
@@ -107,7 +112,8 @@ namespace views
                 Configuration::get<std::string>(config::TRAINING_LEVEL5_NAME),
                 Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
                 sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-                [this]() {
+                [this]()
+                {
                     GameModel::selectLevel(levels::LevelName::Training5);
                     m_nextState = ViewState::GamePlay;
                 });
@@ -122,7 +128,8 @@ namespace views
                 Configuration::get<std::string>(config::PATIENT_LEVEL1_NAME),
                 Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
                 sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-                [this]() {
+                [this]()
+                {
                     GameModel::selectLevel(levels::LevelName::Patient1);
                     m_nextState = ViewState::GamePlay;
                 });
@@ -134,7 +141,8 @@ namespace views
                 Configuration::get<std::string>(config::PATIENT_LEVEL2_NAME),
                 Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
                 sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-                [this]() {
+                [this]()
+                {
                     GameModel::selectLevel(levels::LevelName::Patient2);
                     m_nextState = ViewState::GamePlay;
                 });
@@ -146,7 +154,8 @@ namespace views
                 Configuration::get<std::string>(config::PATIENT_LEVEL3_NAME),
                 Content::get<sf::Font>(content::KEY_FONT_LEVEL_SELECT),
                 sf::Color::White, sf::Color::Yellow, alphabetItem.getCharacterSize(),
-                [this]() {
+                [this]()
+                {
                     GameModel::selectLevel(levels::LevelName::Patient3);
                     m_nextState = ViewState::GamePlay;
                 });
@@ -172,22 +181,25 @@ namespace views
 
         //
         // Get the keyboard inputs registered
-        KeyboardInput::instance().registerKeyReleasedHandler("escape", [this]() { m_nextState = ViewState::MainMenu; });
-        KeyboardInput::instance().registerKeyReleasedHandler("down", [this]() {
-            m_menuItems[m_activeMenuItem]->setInactive();
-            m_activeMenuItem = (static_cast<std::size_t>(m_activeMenuItem) + 1) % m_menuItems.size();
-            m_menuItems[m_activeMenuItem]->setActive();
-        });
-        KeyboardInput::instance().registerKeyReleasedHandler("up", [this]() {
-            m_menuItems[m_activeMenuItem]->setInactive();
-            m_activeMenuItem--;
-            if (m_activeMenuItem < 0)
-            {
+        KeyboardInput::instance().registerKeyReleasedHandler("escape", [this]()
+                                                             { m_nextState = ViewState::MainMenu; });
+        KeyboardInput::instance().registerKeyReleasedHandler("down", [this]()
+                                                             {
+                                                                 m_menuItems[m_activeMenuItem]->setInactive();
+                                                                 m_activeMenuItem = (static_cast<std::size_t>(m_activeMenuItem) + 1) % m_menuItems.size();
+                                                                 m_menuItems[m_activeMenuItem]->setActive();
+                                                             });
+        KeyboardInput::instance().registerKeyReleasedHandler("up", [this]()
+                                                             {
+                                                                 m_menuItems[m_activeMenuItem]->setInactive();
+                                                                 m_activeMenuItem--;
+                                                                 if (m_activeMenuItem < 0)
+                                                                 {
 
-                m_activeMenuItem = static_cast<std::int8_t>(m_menuItems.size() - 1);
-            }
-            m_menuItems[m_activeMenuItem]->setActive();
-        });
+                                                                     m_activeMenuItem = static_cast<std::int8_t>(m_menuItems.size() - 1);
+                                                                 }
+                                                                 m_menuItems[m_activeMenuItem]->setActive();
+                                                             });
 
         for (auto&& menuItem : m_menuItems)
         {
@@ -196,12 +208,10 @@ namespace views
 
         //
         // Get the mouse inputs registered
-        m_mouseMovedHandlerId = MouseInput::instance().registerMouseMovedHandler([this](math::Point2f point, const std::chrono::microseconds elapsedTime) {
-            onMouseMoved(point, elapsedTime);
-        });
-        m_mouseReleasedHandlerId = MouseInput::instance().registerMouseReleasedHandler([this](sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime) {
-            onMouseReleased(button, point, elapsedTime);
-        });
+        m_mouseMovedHandlerId = MouseInput::instance().registerMouseMovedHandler([this](math::Point2f point, const std::chrono::microseconds elapsedTime)
+                                                                                 { onMouseMoved(point, elapsedTime); });
+        m_mouseReleasedHandlerId = MouseInput::instance().registerMouseReleasedHandler([this](sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime)
+                                                                                       { onMouseReleased(button, point, elapsedTime); });
 
         return true;
     }

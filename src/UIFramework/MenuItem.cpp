@@ -46,10 +46,13 @@ namespace ui
 
     void MenuItem::start()
     {
-        m_handlerId = KeyboardInput::instance().registerKeyReleasedHandler([this](sf::Keyboard::Key key) {
-            if (this->isActive() && key == sf::Keyboard::Enter) {
-                this->select();
-            } });
+        m_handlerId = KeyboardInput::instance().registerKeyReleasedHandler([this](sf::Keyboard::Key key)
+                                                                           {
+                                                                               if (this->isActive() && key == sf::Keyboard::Enter)
+                                                                               {
+                                                                                   this->select();
+                                                                               }
+                                                                           });
     }
 
     void MenuItem::stop()

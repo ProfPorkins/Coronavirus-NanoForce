@@ -2,7 +2,7 @@ Language: Cpp
 ColumnLimit: 0
 BreakBeforeBraces : Allman
 BreakConstructorInitializers: AfterColon
-Cpp11BracedListStyle: true
+Cpp11BracedListStyle: false
 IndentCaseLabels: true
 NamespaceIndentation: All
 IndentWidth: 4
@@ -13,4 +13,6 @@ PointerAlignment: Left
 IncludeBlocks: Regroup
 IndentPPDirectives: BeforeHash
 AllowShortFunctionsOnASingleLine: Inline
-Cpp11BracedListStyle: false
+AllowShortLambdasOnASingleLine: Inline
+BraceWrapping:
+  BeforeLambdaBody: true

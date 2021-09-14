@@ -107,8 +107,10 @@ namespace systems
             m_effects.pop_front();
             effect->update(
                 elapsedTime,
-                [this]() { return getAvailableParticle(); },
-                [this](std::unique_ptr<Particle> p) { this->addParticle(std::move(p)); });
+                [this]()
+                { return getAvailableParticle(); },
+                [this](std::unique_ptr<Particle> p)
+                { this->addParticle(std::move(p)); });
             // Put it back in the queue if its lifetime hasn't expired
             if (effect->getAlive() < effect->getLifetime())
             {

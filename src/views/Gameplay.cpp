@@ -44,7 +44,8 @@ namespace views
         m_model = std::make_unique<GameModel>();
         m_model->initialize();
 
-        KeyboardInput::instance().registerKeyReleasedHandler("escape", [this]() { m_nextState = ViewState::LevelSelect; });
+        KeyboardInput::instance().registerKeyReleasedHandler("escape", [this]()
+                                                             { m_nextState = ViewState::LevelSelect; });
 
         return true;
     }

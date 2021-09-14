@@ -107,7 +107,8 @@ namespace levels
     {
         const float shipSize = Configuration::get<float>(config::PLAYER_SIZE);
 
-        auto getMinDistance = [](math::Point2f position, const std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& viruses) {
+        auto getMinDistance = [](math::Point2f position, const std::unordered_map<entities::Entity::IdType, std::shared_ptr<entities::Entity>>& viruses)
+        {
             auto minDistance = std::numeric_limits<float>::max();
             for (auto&& [id, virus] : viruses)
             {

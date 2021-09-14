@@ -187,10 +187,12 @@ bool loadMenuContent()
     std::condition_variable eventContent;
     std::mutex mutexContent;
 
-    auto onComplete = [&]([[maybe_unused]] std::string key) {
+    auto onComplete = [&]([[maybe_unused]] std::string key)
+    {
         eventContent.notify_one();
     };
-    auto onError = [&]([[maybe_unused]] std::string filename) {
+    auto onError = [&]([[maybe_unused]] std::string filename)
+    {
         success = false;
         eventContent.notify_one();
     };

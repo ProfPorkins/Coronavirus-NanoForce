@@ -65,18 +65,15 @@ namespace views
 
         //
         // Get the keyboard inputs registered
-        m_handlerId = KeyboardInput::instance().registerKeyReleasedHandler([this](sf::Keyboard::Key key) {
-            onKeyPressed(key);
-        });
+        m_handlerId = KeyboardInput::instance().registerKeyReleasedHandler([this](sf::Keyboard::Key key)
+                                                                           { onKeyPressed(key); });
 
         //
         // Get the mouse inputs registered
-        m_mouseMovedHandlerId = MouseInput::instance().registerMouseMovedHandler([this](math::Point2f point, const std::chrono::microseconds elapsedTime) {
-            onMouseMoved(point, elapsedTime);
-        });
-        m_mouseReleasedHandlerId = MouseInput::instance().registerMouseReleasedHandler([this](sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime) {
-            onMouseReleased(button, point, elapsedTime);
-        });
+        m_mouseMovedHandlerId = MouseInput::instance().registerMouseMovedHandler([this](math::Point2f point, const std::chrono::microseconds elapsedTime)
+                                                                                 { onMouseMoved(point, elapsedTime); });
+        m_mouseReleasedHandlerId = MouseInput::instance().registerMouseReleasedHandler([this](sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime)
+                                                                                       { onMouseReleased(button, point, elapsedTime); });
 
         return true;
     }
@@ -167,7 +164,8 @@ namespace views
             fullScreenOptions,
             Configuration::get<bool>(config::GRAPHICS_FULL_SCREEN) ? 0 : 1,
             Content::get<sf::Font>(content::KEY_FONT_SETTINGS), HEADING_COLOR, sf::Color::Yellow, Configuration::get<std::uint8_t>(config::FONT_SETTINGS_ITEM_SIZE),
-            [this](std::uint8_t option) {
+            [this](std::uint8_t option)
+            {
                 m_restart1.show();
                 m_restart2.show();
                 auto value = static_cast<bool>(option);
@@ -207,23 +205,24 @@ namespace views
 
         // Filter to only 24/32 bpp and no duplicate resolutions
         std::vector<sf::VideoMode> allowedModes;
-        std::copy_if(modes.begin(), modes.end(), std::back_inserter(allowedModes), [&](sf::VideoMode mode) {
-            if (mode.bitsPerPixel == 32 || mode.bitsPerPixel == 24)
-            {
-                bool unique = std::none_of(allowedModes.begin(), allowedModes.end(), [&mode](sf::VideoMode test) {
-                    return mode.height == test.height && mode.width == test.width;
-                });
-                return unique;
-            }
+        std::copy_if(modes.begin(), modes.end(), std::back_inserter(allowedModes), [&](sf::VideoMode mode)
+                     {
+                         if (mode.bitsPerPixel == 32 || mode.bitsPerPixel == 24)
+                         {
+                             bool unique = std::none_of(allowedModes.begin(), allowedModes.end(), [&mode](sf::VideoMode test)
+                                                        { return mode.height == test.height && mode.width == test.width; });
+                             return unique;
+                         }
 
-            return false;
-        });
+                         return false;
+                     });
         // Finally, transform into a vector of tuples to be given to the option control
         // While doing this, identify which is the current configuration setting
         std::size_t initialSelection = 0;
         std::vector<std::tuple<std::string, std::uint8_t>> resolutionOptions;
         std::transform(allowedModes.begin(), allowedModes.end(), std::back_inserter(resolutionOptions),
-                       [&](sf::VideoMode mode) {
+                       [&](sf::VideoMode mode)
+                       {
                            std::stringstream str;
                            str << mode.width << " x " << mode.height;
 
@@ -272,7 +271,8 @@ namespace views
             musicOptions,
             Configuration::get<bool>(config::PLAY_BACKGROUND_MUSIC) ? 0 : 1,
             Content::get<sf::Font>(content::KEY_FONT_SETTINGS), HEADING_COLOR, sf::Color::Yellow, Configuration::get<std::uint8_t>(config::FONT_SETTINGS_ITEM_SIZE),
-            [this](std::uint8_t option) {
+            [this](std::uint8_t option)
+            {
                 auto value = static_cast<bool>(option);
                 Configuration::set<bool>(config::PLAY_BACKGROUND_MUSIC, value);
             });
@@ -298,10 +298,12 @@ namespace views
             0.0f, top,
             "Thrust", Configuration::get<std::string>(config::KEYBOARD_UP),
             Content::get<sf::Font>(content::KEY_FONT_SETTINGS), HEADING_COLOR, sf::Color::Yellow, Configuration::get<std::uint8_t>(config::FONT_SETTINGS_ITEM_SIZE),
-            [this]() {
+            [this]()
+            {
                 m_selectKey.show();
             },
-            [this](std::string key) {
+            [this](std::string key)
+            {
                 m_selectKey.hide();
                 if (key != "esc")
                 {
@@ -314,10 +316,12 @@ namespace views
             thrust->getRegion().getBottom(),
             "Rotate Left", Configuration::get<std::string>(config::KEYBOARD_LEFT),
             Content::get<sf::Font>(content::KEY_FONT_SETTINGS), HEADING_COLOR, sf::Color::Yellow, Configuration::get<std::uint8_t>(config::FONT_SETTINGS_ITEM_SIZE),
-            [this]() {
+            [this]()
+            {
                 m_selectKey.show();
             },
-            [this](std::string key) {
+            [this](std::string key)
+            {
                 m_selectKey.hide();
                 if (key != "esc")
                 {
@@ -330,10 +334,12 @@ namespace views
             thrust->getRegion().getBottom(),
             "Rotate Right", Configuration::get<std::string>(config::KEYBOARD_RIGHT),
             Content::get<sf::Font>(content::KEY_FONT_SETTINGS), HEADING_COLOR, sf::Color::Yellow, Configuration::get<std::uint8_t>(config::FONT_SETTINGS_ITEM_SIZE),
-            [this]() {
+            [this]()
+            {
                 m_selectKey.show();
             },
-            [this](std::string key) {
+            [this](std::string key)
+            {
                 m_selectKey.hide();
                 if (key != "esc")
                 {
@@ -346,10 +352,12 @@ namespace views
             rotateRight->getRegion().getBottom(),
             "Primary Fire", Configuration::get<std::string>(config::KEYBOARD_PRIMARY_FIRE),
             Content::get<sf::Font>(content::KEY_FONT_SETTINGS), HEADING_COLOR, sf::Color::Yellow, Configuration::get<std::uint8_t>(config::FONT_SETTINGS_ITEM_SIZE),
-            [this]() {
+            [this]()
+            {
                 m_selectKey.show();
             },
-            [this](std::string key) {
+            [this](std::string key)
+            {
                 m_selectKey.hide();
                 if (key != "esc")
                 {
@@ -362,10 +370,12 @@ namespace views
             rotateRight->getRegion().getBottom(),
             "Secondary Fire", Configuration::get<std::string>(config::KEYBOARD_SECONDARY_FIRE),
             Content::get<sf::Font>(content::KEY_FONT_SETTINGS), HEADING_COLOR, sf::Color::Yellow, Configuration::get<std::uint8_t>(config::FONT_SETTINGS_ITEM_SIZE),
-            [this]() {
+            [this]()
+            {
                 m_selectKey.show();
             },
-            [this](std::string key) {
+            [this](std::string key)
+            {
                 m_selectKey.hide();
                 if (key != "esc")
                 {

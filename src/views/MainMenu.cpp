@@ -48,31 +48,36 @@ namespace views
                 "New Game"s,
                 Content::get<sf::Font>(content::KEY_FONT_MENU),
                 sf::Color::White, sf::Color::Yellow, alphabet.getCharacterSize(),
-                [this]() { m_nextState = ViewState::LevelSelect; });
+                [this]()
+                { m_nextState = ViewState::LevelSelect; });
             m_menuItems.push_back(menuNewGame);
 
             auto menuGraphicsOptions = std::make_shared<ui::MenuItem>(
                 "Settings"s, Content::get<sf::Font>(content::KEY_FONT_MENU),
                 sf::Color::White, sf::Color::Yellow, alphabet.getCharacterSize(),
-                [this]() { m_nextState = ViewState::Settings; });
+                [this]()
+                { m_nextState = ViewState::Settings; });
             m_menuItems.push_back(menuGraphicsOptions);
 
             auto menuAbout = std::make_shared<ui::MenuItem>(
                 "About"s, Content::get<sf::Font>(content::KEY_FONT_MENU),
                 sf::Color::White, sf::Color::Yellow, alphabet.getCharacterSize(),
-                [this]() { m_nextState = ViewState::About; });
+                [this]()
+                { m_nextState = ViewState::About; });
             m_menuItems.push_back(menuAbout);
 
             auto menuCredits = std::make_shared<ui::MenuItem>(
                 "Credits"s, Content::get<sf::Font>(content::KEY_FONT_MENU), sf::Color::White,
                 sf::Color::Yellow, alphabet.getCharacterSize(),
-                [this]() { m_nextState = ViewState::Credits; });
+                [this]()
+                { m_nextState = ViewState::Credits; });
             m_menuItems.push_back(menuCredits);
 
             auto menuExit = std::make_shared<ui::MenuItem>(
                 "Quit"s, Content::get<sf::Font>(content::KEY_FONT_MENU), sf::Color::White,
                 sf::Color::Yellow, alphabet.getCharacterSize(),
-                [this]() { m_nextState = ViewState::Exit; });
+                [this]()
+                { m_nextState = ViewState::Exit; });
             m_menuItems.push_back(menuExit);
 
             //
@@ -98,21 +103,23 @@ namespace views
 
         //
         // Get the keyboard inputs registered
-        KeyboardInput::instance().registerKeyReleasedHandler("down", [this]() {
-            m_menuItems[m_activeMenuItem]->setInactive();
-            m_activeMenuItem = (static_cast<std::size_t>(m_activeMenuItem) + 1) % m_menuItems.size();
-            m_menuItems[m_activeMenuItem]->setActive();
-        });
-        KeyboardInput::instance().registerKeyReleasedHandler("up", [this]() {
-            m_menuItems[m_activeMenuItem]->setInactive();
-            m_activeMenuItem--;
-            if (m_activeMenuItem < 0)
-            {
+        KeyboardInput::instance().registerKeyReleasedHandler("down", [this]()
+                                                             {
+                                                                 m_menuItems[m_activeMenuItem]->setInactive();
+                                                                 m_activeMenuItem = (static_cast<std::size_t>(m_activeMenuItem) + 1) % m_menuItems.size();
+                                                                 m_menuItems[m_activeMenuItem]->setActive();
+                                                             });
+        KeyboardInput::instance().registerKeyReleasedHandler("up", [this]()
+                                                             {
+                                                                 m_menuItems[m_activeMenuItem]->setInactive();
+                                                                 m_activeMenuItem--;
+                                                                 if (m_activeMenuItem < 0)
+                                                                 {
 
-                m_activeMenuItem = static_cast<std::int8_t>(m_menuItems.size() - 1);
-            }
-            m_menuItems[m_activeMenuItem]->setActive();
-        });
+                                                                     m_activeMenuItem = static_cast<std::int8_t>(m_menuItems.size() - 1);
+                                                                 }
+                                                                 m_menuItems[m_activeMenuItem]->setActive();
+                                                             });
 
         for (auto&& menuItem : m_menuItems)
         {
@@ -121,12 +128,10 @@ namespace views
 
         //
         // Get the mouse inputs registered
-        m_mouseMovedHandlerId = MouseInput::instance().registerMouseMovedHandler([this](math::Point2f point, const std::chrono::microseconds elapsedTime) {
-            onMouseMoved(point, elapsedTime);
-        });
-        m_mouseReleasedHandlerId = MouseInput::instance().registerMouseReleasedHandler([this](sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime) {
-            onMouseReleased(button, point, elapsedTime);
-        });
+        m_mouseMovedHandlerId = MouseInput::instance().registerMouseMovedHandler([this](math::Point2f point, const std::chrono::microseconds elapsedTime)
+                                                                                 { onMouseMoved(point, elapsedTime); });
+        m_mouseReleasedHandlerId = MouseInput::instance().registerMouseReleasedHandler([this](sf::Mouse::Button button, math::Point2f point, const std::chrono::microseconds elapsedTime)
+                                                                                       { onMouseReleased(button, point, elapsedTime); });
 
         return true;
     }

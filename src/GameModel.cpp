@@ -125,17 +125,23 @@ void GameModel::initialize()
     m_sysMovement = std::make_unique<systems::Movement>(*m_level);
     m_sysAge = std::make_unique<systems::Age>();
     m_sysAnimatedSprite = std::make_unique<systems::AnimatedSprite>();
-    m_sysBirth = std::make_unique<systems::Birth>([this](std::shared_ptr<entities::Entity> entity) { this->onVirusBirth(entity); });
+    m_sysBirth = std::make_unique<systems::Birth>([this](std::shared_ptr<entities::Entity> entity)
+                                                  { this->onVirusBirth(entity); });
     m_sysHealth = std::make_unique<systems::Health>();
-    m_sysLifetime = std::make_unique<systems::Lifetime>([this](entities::Entity::IdType entityId) { m_removeEntities.push_back(entityId); });
+    m_sysLifetime = std::make_unique<systems::Lifetime>([this](entities::Entity::IdType entityId)
+                                                        { m_removeEntities.push_back(entityId); });
     m_sysPowerup = std::make_unique<systems::Powerup>(
         *m_level,
-        [this](std::shared_ptr<entities::Powerup>& powerup) { m_newEntities.push_back(powerup); },
+        [this](std::shared_ptr<entities::Powerup>& powerup)
+        { m_newEntities.push_back(powerup); },
         m_level->getKey());
     m_sysCollision = std::make_unique<systems::Collision>(
-        [this](entities::Entity::IdType entityId) { m_removeEntities.push_back(entityId); },
-        [this](entities::Entity* entity) { this->onVirusDeath(entity); },
-        [this]() { this->onPlayerDeath(); });
+        [this](entities::Entity::IdType entityId)
+        { m_removeEntities.push_back(entityId); },
+        [this](entities::Entity* entity)
+        { this->onVirusDeath(entity); },
+        [this]()
+        { this->onPlayerDeath(); });
     m_sysParticle = std::make_unique<systems::ParticleSystem>();
 
     m_sysRendererSprite = std::make_unique<systems::RendererSprite>();
@@ -369,7 +375,8 @@ void GameModel::onPlayerDeath()
     {
         m_rendererStatus->setMessage(m_level->getMessageFailure());
         m_remainingNanoBots--;
-        m_updatePlayer = [](std::chrono::microseconds) {};
+        m_updatePlayer = [](std::chrono::microseconds) {
+        };
     }
 }
 
@@ -389,7 +396,8 @@ void GameModel::resetPlayer()
 
     m_rendererStatus->setMessage(m_level->getMessageReady());
     m_playerStartCountdown = misc::msTous(std::chrono::milliseconds(3000));
-    m_updatePlayer = [this](std::chrono::microseconds elapsedTime) {
+    m_updatePlayer = [this](std::chrono::microseconds elapsedTime)
+    {
         m_playerStartCountdown -= elapsedTime;
         if (m_playerStartCountdown <= std::chrono::microseconds(0))
         {
@@ -418,35 +426,46 @@ void GameModel::startPlayer(math::Point2f position)
 
     // A copy of the pointer is needed, because the controls might still happen during the next update when the player dies
     auto player = m_player;
-    KeyboardInput::instance().registerKeyPressedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { startThrust(player.get()); });
-    KeyboardInput::instance().registerKeyReleasedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]() { endThrust(player.get()); });
-    KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_LEFT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { rotateLeft(player.get(), elapsedTime); });
-    KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_RIGHT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime) { rotateRight(player.get(), elapsedTime); });
+    KeyboardInput::instance().registerKeyPressedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]()
+                                                        { startThrust(player.get()); });
+    KeyboardInput::instance().registerKeyReleasedHandler(Configuration::get<std::string>(config::KEYBOARD_UP), [player]()
+                                                         { endThrust(player.get()); });
+    KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_LEFT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime)
+                                              { rotateLeft(player.get(), elapsedTime); });
+    KeyboardInput::instance().registerHandler(Configuration::get<std::string>(config::KEYBOARD_RIGHT), true, std::chrono::microseconds(0), [player](std::chrono::microseconds elapsedTime)
+                                              { rotateRight(player.get(), elapsedTime); });
     //
     // Primary weapon fire
     KeyboardInput::instance().registerHandler(
         Configuration::get<std::string>(config::KEYBOARD_PRIMARY_FIRE), true, std::chrono::microseconds(0),
-        [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime) {
+        [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime)
+        {
             player->getPrimaryWeapon()->fire(
-                [this](std::shared_ptr<entities::Entity>& bullet) { m_newEntities.push_back(bullet); },
-                [this](std::shared_ptr<entities::Entity>& bomb) { m_newEntities.push_back(bomb); });
+                [this](std::shared_ptr<entities::Entity>& bullet)
+                { m_newEntities.push_back(bullet); },
+                [this](std::shared_ptr<entities::Entity>& bomb)
+                { m_newEntities.push_back(bomb); });
         });
 
     //
     // Secondary weapon fire
     KeyboardInput::instance().registerHandler(
         Configuration::get<std::string>(config::KEYBOARD_SECONDARY_FIRE), true, std::chrono::microseconds(0),
-        [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime) {
+        [this, player]([[maybe_unused]] std::chrono::microseconds elapsedTime)
+        {
             player->getSecondaryWeapon()->fire(
-                [this](std::shared_ptr<entities::Entity>& bullet) { m_newEntities.push_back(bullet); },
-                [this](std::shared_ptr<entities::Entity>& bomb) { m_newEntities.push_back(bomb); });
+                [this](std::shared_ptr<entities::Entity>& bullet)
+                { m_newEntities.push_back(bullet); },
+                [this](std::shared_ptr<entities::Entity>& bomb)
+                { m_newEntities.push_back(bomb); });
         });
 
     m_player->getComponent<components::Position>()->set(position);
     m_player->getComponent<components::Momentum>()->set({ 0.0f, 0.0f });
     m_player->getComponent<components::Orientation>()->set(0.0f);
 
-    m_updatePlayer = [this](std::chrono::microseconds elapsedTime) {
+    m_updatePlayer = [this](std::chrono::microseconds elapsedTime)
+    {
         // This is a little sloppy, but it at least is a way to stop the time played clock in a winning condition
         if (m_virusCount > 0)
         {
