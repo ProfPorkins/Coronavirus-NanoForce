@@ -129,8 +129,8 @@ namespace views
                     m_activeOption--;
                     if (m_activeOption < 0)
                     {
-
-                        m_activeOption = static_cast<std::int8_t>(m_options.size() - 1); // A little hack, special case for when resolution isn't visible
+                        // A little hack, special case for when resolution isn't visible
+                        m_activeOption = static_cast<std::int8_t>(m_options.size() - 1);
                     }
                     if (!m_options[m_activeOption]->isVisible())
                     {
@@ -180,6 +180,10 @@ namespace views
                 {
                     m_options[1]->show();
                 }
+
+                //
+                // Any graphics option change means it is time to restart the window
+                Configuration::getGraphics().setRestart(true);
             });
         m_options.push_back(fullScreen);
     }
@@ -247,6 +251,9 @@ namespace views
                 auto value = allowedModes[option];
                 Configuration::set<std::uint16_t>(config::GRAPHICS_WIDTH, static_cast<std::uint16_t>(value.width));
                 Configuration::set<std::uint16_t>(config::GRAPHICS_HEIGHT, static_cast<std::uint16_t>(value.height));
+                //
+                // Any graphics option change means it is time to restart the window
+                Configuration::getGraphics().setRestart(true);
             });
         m_options.push_back(resolution);
         if (Configuration::get<bool>(config::GRAPHICS_FULL_SCREEN))

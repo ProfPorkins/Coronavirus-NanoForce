@@ -29,6 +29,8 @@ THE SOFTWARE.
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/stringbuffer.h>
 
+Configuration* Configuration::m_instance{ nullptr };
+
 // --------------------------------------------------------------
 //
 // Why two configuration files and why can the developer one not
@@ -74,6 +76,7 @@ bool Configuration::initialize(const std::string_view jsonSettings, const std::s
     //
     // Have to call this because the resolution and scale-to-resolution settings are needed in
     // order to set this correctly.
+    m_graphics.m_uiScaled = false;
     m_graphics.updateScale();
 
     return true;
@@ -121,55 +124,55 @@ auto findValue(rapidjson::Document& dom, const std::vector<std::string>& path)
 template <>
 bool Configuration::get(const std::vector<std::string>& path)
 {
-    return findValue(instance().m_domFull, path)->value.GetBool();
+    return findValue(instance()->m_domFull, path)->value.GetBool();
 }
 
 template <>
 std::string Configuration::get(const std::vector<std::string>& path)
 {
-    return findValue(instance().m_domFull, path)->value.GetString();
+    return findValue(instance()->m_domFull, path)->value.GetString();
 }
 
 template <>
 std::uint8_t Configuration::get(const std::vector<std::string>& path)
 {
-    return static_cast<std::uint8_t>(findValue(instance().m_domFull, path)->value.GetUint());
+    return static_cast<std::uint8_t>(findValue(instance()->m_domFull, path)->value.GetUint());
 }
 
 template <>
 std::uint16_t Configuration::get(const std::vector<std::string>& path)
 {
-    return static_cast<std::uint16_t>(findValue(instance().m_domFull, path)->value.GetUint());
+    return static_cast<std::uint16_t>(findValue(instance()->m_domFull, path)->value.GetUint());
 }
 
 template <>
 std::uint32_t Configuration::get(const std::vector<std::string>& path)
 {
-    return static_cast<std::uint32_t>(findValue(instance().m_domFull, path)->value.GetUint());
+    return static_cast<std::uint32_t>(findValue(instance()->m_domFull, path)->value.GetUint());
 }
 
 template <>
 int Configuration::get(const std::vector<std::string>& path)
 {
-    return static_cast<int>(findValue(instance().m_domFull, path)->value.GetInt());
+    return static_cast<int>(findValue(instance()->m_domFull, path)->value.GetInt());
 }
 
 template <>
 float Configuration::get(const std::vector<std::string>& path)
 {
-    return static_cast<float>(findValue(instance().m_domFull, path)->value.GetDouble());
+    return static_cast<float>(findValue(instance()->m_domFull, path)->value.GetDouble());
 }
 
 template <>
 double Configuration::get(const std::vector<std::string>& path)
 {
-    return static_cast<double>(findValue(instance().m_domFull, path)->value.GetDouble());
+    return static_cast<double>(findValue(instance()->m_domFull, path)->value.GetDouble());
 }
 
 template <>
 std::chrono::milliseconds Configuration::get(const std::vector<std::string>& path)
 {
-    auto ms = static_cast<std::uint32_t>(findValue(instance().m_domFull, path)->value.GetUint());
+    auto ms = static_cast<std::uint32_t>(findValue(instance()->m_domFull, path)->value.GetUint());
     return std::chrono::milliseconds(ms);
 }
 
@@ -178,36 +181,36 @@ void Configuration::set(const std::vector<std::string>& path, std::string value)
 {
     // Modify values in both, because when serialization takes place, want the
     // changed values to persist.
-    findValue(instance().m_domFull, path)->value.SetString(value.c_str(), static_cast<rapidjson::SizeType>(value.size()), instance().m_domFull.GetAllocator());
-    findValue(instance().m_domSettings, path)->value.SetString(value.c_str(), static_cast<rapidjson::SizeType>(value.size()), instance().m_domSettings.GetAllocator());
+    findValue(instance()->m_domFull, path)->value.SetString(value.c_str(), static_cast<rapidjson::SizeType>(value.size()), instance()->m_domFull.GetAllocator());
+    findValue(instance()->m_domSettings, path)->value.SetString(value.c_str(), static_cast<rapidjson::SizeType>(value.size()), instance()->m_domSettings.GetAllocator());
 }
 
 template <>
 void Configuration::set(const std::vector<std::string>& path, std::uint16_t value)
 {
-    findValue(instance().m_domFull, path)->value.SetUint(value);
-    findValue(instance().m_domSettings, path)->value.SetUint(value);
+    findValue(instance()->m_domFull, path)->value.SetUint(value);
+    findValue(instance()->m_domSettings, path)->value.SetUint(value);
 }
 
 template <>
 void Configuration::set(const std::vector<std::string>& path, std::uint8_t value)
 {
-    findValue(instance().m_domFull, path)->value.SetUint(value);
-    findValue(instance().m_domSettings, path)->value.SetUint(value);
+    findValue(instance()->m_domFull, path)->value.SetUint(value);
+    findValue(instance()->m_domSettings, path)->value.SetUint(value);
 }
 
 template <>
 void Configuration::set(const std::vector<std::string>& path, bool value)
 {
-    findValue(instance().m_domFull, path)->value.SetBool(value);
-    findValue(instance().m_domSettings, path)->value.SetBool(value);
+    findValue(instance()->m_domFull, path)->value.SetBool(value);
+    findValue(instance()->m_domSettings, path)->value.SetBool(value);
 }
 
 template <>
 void Configuration::set(const std::vector<std::string>& path, float value)
 {
-    findValue(instance().m_domFull, path)->value.SetDouble(value);
-    findValue(instance().m_domSettings, path)->value.SetDouble(value);
+    findValue(instance()->m_domFull, path)->value.SetDouble(value);
+    findValue(instance()->m_domSettings, path)->value.SetDouble(value);
 }
 
 // --------------------------------------------------------------
@@ -218,20 +221,18 @@ void Configuration::set(const std::vector<std::string>& path, float value)
 // --------------------------------------------------------------
 void Configuration::Graphics::updateScale()
 {
-    static bool uiScaled{ false };
-
     if (!Configuration::get<bool>(config::GRAPHICS_SCALE_TO_RESOLUTION))
     {
         m_scale = { m_viewCoordinates.width / Configuration::getGraphics().getResolution().width, m_viewCoordinates.height / Configuration::getGraphics().getResolution().height };
     }
 
-    if (!uiScaled)
+    if (!m_uiScaled)
     {
         auto aspectRatio = Configuration::get<float>(config::GRAPHICS_WIDTH) / Configuration::getGraphics().getResolution().height;
         if (aspectRatio < 1.0)
         {
             m_scaleUI.y *= aspectRatio;
         }
-        uiScaled = true;
+        m_uiScaled = true;
     }
 }

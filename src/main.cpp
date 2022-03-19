@@ -77,7 +77,7 @@ auto readConfiguration()
         inDeveloper.close();
     }
 
-    return Configuration::instance().initialize(bufferSettings.str(), bufferDeveloper.str());
+    return Configuration::instance()->initialize(bufferSettings.str(), bufferDeveloper.str());
 }
 
 // --------------------------------------------------------------
@@ -87,7 +87,7 @@ auto readConfiguration()
 // --------------------------------------------------------------
 void saveConfiguration()
 {
-    auto json = Configuration::instance().serialize();
+    auto json = Configuration::instance()->serialize();
     std::ofstream ofFile(CONFIG_SETTINGS_FILENAME);
     ofFile << json;
     ofFile.close();
@@ -276,7 +276,7 @@ int main()
     std::shared_ptr<views::View> view = views[viewState];
     if (!view->start())
     {
-        std::cout << "Iniital view failed to initialize, terminating..." << std::endl;
+        std::cout << "Initial view failed to initialize, terminating..." << std::endl;
         exit(0);
     }
 
@@ -384,6 +384,52 @@ int main()
                 {
                     window->setMouseCursorVisible(true);
                 }
+            }
+        }
+        //
+        // Constantly check to see if the window should be restarted, due to a graphics option having changed.
+        if (Configuration::getGraphics().restart())
+        {
+            Configuration::getGraphics().setRestart(false);
+            saveConfiguration();
+            //
+            // The way I am having to completely reset the configuration completely is pretty bad,
+            // but I have struggled with SFML and getting the UI to render correctly based on
+            // different resolutions.  Completely resetting the configuration was the path of least
+            // resistance to accomplish the task at hand.  In a future program, I'll look into redoing
+            // how I use the SFML to get things rendered and hopefully also fix this at that time...or
+            // more likely, not use the SFML, just build from the ground up myself.
+            Configuration::instance()->reset();
+            readConfiguration();
+
+            //
+            // Shutdown the current window and view
+            view->stop();
+            window->setActive(false);
+            window->close();
+
+            //
+            // Create and activate the window for rendering on the main thread
+            window = prepareWindow();
+            prepareView(window);
+            window->setActive(true);
+
+            //
+            // Construct the different views the game may show, then get
+            // the initial view set and ready to run.
+            views.clear();
+            views[views::ViewState::MainMenu] = std::make_shared<views::MainMenu>();
+            views[views::ViewState::LevelSelect] = std::make_shared<views::LevelSelect>();
+            views[views::ViewState::GamePlay] = std::make_shared<views::Gameplay>();
+            views[views::ViewState::Credits] = std::make_shared<views::Credits>();
+            views[views::ViewState::About] = std::make_shared<views::About>();
+            views[views::ViewState::Settings] = std::make_shared<views::Settings>();
+
+            view = views[viewState];
+            if (!view->start())
+            {
+                std::cout << "Initial view failed to initialize, terminating..." << std::endl;
+                exit(0);
             }
         }
     }

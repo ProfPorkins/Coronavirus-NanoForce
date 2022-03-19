@@ -45,12 +45,20 @@ class Configuration
 
     static auto& instance()
     {
-        static Configuration instance;
-        return instance;
+        if (m_instance == nullptr)
+        {
+            m_instance = new Configuration();
+        }
+        return m_instance;
     }
 
     bool initialize(const std::string_view jsonSettings, const std::string_view jsonDeveloper);
     std::string serialize();
+    void reset()
+    {
+        delete m_instance;
+        m_instance = nullptr;
+    } // Believe me, I know, a terrible thing to do!
 
     template <typename T>
     static T get(const std::vector<std::string>& path);
@@ -69,6 +77,7 @@ class Configuration
         auto getViewCoordinates() { return m_viewCoordinates; }
         auto getResolution() { return m_resolution; }
         auto getBpp() { return m_bpp; }
+        auto restart() { return m_restart; }
 
         void setViewCoordinates(math::Dimension2f coordinates)
         {
@@ -77,20 +86,26 @@ class Configuration
         }
         void setResolution(math::Dimension2u resolution) { m_resolution = resolution; }
         void setBpp(unsigned int bpp) { m_bpp = bpp; }
+        void setRestart(bool state)
+        {
+            m_restart = state;
+        }
 
       private:
         friend Configuration;
 
+        bool m_uiScaled{ false };
         math::Vector2f m_scale{ 0.1f, 0.1f };
         math::Vector2f m_scaleUI{ m_scale };
         math::Dimension2f m_viewCoordinates{ 100.0f, 100.0f };
         math::Dimension2u m_resolution{ 640, 480 };
         unsigned int m_bpp{ 24 };
+        bool m_restart{ false }; // Set to true when the window should be restarted due to a change in the graphics options
 
         void updateScale();
     };
 
-    static Graphics& getGraphics() { return instance().m_graphics; }
+    static Graphics& getGraphics() { return instance()->m_graphics; }
 
   private:
     Configuration() {}
@@ -99,4 +114,6 @@ class Configuration
     rapidjson::Document m_domSettings;
 
     Graphics m_graphics;
+
+    static Configuration* m_instance;
 };
