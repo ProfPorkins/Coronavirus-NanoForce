@@ -42,16 +42,6 @@ namespace views
 
         if (!m_initialized)
         {
-
-            //
-            // Locate the restart message to near the bottom of the view
-            m_restart2.setPosition({ -(m_restart2.getRegion().width / 2.0f),
-                                     (Configuration::getGraphics().getViewCoordinates().height / 2.0f) - m_restart2.getRegion().height * 2.0f });
-            m_restart1.setPosition({ -(m_restart1.getRegion().width / 2.0f),
-                                     m_restart2.getRegion().top - m_restart2.getRegion().height * 2.0f });
-            m_restart1.hide();
-            m_restart2.hide();
-
             addFullScreenOption();
             addResolutionOption();
             addMusicOption();
@@ -99,8 +89,6 @@ namespace views
             option->render(renderTarget);
         }
 
-        m_restart1.render(renderTarget);
-        m_restart2.render(renderTarget);
         m_selectKey.render(renderTarget);
     }
 
@@ -166,8 +154,6 @@ namespace views
             Content::get<sf::Font>(content::KEY_FONT_SETTINGS), HEADING_COLOR, sf::Color::Yellow, Configuration::get<std::uint8_t>(config::FONT_SETTINGS_ITEM_SIZE),
             [this](std::uint8_t option)
             {
-                m_restart1.show();
-                m_restart2.show();
                 auto value = static_cast<bool>(option);
                 Configuration::set<bool>(config::GRAPHICS_FULL_SCREEN, value);
 
@@ -246,8 +232,6 @@ namespace views
             resolutionOptions, initialSelection,
             Content::get<sf::Font>(content::KEY_FONT_SETTINGS), HEADING_COLOR, sf::Color::Yellow, Configuration::get<std::uint8_t>(config::FONT_SETTINGS_ITEM_SIZE),
             [allowedModes, this](std::uint8_t option) { // NOTE: allowedModes is captured by copy; see note in Option.hpp for why
-                m_restart1.show();
-                m_restart2.show();
                 auto value = allowedModes[option];
                 Configuration::set<std::uint16_t>(config::GRAPHICS_WIDTH, static_cast<std::uint16_t>(value.width));
                 Configuration::set<std::uint16_t>(config::GRAPHICS_HEIGHT, static_cast<std::uint16_t>(value.height));

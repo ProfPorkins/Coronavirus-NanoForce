@@ -56,8 +56,6 @@ namespace views
         std::uint32_t m_mouseMovedHandlerId{ 0 };
         std::uint32_t m_mouseReleasedHandlerId{ 0 };
 
-        ui::Text m_restart1{ 0.0f, 0.0f, "Restart for changes", Content::get<sf::Font>(content::KEY_FONT_SETTINGS), sf::Color::Yellow, Configuration::get<std::uint8_t>(config::FONT_SETTINGS_MESSAGE_SIZE) };
-        ui::Text m_restart2{ 0.0f, 0.0f, "to take effect", Content::get<sf::Font>(content::KEY_FONT_SETTINGS), sf::Color::Yellow, Configuration::get<std::uint8_t>(config::FONT_SETTINGS_MESSAGE_SIZE) };
         ui::Text m_selectKey{ 0.0f, 0.0f, "Press a key to select the input", Content::get<sf::Font>(content::KEY_FONT_SETTINGS), sf::Color::Yellow, Configuration::get<std::uint8_t>(config::FONT_SETTINGS_MESSAGE_SIZE) };
 
         std::vector<std::shared_ptr<ui::Element>> m_options; // both ui::Selection and ui::KeyboardOption
