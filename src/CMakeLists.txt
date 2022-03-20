@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
-project(CoronavirusNF)
+set(PROJECT_NAME "CoronavirusNF")
+project(${PROJECT_NAME})
 
 # 
 # Great git submodules Reference: https://www.vogella.com/tutorials/GitSubmodules/article.html
@@ -192,7 +193,7 @@ set(CLIENT_PARTICLE_EFFECTS_SOURCES
     systems/effects/CircleExpansionEffect.cpp
     systems/effects/ParticleEffect.cpp
     systems/effects/PlayerStartEffect.cpp
-    )    
+    )
 
 set(CLIENT_UIFRAMEWORK_HEADERS
     UIFramework/Activate.hpp
@@ -296,39 +297,39 @@ set(CLIENT_CODE_FILES
     )
 
 #
-# This is the CoronavirusNF executable target
+# This is the program executable target
 #
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     # For Windows, linking with sfml-main so SFML's main is used, allow subsystem type to
     # be Windows instead of Console, to prevent the display of a console window on startup.
     # Reference: https://en.sfml-dev.org/forums/index.php?topic=6278.0
-    add_executable(CoronavirusNF WIN32 ${CLIENT_CODE_FILES})
-    target_link_libraries(CoronavirusNF sfml-main sfml-graphics sfml-audio sfml-system sfml-window)
+    add_executable(${PROJECT_NAME} WIN32 ${CLIENT_CODE_FILES})
+    target_link_libraries(${PROJECT_NAME} sfml-main sfml-graphics sfml-audio sfml-system sfml-window)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    add_executable(CoronavirusNF ${CLIENT_CODE_FILES})
-    target_link_libraries(CoronavirusNF sfml-graphics sfml-audio sfml-system sfml-window)
+    add_executable(${PROJECT_NAME} ${CLIENT_CODE_FILES})
+    target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-audio sfml-system sfml-window)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "CLANG")
-    add_executable(CoronavirusNF ${CLIENT_CODE_FILES})
-    target_link_libraries(CoronavirusNF sfml-graphics sfml-audio sfml-system sfml-window)
+    add_executable(${PROJECT_NAME} ${CLIENT_CODE_FILES})
+    target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-audio sfml-system sfml-window)
 endif()
-target_include_directories(CoronavirusNF PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 #
 # Want the C++ 17 standard for our project
 #
-set_property(TARGET CoronavirusNF PROPERTY CXX_STANDARD 17)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 #
 # Enable a lot of warnings, forcing better code to be written
 #
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(CoronavirusNF PRIVATE /W4 /permissive-)
+    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /permissive-)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_compile_options(CoronavirusNF PRIVATE -O3 -Wall -Wextra -pedantic) # -Wconversion -Wsign-conversion
+    target_compile_options(${PROJECT_NAME} PRIVATE -O3 -Wall -Wextra -pedantic) # -Wconversion -Wsign-conversion
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
     set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -Wl,-R,\$ORIGIN")
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "CLANG")
-    target_compile_options(CoronavirusNF PRIVATE -O3 -Wall -Wextra -pedantic)
+    target_compile_options(${PROJECT_NAME} PRIVATE -O3 -Wall -Wextra -pedantic)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
     set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 endif()
@@ -337,7 +338,7 @@ endif()
 # Enable static multithreaded library linking for MSVC
 # Reference: https://cmake.org/cmake/help/latest/prop_tgt/MSVC_RUNTIME_LIBRARY.html#prop_tgt:MSVC_RUNTIME_LIBRARY
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(CoronavirusNF
+    target_compile_options(${PROJECT_NAME}
  PRIVATE "/MT$<$<CONFIG:Debug>:d>")
 endif()
 
@@ -350,7 +351,7 @@ if (NOT EXISTS ${BUILD_CONFIG_FILE} OR ${DEFAULT_CONFIG_FILE} IS_NEWER_THAN ${BU
    configure_file(${DEFAULT_CONFIG_FILE} ${BUILD_CONFIG_FILE} COPYONLY)
 endif()
 
-add_dependencies(CoronavirusNF sfml-graphics sfml-audio sfml-system sfml-window)
+add_dependencies(${PROJECT_NAME} sfml-graphics sfml-audio sfml-system sfml-window)
 
 #
 # Move the assets into the build folder so they load at runtime
@@ -362,7 +363,7 @@ set(ASSETS_AUDIO_DIR ${ASSETS_DIR}/audio)
 set(ASSETS_MUSIC_DIR ${ASSETS_DIR}/music)
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_FONT_DIR}/Shojumaru-Regular.ttf
@@ -370,7 +371,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/menu-background-2.jpg
@@ -378,7 +379,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/petri-1.png
@@ -386,7 +387,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/petri-2.png
@@ -394,7 +395,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/petri-3.png
@@ -402,7 +403,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/petri-4.png
@@ -410,7 +411,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/petri-5.png
@@ -418,7 +419,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/petri-6.png
@@ -426,7 +427,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/playerShip1_blue.png
@@ -434,7 +435,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/sars-cov-2.png
@@ -442,7 +443,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/antibody.png
@@ -450,7 +451,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/bomb.png
@@ -458,7 +459,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/player-start-particle.png
@@ -466,7 +467,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/virus-particle.png
@@ -474,7 +475,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/powerup-rapid-fire.png
@@ -482,7 +483,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/powerup-spread-fire.png
@@ -490,7 +491,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_IMAGE_DIR}/powerup-bomb.png
@@ -498,7 +499,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_AUDIO_DIR}/menu-activate.wav
@@ -506,7 +507,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_AUDIO_DIR}/menu-accept.wav
@@ -514,7 +515,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_AUDIO_DIR}/powerup.ogg
@@ -522,7 +523,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_AUDIO_DIR}/fire.ogg
@@ -530,7 +531,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_AUDIO_DIR}/fire-bomb.ogg
@@ -538,7 +539,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_AUDIO_DIR}/explode-bomb.ogg
@@ -546,7 +547,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_AUDIO_DIR}/player-start.wav
@@ -554,7 +555,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_AUDIO_DIR}/player-death.ogg
@@ -562,7 +563,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_AUDIO_DIR}/virus-death.ogg
@@ -570,7 +571,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_AUDIO_DIR}/thruster-level3.ogg
@@ -578,7 +579,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_MUSIC_DIR}/background-music-1.ogg
@@ -586,7 +587,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET CoronavirusNF
+    TARGET ${PROJECT_NAME}
  POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/${ASSETS_MUSIC_DIR}/background-music-2.ogg
