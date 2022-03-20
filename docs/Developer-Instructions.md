@@ -25,10 +25,10 @@ The next step is to clone and build the game.  The following steps can be used t
       * `SFML_BUILD_GRAPHICS`
       * `SFML_BUILD_NETWORK`
       * `SFML_BUILD_WINDOW`
-   1. Open the **RAPIDJSON** dropdown in the CMake GUID and ensure only the following checkbox is checked
+   1. Open the **RAPIDJSON** dropdown in the CMake GUI and ensure only the following checkbox is checked
       * `RAPID_JSON_BUILD_CXX17`
    1. Open the **CTTI** dropdown in the CMake GUI and ensure all checkboxes are unchecked
-   1. Open the **BUILD** dropdown in the CMake GUID and ensure only the following checkbox is checked
+   1. Open the **BUILD** dropdown in the CMake GUI and ensure only the following checkbox is checked
       * `BUILD_SHARED_LIBS`
    1. Press **Configure** again.
    1. Press the **Generate** button.
